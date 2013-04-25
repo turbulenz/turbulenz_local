@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+# Copyright (c) 2012 Turbulenz Limited
+"""
+Deploy game from Local to the Hub.
+"""
+
+from turbulenz_local.deploygame import main
+
+if __name__ == "__main__":
+    main()

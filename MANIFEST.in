@@ -1,0 +1,6 @@
+recursive-include turbulenz_local/public/release *
+recursive-include turbulenz_local/public/external *
+recursive-include turbulenz_local/public/development *
+recursive-include turbulenz_local/config *
+recursive-include turbulenz_local/templates *
+recursive-include turbulenz_local/raw-response *

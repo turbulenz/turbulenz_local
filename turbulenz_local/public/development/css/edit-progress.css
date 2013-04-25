@@ -1,0 +1,118 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+.progress-panel {
+    color: #898989;
+    font-size: 92.3%;
+    margin-top: 12px;
+    padding-left: 25px;
+}
+
+.progress-panel .logo-area {
+    float: left;
+    width:  306px;
+    height: 78px;
+    overflow: hidden;
+}
+
+.progress-panel .logo-area p {
+    font-size: 2.5em;
+    opacity: 0.5;
+}
+
+.progress-panel .button-area {
+    border-right: 1px groove #b0adae;
+    color: #464545;
+    float: left;
+    line-height: 1.5em;
+    padding: 2px 8px 2px 0;
+    text-align: right;
+    width: 269px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.progress-panel .slug {
+    font-weight: bold;
+}
+
+.progress-panel .play-button {
+    background: url(/img/buttons/playlivebuild.png) 0 0 no-repeat;
+    display: block;
+    height: 29px;
+    margin: 5px 0 4px 122px;
+    text-align: left;
+    text-indent: -9999em;
+}
+
+.progress-panel .play-button.enabled {
+    background-position: 0 -29px;
+}
+
+.progress-panel .play-button.enabled:hover {
+    background-position: 0 -58px;
+}
+
+.progress-panel .deploy-button {
+    background: url(/img/deploy-button.png) no-repeat 0 0;
+    display: block;
+    height: 29px;
+    margin: 5px 0 4px 122px;
+}
+
+.progress-panel .deploy-button.enabled {
+    background: url(/img/deploy-button.png) no-repeat 0 50%;
+}
+
+.progress-panel .deploy-button.enabled.hover {
+    background: url(/img/deploy-button.png) no-repeat 0 100%;
+}
+
+.progress-panel .progress-percentage {
+    color: #b0adae;
+    float: right;
+    font-size: 1.846em;
+    font-weight: bold;
+    padding-top: 20px;
+    text-shadow: 0 1px 1px #fff;
+    line-height: 1.15em;
+    height: 50px;
+}
+
+.progress-panel .progress-percentage span {
+    font-size: 3.7em;
+}
+
+.progress-panel ul {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #b5b5b5;
+    float: left;
+    font-size: 92.3%;
+    font-weight: bold;
+    height: 128px;
+    list-style-type: none;
+    margin: 10px 0 0;
+    padding: 10px 30px;
+    width: 680px;
+}
+
+.progress-panel li {
+    background: url(/img/statusicons2.png) no-repeat -7px -138px;
+    height: 20px;
+    margin: 7px 4px;
+    padding: 4px 0 0 18px;
+    width: 140px;
+    float: none;
+}
+
+.progress-panel .complete {
+    background-position: -7px -86px;
+    color: #53b940;
+}
+
+.progress-panel .incorrect {
+    background-position: -7px -112px;
+    color: #cc244d;
+}

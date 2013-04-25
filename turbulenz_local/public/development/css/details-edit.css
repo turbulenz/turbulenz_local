@@ -1,0 +1,392 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+#progress .content {
+    width: 960px;
+    margin: 0 auto;
+    padding: 25px 0 0;
+}
+
+.not-ok {
+    background-color: #ffcccc;
+}
+
+#edit-form form {
+    -moz-box-shadow: 0 0 5px #aaa;
+    -webkit-box-shadow: 0 0 5px #aaa;
+    box-shadow: 0 0 5px #aaa;
+    background: #fff url(/img/label-bg.png) repeat-y 0 0;
+}
+
+#edit-form fieldset {
+    padding: 16px 0;
+    display: none;
+}
+
+#edit-form fieldset.enabled {
+    display: block;
+}
+
+.top-rounded {
+    -moz-border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+}
+
+#edit-form legend {
+    background: url(/img/title-bar-grey.png) repeat-x 0 0;
+    color: #fff;
+    display: block;
+    font-size: 92.31%;
+    font-weight: bold;
+    line-height: 2.41;
+    margin: 0 0 16px;
+    position: relative;
+    text-indent: 30px;
+    text-shadow: 0 1px #222;
+    width: 100%;
+}
+
+#edit-form .correct legend {
+    background: url(/img/title-bar-green.png) repeat-x 0 0;
+}
+
+#edit-form .incorrect legend {
+    background: url(/img/title-bar-red.png) repeat-x 0 0;
+}
+
+#edit-form legend span {
+    position: absolute;
+    clear: none;
+    text-indent: -9999em;
+    background: url('/img/status-icons.png') no-repeat -8px -8px;
+    width: 14px;
+    height: 15px;
+    left: 100%;
+    margin: 8px 0 0 -24px;
+}
+
+#edit-form .correct legend span {
+    background-position: -24px -8px;
+}
+
+#edit-form .incorrect legend span {
+    background-position: -40px -8px;
+}
+
+#edit-form .field {
+    float: left;
+    position: relative;
+    margin: 0 0 0 172px;
+    padding: 21px 40px 21px 0;
+    vertical-align: middle;
+    background-color: #fff;
+    width: 57.538em;
+}
+
+#edit-form .field.incorrect {
+    background-color: #fcc;
+}
+
+#edit-form .img-input {
+    border: 1px solid #b5b5b5;
+    cursor: pointer;
+}
+
+#edit-form label {
+    float: left;
+    clear: left;
+    background: url(/img/label-bg.png) repeat-y 0 0;
+    width: 146px;
+    line-height: 2;
+    text-align: right;
+    font-weight: bold;
+    font-size: 92.31%;
+    color: #1d1d1d;
+    padding: 0 26px 0 0;
+    margin: 0 32px 0 -172px;
+    text-shadow: 0 1px 0.5px #fff;
+}
+
+.field .status-icon {
+    display: block;
+    float: left;
+    background: none;
+    width: 14px;
+    height: 14px;
+    margin: 4px 2px 0px 10px;
+    z-index: 10;
+}
+
+.field.correct .status-icon {
+    background: url(/img/circle-tick-green.png) no-repeat;
+}
+
+.field.incorrect .status-icon {
+    background: url(/img/circle-cross-red.png) no-repeat;
+}
+
+.field .status-icon.busy {
+    background: url(/img/rotatingrainbowdots.gif) no-repeat;
+    margin: 2px 2px 0px 8px;
+    width: 17px;
+    height: 17px;
+}
+
+#upload-images .status-icon {
+    position: absolute;
+    top: 0px;
+    left: 109px;
+}
+
+#upload-images #screenshots .status-icon {
+    top: -9px;
+    left: 29px;
+}
+
+#edit-form input, #edit-form select, #edit-form textarea {
+    font: 92.31% Helvetica,Arial,sans-serif;
+    float: left;
+}
+
+#edit-form input, #edit-form #is_multiplayer_id {
+    width: 290px;
+    height: 25px;
+}
+
+#edit-form input.custom-button {
+    width: 265px;
+    position: relative;
+    z-index: 3;
+}
+
+#edit-form input.browse-dialog {
+    position: absolute;
+    left: 40px;
+    opacity: 0;
+    filter: alpha(opacity:0); /*for Internet Explorer 6/7*/
+    -ms-filter: 'alpha(opacity:0)'; /*for Internet Explorer 8*/
+    text-align: right;
+    z-index: 2;
+}
+
+#edit-form textarea {
+    width: 290px;
+    height: 125px;
+}
+
+#edit-form #path_id {
+    background-color: #fff;
+    color: #aaa;
+}
+
+#edit-form #path_id.unlocked {
+    color: #000;
+}
+
+#edit-form #lock_id {
+    background: url(/img/buttons/lock-unlock.png) no-repeat 0 0;
+    border: none;
+    text-indent: -9999em;
+    margin: 0 0 0 2px;
+    width: 25px;
+    height: 25px;
+}
+
+#edit-form #lock_id.unlocked {
+    background-position: 0 -25px;
+}
+
+
+#edit-form .browse_btn {
+    background: url(/img/browse.png) no-repeat 0 0;
+    border: none;
+    text-indent: -9999em;
+    margin: 3px 0 0 2px;
+    width: 25px;
+    height: 25px;
+    z-index: 1;
+    position: relative;
+}
+
+
+#edit-form .error {
+    color: red;
+    background-image: none;
+    padding: 0 0 0 32px;
+    margin: 0;
+    font-weight: bold;
+    font-size: 84.62%;
+    text-align: left;
+    width: auto;
+}
+
+#upload-images .img-input {
+    float: left;
+    position: relative;
+    width: 93px;
+    height: 93px;
+    cursor: pointer;
+}
+
+#upload-images img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    clip: rect(0 93px 93px 0);
+    cursor: pointer;
+}
+
+#upload-images .img-input input {
+    position: absolute;
+    opacity: 0;
+    top: -9999em;
+    cursor: pointer;
+}
+
+#upload-images .clip-portrait {
+    width: 93px;
+}
+
+#upload-images .clip-landscape {
+    height: 93px;
+}
+
+#upload-images #screenshots .img-input {
+    width: 43px;
+    height: 43px;
+    margin: 1px 0 2px 2px;
+}
+
+#upload-images #screenshots img {
+    clip: rect(0 43px 43px 0);
+}
+
+#upload-images #screenshots .clip-portrait {
+    width: 43px;
+}
+
+#upload-images #screenshots .clip-landscape {
+    height: 43px;
+}
+
+#edit-form ul {
+    list-style-type: none;
+    float: left;
+    width: 93px;
+    height: 93px;
+}
+
+#edit-form li {
+    position: relative;
+    float: left;
+    width: 50%;
+}
+
+#edit-form p {
+    font-size: 92.31%;
+    color: #898989;
+    padding-left: 390px;
+}
+
+#edit-form #path_error,
+#edit-form #slug_error {
+    color: #b00;
+    margin: 0 0 0 34px;
+    color: #BB0000;
+    line-height: 1.5;
+    margin: 4px 0 0 34px;
+}
+
+#edit-form #upload-images p {
+    padding-left: 148px;
+    width: 350px;
+}
+
+#edit-form p em {
+    font-weight: bold;
+    font-style: normal;
+}
+
+.charcounter {
+    color: #888;
+    font-size: 76.92%;
+    position: absolute;
+    bottom: 13px;
+    right: 66px;
+}
+
+#edit-form .description textarea {
+    float: left;
+    width: 620px;
+}
+
+.charcounter.over {
+    color: red;
+    font-weight: bold;
+    bottom: 36px;
+}
+
+#directory-options {
+    border: 1px dashed #FF0000;
+    border-top: none;
+    float: left;
+    margin: -12px 33px 0;
+    padding: 15px 0 0 10px;
+    width: 282px;
+    display: none;
+    background-color: #fff;
+}
+
+#directory-options.enabled {
+    display: block;
+}
+
+#directory-options>p {
+    float: left;
+    clear: left;
+    padding: 0;
+    margin: 0 0 10px;
+    line-height: 1.4em;
+}
+
+#directory-options>p.directory {
+    color: #1d1d1d;
+}
+
+#directory-options>a {
+    clear: left;
+    float: left;
+    margin: 8px 8px 8px 188px;
+}
+
+#file-options a {
+    display: block;
+    width: 124px;
+    height: 29px;
+    float: right;
+    text-indent: -9999em;
+}
+
+#file-options .save {
+    background: url(/img/buttons/save-game-button.png) no-repeat 0 0;
+    cursor: default;
+    margin-left: 35px;
+}
+
+#file-options .enabled.save {
+    background: url(/img/buttons/save-game-button.png) no-repeat 0 -29px;
+    cursor: pointer;
+}
+
+#file-options .enabled.save:hover {
+    background: url(/img/buttons/save-game-button.png) no-repeat 0 -58px;
+}
+
+#file-options .delete {
+    background: url(/img/buttons/deletebutton.png) no-repeat 0 0;
+    margin-left: 45px;
+}
+
+#file-options .delete:hover {
+    background: url(/img/buttons/deletebutton.png) no-repeat 0 -29px;
+}

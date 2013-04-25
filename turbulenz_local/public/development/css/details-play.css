@@ -1,0 +1,112 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+#playable-versions {
+    -moz-border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+    -moz-box-shadow: 0 0 5px #ccc;
+    -webkit-box-shadow: 0 0 5px #ccc;
+    box-shadow: 0 0 5px #ccc;
+    background-color: #fff;
+    width: 100%;
+}
+
+#playable-versions thead {
+    font-size: 92.3%;
+    font-weight: bold;
+    line-height: 1.833em;
+    background: #eaeaea;
+    border-bottom: 1px solid #d1d1d1;
+    text-align: left;
+}
+
+#playable-versions h2 {
+    background: url(/img/title-bar-grey.png) repeat-x 0 0;
+    line-height: 2.417em;
+    -moz-border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+    text-shadow: 0 1px 1px #fff;
+    color: #000;
+    padding: 0 0 0 20px;
+}
+
+#playable-versions tbody {
+    background: #fff;
+    padding: 1px;
+    color: #000;
+    font-size: 92.3%;
+    line-height: 1.917em;
+}
+
+#playable-versions th:first-child,
+#playable-versions td:first-child {
+    padding: 0 0 0 36px;
+}
+
+#playable-versions td a {
+    color: #1d1d1d;
+}
+
+#playable-versions thead tr:first-child th {
+    padding: 0;
+}
+
+#playable-versions .stripe {
+    background-color: #eee;
+}
+
+div .install {
+    width: 920px;
+    background-color: gray;
+    height: 520px;
+    position: center;
+    text-align: center;
+    margin: 80px auto;
+}
+
+div .install-message {
+    height: 120px;
+    padding-top: 180px;
+}
+
+.install p {
+    color: white;
+    font-size: 1.3em;
+    height: 25px;
+    text-shadow: 0 1px 1px black;
+    top: 100px;
+    line-height: 40px;
+    height: 40px;
+    white-space: nowrap;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+
+/* TODO - restructure play versions page */
+/* UL, LI - DOES NOT EXIST!!! */
+
+/*#playable-versions-div>ul>li {*/
+/*    background: url(/img/title-bar-grey.png) repeat-x #fff;*/
+/*    margin: 0 0 40px;*/
+/*    -moz-box-shadow: 0 2px 3px #ccc;*/
+/*    -moz-border-radius: 5px 5px 5px 5px;*/
+/*    -webkit-box-shadow: 0 2px 3px #ccc;*/
+/*    -webkit-border-radius: 5px 5px 5px 5px;*/
+/*    box-shadow:  0 2px 3px #ccc;*/
+/*    border-radius: 5px 5px 5px 5px;*/
+/*    height: 29px;*/
+/*    overflow: hidden;*/
+/*}*/
+/**/
+/*#playable-versions-div>ul>li.empty {*/
+/*    font-weight: bold;*/
+/*    height: auto;*/
+/*    padding: 8px;*/
+/*    color: #FFFFFF;*/
+/*    text-align: center;*/
+/*    text-shadow: 0 1px #222222;*/
+/*}*/

@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>local.turbulenz - disassemble - {{ asset }}</title>
+        {{ h.stylesheet_link('/css/base.css') }}
+        {{ h.stylesheet_link('/css/disassembler.css') }}
+        {{ h.javascript_link('/js/jquery-1.7.1.min.js') }}
+    </head>
+    <body>
+        <div class="messages"></div>
+        <div id="header">
+            <a href="{{ url('local-app') }}" id="logo">Turbulenz</a>
+        </div>
+        <div id="content">
+            <div id="loading" style="display:none">Loading...</div>
+            <div class="highlight">
+                <form id="button_panel" style="padding-top: 20px">
+                    <fieldset>
+                        <legend align="center">DEPTH</legend>
+                        <input type="button" class="dh_btn" id="decrease-depth" value="-">
+                        <span id="value-depth"> {{ depth }} </span>
+                        <input type="button" class="dh_btn" id="increase-depth" value="+">
+                    </fieldset>
+                    <fieldset>
+                        <legend align="center">LIST</legend>
+                        <input type="button" class="l_btn" id="decrease-list" value="-">
+                        <span id="value-list"> {{ list_cull }} </span>
+                        <input type="button" class="l_btn" id="increase-list" value="+">
+                    </fieldset>
+                    <fieldset>
+                        <legend align="center">DICT</legend>
+                        <input type="button" class="dc_btn" id="decrease-dict" value="-">
+                        <span id="value-dict"> {{ dict_cull }} </span>
+                        <input type="button" class="dc_btn" id="increase-dict" value="+">
+                    </fieldset>
+                    <input type="button" class="res_btn" id="reset" value="reset">
+                </form>
+                <pre class="node" id="node=0">Loading asset... </pre>
+            </div>
+        </div>
+        <script type="text/javascript">
+        //jQuery.noConflict();
+        jQuery(function($j) {
+            var list_cull = {{ list_cull }};
+            var dict_cull = {{ dict_cull }};
+            var depth = {{ depth }};
+            var userdata = {{ userdata }};
+
+            var request = function requestFn()
+            {
+                return '?list_cull=' + list_cull + ';dict_cull=' + dict_cull + ';depth=' + depth + ';userdata=' + userdata + ';';
+            };
+
+            var updateNodes = function updateNodesFn(responseText, textStatus)
+            {
+                if (textStatus == 'error')
+                {
+                    $j(this).html(responseText)
+                    $j('#loading').toggle(false);
+                    return;
+                }
+                var expand = $j('.expand');
+                var collapse = $j('.collapse');
+
+                // Make sure we unbind all possible click events before registering new ones to avoid
+                // double calls to the click functions
+                expand.unbind('click');
+                collapse.unbind('click');
+
+                expand.click(function() {
+                    // Remove our jQuery events which get reapplied during updateNodes after DOM manipulation
+                    $j(this).removeClass('expand');
+                    $j(this).removeClass('collapse');
+                    $j(this).unbind('click');
+
+                    $j('#loading').toggle(true);
+
+                    var parent = $j(this).closest('.node');
+                    var requestUrl = request() + parent.attr('id');
+
+                    if ($j(this).is('.all'))
+                    {
+                        requestUrl = requestUrl + ';expand=1';
+                    }
+                    // Replacing innerHTML when there a lots of children is very slow see
+                    // http://blog.stevenlevithan.com/archives/faster-than-innerhtml
+                    // Following this advice we clone the underlying DOM node without any children, use jQuery to load into
+                    // the empty clone and then insert the clone with jQuery in place of the existing node
+                    var parentEl = parent[0];
+                    var newEl = $j(parentEl.cloneNode(false));
+                    function postLoad(responseText, textStatus)
+                    {
+                        newEl.insertAfter(parent);
+                        parent.detach();
+                        updateNodes(responseText, textStatus);
+                    }
+                    newEl.load(requestUrl, postLoad);
+                });
+                collapse.click(function() {
+                    // Remove our jQuery events which get reapplied during updateNodes after DOM manipulation
+                    $j(this).removeClass('expand');
+                    $j(this).removeClass('collapse');
+                    $j(this).unbind('click');
+
+                    var parent = $j(this).closest('.node');
+
+                    $j('#loading').toggle(true);
+
+                    // Replacing innerHTML when there a lots of children is very slow see
+                    // http://blog.stevenlevithan.com/archives/faster-than-innerhtml
+                    // Following this advice we clone the underlying DOM node without any children, use jQuery to load into
+                    // the empty clone and then insert the clone with jQuery in place of the existing node
+                    var parentEl = parent[0];
+                    var newEl = $j(parentEl.cloneNode(false));
+                    function postLoad(responseText, textStatus)
+                    {
+                        newEl.insertAfter(parent);
+                        parent.detach();
+                        updateNodes(responseText, textStatus);
+                    }
+                    newEl.load(request() + parent.attr('id'), postLoad);
+                });
+                $j('#loading').toggle(false);
+            };
+
+            var loadRootNode = function loadRootNodeFn()
+            {
+                $j('#loading').toggle(true);
+                $j('#value-depth').html(depth);
+                $j('#value-list').html(list_cull);
+                $j('#value-dict').html(dict_cull);
+                $j('#decrease-depth').attr("disabled", (depth === 1));
+                $j('#decrease-dict').attr("disabled", (dict_cull === 1));
+                $j('#decrease-list').attr("disabled", (list_cull === 1));
+                $j('.node').load(request() + 'node=0;expand=1;', updateNodes);
+            };
+
+            $j('#increase-depth').click(function increaseDepthFn() {
+                depth += 1;
+                loadRootNode();
+            });
+            $j('#decrease-depth').click(function decreaseDepthFn() {
+                depth = Math.max(1, depth - 1);
+                loadRootNode();
+            });
+            $j('#increase-dict').click(function increaseDictCullFn() {
+                dict_cull += 5;
+                loadRootNode();
+            });
+            $j('#decrease-dict').click(function decreaseDictCullFn() {
+                dict_cull = Math.max(1, dict_cull - 5);
+                loadRootNode();
+            });
+            $j('#increase-list').click(function increaseListCullFn() {
+                list_cull += 5;
+                loadRootNode();
+            });
+            $j('#decrease-list').click(function decreaseListCullFn() {
+                list_cull = Math.max(1, list_cull - 5);
+                loadRootNode();
+            });
+            $j('#reset').click(function resetFn() {
+                depth = {{ depth }};
+                dict_cull = {{ dict_cull }};
+                list_cull = {{ list_cull }};
+                loadRootNode();
+            });
+
+            loadRootNode();
+        });
+        </script>
+    </body>
+</html>

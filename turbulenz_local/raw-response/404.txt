@@ -1,0 +1,4 @@
+HTTP/1.0 404 Not Found
+Some-header: 1337
+
+Hello world

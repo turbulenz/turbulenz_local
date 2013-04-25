@@ -1,0 +1,77 @@
+/* Copyright (c) 2011 Turbulenz Limited */
+
+#button_panel fieldset {
+    float: left;
+    border: 1px solid #666666;
+    margin: 0 3px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    position: relative;
+    left: 35px;
+    top: -7px;
+}
+
+legend {
+    color: #666666;
+    padding: 3px;
+}
+
+.highlight span {
+    color:#C5060B;
+}
+
+.highlight span.node {
+    color:#000000;
+}
+
+.highlight span.c {
+    color:#0066ff;
+    font-style:italic;
+    font-size:smaller;
+}
+
+.highlight a.c {
+    color:#0066ff;
+    font-size:smaller;
+}
+
+.highlight a.c:hover {
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+.highlight {
+    font-family:monospace;
+}
+
+#button_panel {
+    background-image: url('/img/panel-bg.png');
+    background-repeat:repeat-x;
+    position: relative;
+    height: 65px;
+    padding-left: 35px;
+}
+
+.highlight pre {
+    padding-left: 35px;
+}
+
+.res_btn {
+    position: relative;
+    left: 55px;
+    top: 13px;
+}
+
+#loading {
+    background-color:#ff0033;
+    color:#fff;
+    font-weight:bold;
+    position:fixed;
+    padding:0px 0px 0px 5px;
+    height:18px;
+    width:70px;
+    top:0px;
+    right:0px;
+    z-index:10000;
+}

@@ -1,0 +1,4 @@
+HTTP/1.0 200 OK
+Some-header: 1337
+
+Hello world

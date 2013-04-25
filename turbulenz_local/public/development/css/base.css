@@ -1,0 +1,273 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+/* reset */
+html, body, div, span, object, iframe, h1, h2, p, a, img, ul, li, fieldset, form, label, legend, table, thead, tbody, tfoot, tr, th, td {
+    border: 0;
+    font-size: 100%;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+
+body {
+    background: #dbdbd9 url('/img/noise-bg.png') repeat;
+    font: normal normal normal 13px/1.231 Helvetica,Arial,sans-serif;
+    line-height: 1;
+}
+
+img {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+a {
+    color: #000;
+}
+
+#header {
+    margin: 0 auto;
+    overflow: hidden;
+    width: 960px;
+    height: 94px;
+}
+
+#logo {
+    background: url('/img/logo.png') no-repeat;
+    float: left;
+    height: 23px;
+    text-indent: -999em;
+    width: 202px;
+    margin-top: 40px;
+}
+
+#content {
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+
+#game_player {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+}
+
+.feature {
+    background: url(/img/panel-tile.png) repeat 0 0;
+    margin: 0 0 55px;
+    position: relative;
+    width: 100%;
+    zoom: 1;
+    overflow: visible;
+}
+
+.feature h1 {
+    background: url(/img/panel-top.png) repeat-x 0 0;
+    float: left;
+    height: 17px;
+    margin: 0;
+    padding: 0;
+    text-indent: -9999em;
+    width: 100%;
+}
+
+#games {
+    margin: 0 auto;
+    width: 1040px;
+    position: relative;
+}
+
+.feature .clear {
+    display: block;
+    float: left;
+    clear: both;
+    height: 30px;
+    background-image: url(/img/panel-bottom.png);
+    background-repeat: repeat-x;
+    background-position: 0 bottom;
+    width: 100%;
+}
+
+#details {
+    margin: 22px auto 50px;
+    width: 960px;
+}
+
+.push {
+    clear: both;
+    height: 1.5em;
+    margin-top: 2.308em;
+}
+
+.message {
+    background: url(/img/update-bar.png) repeat-x 0 0;
+    height: 29px;
+    color: #fff;
+    text-shadow: 1px 0 0 #000;
+}
+
+.message .notification {
+    width: 960px;
+    margin: 0 auto;
+    padding: 7px;
+    font-weight: bold;
+}
+
+.message a {
+    color: #fff;
+}
+
+.message .options {
+    float: right;
+}
+
+
+/* navigation */
+#home-link {
+    position: absolute;
+    display: block;
+    background-image: url(/img/carousel-controls.png);
+    background-repeat: no-repeat;
+    background-position: 0 -23px;
+    width: 24px;
+    height: 23px;
+    padding: 0;
+    margin: 0 0 0 -514px;
+    text-indent: -999em;
+    overflow: hidden;
+    top: 36px;
+    left: 50%;
+}
+
+#home-link:hover {
+    background-position: 0 0;
+}
+
+#add-game {
+    position: absolute;
+    display: block;
+    background-image: url(/img/carousel-controls.png);
+    background-repeat: no-repeat;
+    background-position: 0 -146px;
+    width: 24px;
+    height: 26px;
+    padding: 0;
+    margin: 0 0 0 -514px;
+    text-indent: -9999em;
+    overflow: hidden;
+    top: 70px;
+    left: 50%;
+}
+
+#add-game:hover {
+    background-position: 0 -173px;
+}
+
+.deploy-label {
+    display: block;
+    margin-bottom:5px;
+    float:left;
+}
+
+ .deploy-select {
+    display:block;
+    margin-bottom:12px;
+    width:100%;
+    padding: .4em;
+    float:left;
+}
+
+ .deploy-input {
+    display:block;
+    margin-bottom:12px;
+    width:100%;
+    padding: .4em;
+    float:left;
+}
+
+ .deploy-fieldset {
+    padding:0;
+    border:0;
+    margin-top:25px;
+}
+
+ .ui-dialog .ui-state-error {
+    padding: .3em;
+}
+
+ .deploy-validateTips {
+    border: 1px solid transparent;
+    margin-bottom:5px;
+    padding: 0.3em;
+}
+
+
+#osd_message_content {
+    display: block;
+}
+
+.message-container-outer {
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+    border-radius: 0px 0px 4px 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    -moz-border-radius: 0px 0px 4px 4px;
+    -o-border-radius: 0px 0px 4px 4px;
+}
+
+.message-container {
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+    background-color: #222222;
+    background-color: rgba(20, 20, 20, 0.8) !important;
+    padding: 0px 9px;
+    height: 26px;
+    border-radius: 0px 0px 4px 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    -moz-border-radius: 0px 0px 4px 4px;
+    -o-border-radius: 0px 0px 4px 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: none;
+    cursor: pointer;
+    font-family: helvetica;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+}
+
+.message-container span {
+    float: left;
+}
+
+.message-container span.message-counter {
+    text-shadow: none;
+    /* for some reason you have to declare all corners in ie*/
+    border-radius: 14px 14px 14px 14px;
+    -webkit-border-radius: 14px;
+    -moz-border-radius: 14px;
+    -o-border-radius: 14px;
+    background-color: #c7123c;
+    margin-top: 4px;
+    padding: 1px 5px 2px 5px;
+    display: none;
+}
+
+.message-container span.message-span {
+    margin-top: 6px;
+}
+
+.message-container span.message-span a {
+    color: white;
+}

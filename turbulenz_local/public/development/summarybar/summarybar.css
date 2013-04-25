@@ -1,0 +1,83 @@
+/*
+ * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
+ * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1.  Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer. 
+ * 2.  Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution. 
+ * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
+ *     its contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission. 
+ *
+ * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#resources-summary {
+    position: relative;
+    padding-top: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 73px;
+    margin-left: -1px;
+    border-left: 1px solid rgb(102, 102, 102);
+    background-color: rgb(238, 238, 238);
+    border-bottom: 1px solid rgb(205, 205, 205);
+    text-align: center;
+    white-space: nowrap;
+    color: black;
+    -webkit-background-size: 1px 6px;
+    -webkit-background-origin: padding;
+    -webkit-background-clip: padding;
+    z-index: 400;
+}
+
+.summary-graph-legend {
+    margin-top: -10px;
+    padding-left: 15px;
+}
+
+.summary-graph-legend-item {
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 15px;
+    vertical-align: top;
+}
+
+.summary-graph-legend-item.total {
+    margin-left: 10px;
+}
+
+.summary-graph-legend-label {
+    display: inline-block;
+    text-align: left;
+}
+
+.summary-graph-legend-header {
+    font-size: 12px;
+}
+
+.summary-graph-legend-value {
+    font-size: 10px;
+}
+
+.summary-graph-legend-swatch {
+    vertical-align: top;
+    margin-top: 1px;
+    margin-right: 3px;
+}

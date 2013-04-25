@@ -1,0 +1,214 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+root {
+    display: block;
+}
+
+
+/**** general ****/
+
+
+#details>div>h2 {
+    text-indent: -9999em;
+    line-height: 0;
+}
+
+#details ul {
+    list-style-type: none;
+}
+
+
+#details>div>ul>li {
+    background: url(/img/title-bar-grey.png) repeat-x #fff;
+    margin: 0 0 40px;
+    -moz-box-shadow: 0 2px 3px #ccc;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-box-shadow: 0 2px 3px #ccc;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    box-shadow:  0 2px 3px #ccc;
+    border-radius: 5px 5px 5px 5px;
+    overflow: hidden;
+}
+
+#details>div>ul>li.empty,
+#details>div>ul>li.cap {
+    font-weight: bold;
+    text-shadow: 0 1px #222222;
+    height: auto;
+    padding: 8px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+
+/**** session header ****/
+
+
+#details .session-header {
+    font-weight: bold;
+    font-size: 93%;
+    text-shadow: 0 1px 1px #fff;
+    height: 29px;
+}
+
+#details .session-header .session-title {
+    width: 500px;
+    float: left;
+    cursor: pointer;
+    margin: 4px 0 0 5px;
+    padding: 4px 0 0 24px;
+    width: 635px;
+    height: 14px;
+}
+
+#details .session-header .session-options {
+    margin: 7px 15px 0 0;
+    float: left;
+}
+
+#details .session-header li {
+    float: left;
+}
+
+
+/**** session details ****/
+
+
+#details .session-details {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 0 5px #ccc;
+    -webkit-box-shadow: 0 0 5px #ccc;
+    box-shadow: 0 0 5px #ccc;
+    background: url(/img/title-bar-grey.png) repeat-x;
+}
+
+
+/**** details table ****/
+
+
+#details .details-table {
+    clear: left;
+}
+
+#details .details-table table {
+    text-align: left;
+    width: 100%;
+}
+
+#details .details-table span.active, #details .details-table span.active-reverse {
+    padding-right: 15px;
+}
+
+#details .details-table tr.stripe {
+    background-color: #eee;
+}
+
+
+#details .details-table span.active {
+    background: url(/img/sort-arrow.png) no-repeat right;
+}
+
+
+#details .details-table span.active-reverse {
+    background: url(/img/sort-arrow-reverse.png) no-repeat right;
+}
+
+#details .details-table th,
+#details .details-table td {
+    padding: 4px 0px 4px 20px;
+}
+
+#details .details-table th.number,
+#details .details-table td.number {
+    text-align: right;
+}
+
+#details .details-table th {
+    cursor: pointer;
+}
+
+#details .details-table  tr {
+    background-color: #fff;
+}
+
+
+#details .details-table a.directory {
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+
+/**** buttons ****/
+
+
+#details .button {
+    cursor: pointer;
+}
+
+
+#details .button.left {
+    background: url("/img/titlebar-item-left-up.png") no-repeat scroll 0 0 transparent;
+    margin-left: 8px;
+    padding-left: 11px;
+}
+
+#details .button.left.hover-target {
+    background: url("/img/titlebar-item-left-over.png") no-repeat scroll 0 0 transparent;
+}
+
+#details .button .right {
+    background: url(/img/titlebar-item-right-up.png) no-repeat right 0;
+    padding-right: 11px;
+}
+
+#details .button.hover-target .right {
+    background: url(/img/titlebar-item-right-over.png) no-repeat right 0;
+}
+
+#details .button .middle {
+    background: url(/img/titlebar-item-tile-up.png) repeat-x;
+    padding: 8px 0 7px;
+}
+
+#details .button.hover-target .middle {
+    background: url(/img/titlebar-item-tile-over.png) repeat-x;
+}
+
+#details .button a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/**** asset list form ****/
+
+
+#list-form .details-table tr.highlighted {
+    background-color: #f0fff0;
+}
+
+#list-form .details-table tr.stripe.highlighted {
+    background-color: #d9f2d9;
+}
+
+#list-form>ul>li {
+    height: auto;
+}
+
+
+/**** userdata form ****/
+
+
+#userdata-form .details-table tr.highlighted {
+    background-color: #f0fff0;
+}
+
+#userdata-form .details-table tr.stripe.highlighted {
+    background-color: #d9f2d9;
+}
+
+#userdata-form>ul>li {
+    height: auto;
+}

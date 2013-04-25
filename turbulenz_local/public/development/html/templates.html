@@ -1,0 +1,886 @@
+<script type='text/html' id='local_application_template'>
+<![CDATA[
+    <div id="games-wrapper" class="feature">
+        <h1>Games</h1>
+        <div id="games">
+            <a href="#" id="home-link">Home</a>
+            <a href="#add-game" id="add-game">Add Game</a>
+            <div class="viewport">
+                <ul id="carousel">
+                </ul>
+            </div>
+            <span class="carousel-btn prev">Prev</span>
+            <span class="carousel-btn next">Next</span>
+        </div>
+        <span class="clear"></span>
+    </div>
+    <ul id="actionspacer" class="actions"></ul>
+    <div id="details"></div>
+]]>
+</script>
+
+<script type='text/html' id='local_game_panel_template'>
+<![CDATA[
+ <% if (this.game.is_temp)
+    {
+        var status = 'Temporary';
+    }
+    else
+    {
+        var status = 'In-development';
+    } %>
+    <li id="<%= this.game.slug %>" class="game-panel index<%= this.loop_index %> <%= status %>">
+        <div title="<%= this.game.title %>" class="game-box">
+            <% if (this.game.title !== '') { %>
+                <h2><%= this.game.title %></h2>
+            <% } else { %>
+                <h2 class="no-title">No Title</h2>
+            <% } %>
+            <% if (this.game.cover_art !== '') { %>
+                <img src="/game-meta/<%= this.game.slug %>/<%= this.game.cover_art %>" width="160" height="234" alt="<%= this.game.title %>">
+            <% } else { %>
+                <img src="/img/no-cover.png" width="160" height="234" alt="<%= this.game.title %>">
+            <% } %>
+            <p>
+                <span class="modified date">Modified: <%= this.game.modified %></span><br>
+                <span class="publish date">Deployed: <%= this.game.deployed %></span>
+            </p>
+        </div>
+        <div class="progress-panel">
+        </div>
+    </li>
+]]>
+</script>
+
+<script type='text/html' id='local_progress_panel_template'>
+<![CDATA[
+    <div class="<%= this.game.data.slug %> progress-percentage">
+        <span></span>%
+    </div>
+    <div class="logo-area">
+        <% if (this.game.data.title_logo !== '') { %>
+            <img alt="<%= this.game.data.title %>" src="/game-meta/<%= this.game.data.slug %>/<%= this.game.data.title_logo %>">
+        <% } %>
+    </div>
+    <div class="button-area">
+        <% if (this.game.data.title !== '') { %>
+            <h2 title="<%= this.game.data.title %>"><%= this.game.data.title %></h2>
+        <% } else { %>
+            <h2 class="no-title">No Title</h2>
+        <% } %>
+        <p title="<%= this.game.data.slug %>"><span class="slug"><%= this.game.data.slug %></span></p>
+        <a id="deploy_button_id<%= this.loop_index %>" class="deploy-button enabled"></a>
+    </div>
+    <ul class="<%= this.game.data.slug %> step-list">
+        <li class="<%= this.game.data.status.directory %>">Set game directory</li>
+        <li class="<%= this.game.data.status.path %>">Set game path</li>
+        <li class="<%= this.game.data.status.definition %>">Set title</li>
+    </ul>
+
+]]>
+</script>
+
+<script type='text/html' id='local_action_buttons_template'>
+<![CDATA[
+
+    <li class="action play">
+        <a id="play-button" href="#/play/<%= this %>">Play</a>
+        <span class="note">a build of your game.</span>
+    </li>
+    <li class="action edit">
+        <a id="edit-button" href="#/edit/<%= this %>">Modify</a>
+        <span class="note">the game metadata.</span>
+    </li>
+    <li class="action metrics">
+        <a id="metrics-button" href="#/metrics/<%= this %>">View metrics</a>
+        <span class="note">and statistics.</span>
+    </li>
+    <li class="action assets">
+        <a id="list-button" href="#/list/assets/<%= this %>">View uploaded</a>
+        <span class="note">game assets.</span>
+    </li>
+    <li class="action userdata">
+        <a id="userdata-button" href="#/userdata/<%= this %>">View saved</a>
+        <span class="note">user data.</span>
+    </li>
+]]>
+</script>
+
+<script type='text/html' id='local_message_engine_version_template'>
+<![CDATA[
+    <div class="message engine_version" style="display:none;">
+        <div class="notification">
+            <span class="alert">Version <%= this.engine.newest %> of the Turbulenz Engine is now available!
+            <% if (this.engine.download === '') { %>
+                <p style="display: inline-block; margin-left: 150px;">There is no Turbulenz Engine currently available for your OS.</p>
+            </span>
+            <span class="options">
+            <% } else { %>
+            </span>
+            <span class="options">
+                <a href="<%= this.engine.download %>">Download</a>&nbsp;&nbsp;
+            <% } %>
+                <a href="https://hub.turbulenz.com/download" target="_blank">All versions</a>&nbsp;&nbsp;
+                <a href="#" id="skip-engine-link">Skip this version</a>
+            </span>
+        </div>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_message_plugin_template'>
+<![CDATA[
+    <div class="message plugin" style="display:none;">
+        <div class="notification">
+            <span class="alert">Turbulenz Engine is not detected!
+            <% if (this.engine.download === '') { %>
+                <p style="display: inline-block; margin-left: 150px;">Unfortunately, Turbulenz currently does not support your OS.</p>
+            </span>
+            <span class="options">
+            <% } else { %>
+            </span>
+            <span class="options">
+                <a href="<%= this.engine.download %>">Download</a>&nbsp;&nbsp;
+            <% } %>
+                <a href="https://hub.turbulenz.com/download" target="_blank">All versions</a>&nbsp;&nbsp;
+                <a href="#" id="skip-engine-link">Skip this version</a>
+            </span>
+            </span>
+        </div>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_message_missing_plugin_template'>
+<![CDATA[
+    <div class="message plugin" style="display:none;">
+        <div class="notification">
+            <span class="alert">Turbulenz Engine is not detected!</span>
+            <span class="options">
+                <a href="https://hub.turbulenz.com/download" target="_blank">Download</a>&nbsp;&nbsp;
+                <a href="#" id="skip-engine-link">Ignore</a>
+            </span>
+        </div>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_message_sdk_template'>
+<![CDATA[
+    <div class="message sdk" style="display:none;">
+        <div class="notification">
+            <span class="alert">Version <%= this.sdk.newest %> of the Turbulenz SDK is now available!</span>
+            <span class="options">
+                <a href="<%= this.sdk.download %>">Download</a>&nbsp;&nbsp;
+                <a href="https://hub.turbulenz.com/download" target="_blank">All versions</a>&nbsp;&nbsp;
+                <a href="#" id="skip-sdk-link">Skip this version</a>
+            </span>
+        </div>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_message_host_template'>
+<![CDATA[
+    <div class="message WinOS" style="display:none;">
+        <div class="notification">
+            <span class="alert">You are accessing Local Server through localhost on Windows. This could be a lot faster using the IP address!</span>
+            <span class="options">
+                <a href="#" id="local-link">Switch to 127.0.0.1:8070 now!</a>&nbsp;&nbsp;
+                <a href="#" id="skip-local-link">Skip</a>
+            </span>
+        </div>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_play_template'>
+<![CDATA[
+    <div id="playable-versions-div">
+    <% if (!this.versions) { %>
+        <ul>
+           <li class="empty">
+               <p>Sorry, no versions to play for <%= this.game %> found.</p>
+           </li>
+        </ul>
+    <% } else { %>
+        <table id="playable-versions">
+            <thead>
+                <tr>
+                    <th colspan="5"><h2>Game List</h2></th>
+                </tr>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Version</th>
+                    <th scope="col">Language</th>
+                    <th scope="col">Date Modified</th>
+                    <th scope="col">Date Deployed</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% _(this.versions).each(function(version) { %>
+                <tr>
+                    <td><a href="#/play/<%= version.url %>"><%= version.title %></a></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+    <div>
+]]>
+</script>
+
+<script type='text/html' id='local_deploy_login_template'>
+<![CDATA[
+    <div id="deploy_login_dialog_id" title="Hub Log In" style="display:none;">
+        <form id="deploy_login_form_id">
+            <fieldset class="deploy-fieldset">
+                <label for="login" class="deploy-label">Username or Email</label>
+                <input type="text" name="login" id="deploy_login_id" class="deploy-input ui-widget-content ui-corner-all" />
+                <label for="password" class="deploy-label">Password</label>
+                <input type="password" name="password" id="deploy_password_id" value="" class="deploy-input ui-widget-content ui-corner-all" />
+            </fieldset>
+            <fieldset>
+                <span style="float: right">
+                    <input type="checkbox" name="rememberme"  id="rememberme"/>
+                    <label for="rememberme">Remember me for this session</label>
+                </span>
+                <input class="button" type="submit" name="submit" value="login"/>
+            </fieldset>
+        </form>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_deploy_select_template'>
+<![CDATA[
+    <div id="deploy_select_dialog_id" title="Select Hub Project Version" style="display:none;">
+        <form id="deploy_select_form_id">
+            <fieldset class="deploy-fieldset">
+                <label for="project" class="deploy-label">Project</label>
+                <select id="deploy_select_project_id" name="project" class="deploy-select ui-widget-content ui-corner-all"></select>
+                <div style="float:left; width:45%;">
+                    <label for="newversionnumber" class="deploy-label">New Version Number</label>
+                    <input id="deploy_new_version_number_id" type="text" name="newversionnumber" class="deploy-input ui-widget-content ui-corner-all" />
+                </div>
+                <div style="float:right; width:45%;">
+                    <label for="selectversion" class="deploy-label">Select Version</label>
+                    <select id="deploy_select_version_id" name="selectversion" class="deploy-select ui-widget-content ui-corner-all"></select>
+                </div>
+                <label for="newversionname" class="deploy-label">New Version Name</label>
+                <input id="deploy_new_version_name_id" type="text" name="newversionname" class="deploy-input ui-widget-content ui-corner-all" />
+            </fieldset>
+            <p class="deploy-validateTips">Only alphanumerical characters for new version numbers.</p>
+            <input class="button deploy-label" type="submit" name="submit" value="start"/>
+        </form>
+    </div>
+]]>
+</script>
+
+
+<script type='text/html' id='local_deploy_upload_template'>
+<![CDATA[
+    <div id="deploy_upload_dialog_id" title="Hub Upload" style="display:none;">
+        <form id="deploy_upload_form_id">
+        <span id="deploy_upload_files_counter_id" style="border: 1px solid transparent; padding: 0.3em;">
+        </span>
+        <span id="deploy_upload_bytes_counter_id" style="border: 1px solid transparent; padding: 0.3em;">
+        </span>
+        <div id="deploy_upload_bar_id" style="display:block; margin-top:16px; width:95%; padding: .4em;">
+        </div>
+        <input id="deploy_upload_cancel_id" class="button deploy-label" type="submit" name="submit" value="cancel"/>
+        </form>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_list_asset_template'>
+<![CDATA[
+    <div id="list-form">
+        <h2><%= this.slug %> List</h2>
+        <ul>
+            <li class="assets">
+                <div class="session-details hideable">
+                    <div class="session-header">
+                        <div>
+                            <ul>
+                                <li class="button left directoryPaths" id="asset:">
+                                    <div class="right">
+                                        <div class="middle">asset root:</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="asset-view" style="float:right; margin-right:8px;">
+                            <ul>
+                                <li class="button left" id="toggle-asset-view">
+                                    <div class="right">
+                                        <div class="middle">View as Files</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="details-table">
+                        <table cellspacing="0">
+                            <thead>
+                                <tr class="sort-controller stripe">
+                                    <th scope="col" class="sort-assetName"><span>Asset Name</span></th>
+                                    <th scope="col" class="sort-requestName"><span>Request Name</span></th>
+                                    <th scope="col" class="sort-canView"><span>View</span></th>
+                                    <th scope="col" class="sort-canDisassemble"><span>Disassemble</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+]]>
+</script>
+
+
+<script type='text/html' id='local_list_files_template'>
+<![CDATA[
+    <div id="list-form">
+        <h2><%= this.slug %> List</h2>
+        <ul>
+            <li class="assets">
+                <div class="session-details hideable">
+                    <div class="session-header">
+                        <div>
+                            <ul>
+                                <li class="button left directoryPaths" id="asset:">
+                                    <div class="right">
+                                        <div class="middle">asset root:</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="asset-view" style="float:right; margin-right:8px;">
+                            <ul>
+                                <li class="button left" id="toggle-asset-view">
+                                    <div class="right">
+                                        <div class="middle">View as Assets</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="details-table">
+                        <table cellspacing="0">
+                            <thead>
+                                <tr class="sort-controller stripe">
+                                    <th scope="col" class="sort-requestName"><span>Files Name</span></th>
+                                    <th scope="col" class="sort-assetName"><span>Asset Name</span></th>
+                                    <th scope="col" class="sort-canView"><span>View</span></th>
+                                    <th scope="col" class="sort-canDisassemble"><span>Disassemble</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+]]>
+</script>
+
+
+<script type='text/html' id='local_metrics_template'>
+<![CDATA[
+    <div id="metrics-form">
+        <h2><%= this.title %> Metrics</h2>
+        <ul>
+            <% if (this.warning !== undefined) { %>
+            <li class="cap">
+                <p><%= this.warning %></p>
+            </li>
+            <% } %>
+
+            <% var that = this; %>
+            <% _(this.sessions).each(function(session) { %>
+            <li class="session">
+                <div class="session-header">
+                    <span class="session-title hide-show-controller"><%= session.time %></span>
+                    <ul>
+                        <li class="button left">
+                            <div class="right">
+                                <div class="middle">
+                                    <a href="/local/v1/metrics/<%= that.slug %>/session/<%= session.timeStamp %>.csv">
+                                        CSV File
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="button left">
+                            <div class="right">
+                                <div class="middle">
+                                    <a href="/local/v1/metrics/<%= that.slug %>/session/<%= session.timeStamp %>.json">
+                                        JSON File
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="button left delete tstamp<%= session.timeStamp %>">
+                            <div class="right">
+                                <div class="middle">
+                                    <a href="/local/v1/metrics/<%= that.slug %>/session/<%= session.timeStamp %>/delete">
+                                        Delete Session
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="session-content">
+                    <table cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Number of Files</th>
+                                <th scope="col">Number of Requests</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Total Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><%= session.numFiles %></td>
+                                <td><%= session.numRequests %></td>
+                                <td><%= session.humanSize[0] %>&nbsp;
+                                    <span class="unit"><%= session.humanSize[1] %></span>
+                                </td>
+                                <td><%= session.humanTotalSize[0] %>&nbsp;
+                                    <span class="unit"><%= session.humanTotalSize[1] %></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="session-details hideable" >
+                    <div class="details-header tstamp<%= session.timeStamp %>" id="<%= session.timeStamp %>">
+                        <div class="files-header
+                                    sort-assetName
+                                    hide-show-controller">
+                            Files
+                        </div>
+                        <div class="assets-header
+                                    sort-ext
+                                    hide-show-controller">
+                            Assets
+                        </div>
+                        <div class="mimetypes-header
+                                    sort-type
+                                    hide-show-controller">
+                            Mime-Types
+                        </div>
+                    </div>
+                    <div class="details-table">
+                    </div>
+                </div>
+            </li>
+            <% }); %>
+            <% if (this.sessions.length > 0) { %>
+            <li class="empty" style="display: none;">
+            <% } else { %>
+            <li class="empty">
+            <% } %>
+                <p>Sorry, no metrics for <%= this.slug %> found.</p>
+            </li>
+        </ul>
+
+        <% if (this.sessions) { %>
+            <a id="delete-all"> <input type="button" value="Delete all sessions"></a>
+        <% } %>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_metrics_files_header_template'>
+<![CDATA[
+    <table cellspacing="0">
+        <thead>
+            <tr class="sort-controller">
+                <th scope="col" class="sort-assetName"><span>Asset Name</span></th>
+                <th scope="col" class="sort-file"><span>Request Name</span></th>
+                <th scope="col" class="number sort-size"><span>Size</span></th>
+                <th scope="col" class="number sort-time"><span>Time</span></th>
+                <th scope="col" class="sort-status"><span>Status</span></th>
+                <th scope="col" class="number sort-numRequest"><span>Reqs</span></th>
+                <th scope="col" class="sort-type"><span>Type</span></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+]]>
+</script>
+
+<script type='text/html' id='local_metrics_files_details_template'>
+<![CDATA[
+    <% var that = this; %>
+    <% function short(name) {
+        var maxLength = 30;
+        if (name.length > maxLength)
+        {
+            return "..." + name.substring(name.length - (maxLength - 5));
+        }
+        else
+        {
+            return name;
+        }
+    } %>
+    <%  _(this.sessionDataDict).each(function(session) { %>
+        <% var statusCode = session.data.status; %>
+        <% if ((statusCode[0] === '4') || (statusCode[0] === '5')) { %>
+            <tr class="highlighted">
+        <% } else { %>
+            <tr>
+        <% } %>
+        <% var requestName = session.data.file; %>
+        <% var assetName = session.data.assetName; %>
+        <% var time = session.data.time - parseFloat(that.timestamp); %>
+        <% time = (time * 1000).toFixed(0); %>
+
+        <td><span title="<%= assetName %>"><%= short(assetName) %></span></td>
+        <td>
+        <% if (session.data.ext === '.json') { %>
+            <a href="/disassemble/<%= that.slug %>/<%= requestName %>" title="<%= requestName %>"><%= short(requestName) %></a>
+        <% } else { %>
+            <span title="<%= requestName %>"><%= short(requestName) %></span>
+        <% } %>
+        </td>
+        <td class="number"><%= session.data.sizeStr %></td>
+        <td class="number"><%= time %> ms </td>
+        <td><%= statusCode %></td>
+        <td class="number"><%= session.numRequest %></td>
+        <td><%= session.data.type %></td>
+        </tr>
+    <% }); %>
+]]>
+</script>
+
+<script type='text/html' id='local_metrics_assets_header_template'>
+<![CDATA[
+    <div id="summary-container-<%= this %>"></div>
+    <table cellspacing="0"><thead>
+    <tr class="sort-controller">
+    <th scope="col" class="sort-ext"><span>Asset Type</span></th>
+    <th scope="col" class="number sort-totalSize"><span>Total Size</span></th>
+    <th scope="col" class="number sort-numRequest"><span>Requests</span></th>
+    </tr></thead><tbody></tbody>
+]]>
+</script>
+
+<script type='text/html' id='local_metrics_assets_details_template'>
+<![CDATA[
+        <tr>
+        <td><%= this.data.ext %></td>
+        <td class="number"><%= this.totalSizeStr %></td>
+        <td class="number"><%= this.numRequest %></td>
+        </tr>
+]]>
+</script>
+
+<script type='text/html' id='local_metrics_mimetypes_header_template'>
+<![CDATA[
+    <table cellspacing="0"><thead><tr class="sort-controller">
+    <th scope="col" class="sort-type"><span>Name</span></th>
+    <th scope="col" class="number sort-numFiles"><span>Files</span></th>
+    <th scope="col" class="number sort-numRequest"><span>Requests</span></th>
+    <th scope="col" class="number sort-size"><span>Size</span></th>
+    <th scope="col" class="number sort-totalSize"><span>Total Size</span></th>
+    </tr></thead><tbody></tbody>
+]]>
+</script>
+
+<script type='text/html' id='local_metrics_mimetypes_details_template'>
+<![CDATA[
+    <tr>
+    <td><%= this.data.type %></td>
+    <td class="number"><%= this.numFiles %></td>
+    <td class="number"><%= this.numRequest %></td>
+    <td class="number"><%= this.data.sizeStr %></td>
+    <td class="number"><%= this.totalSizeStr %></td>
+    </tr>
+]]>
+</script>
+
+<script type='text/html' id='local_userdata_template'>
+<![CDATA[
+    <div id="userdata-form">
+        <h2><%= this.title %>Userdata</h2>
+        <ul>
+            <% if (!this.userdata) { %>
+            <li class="empty">
+                <p>Sorry, no userdata for <%= this.title %>&nbsp;found.</p>
+            </li>
+        <% } else { %>
+            <li class="userdata-details">
+                <div class="session-details hideable">
+                    <div class="session-header">
+                        <div>
+                            <ul>
+                                <li class="button left directoryPaths" id="users:">
+                                    <div class="right">
+                                        <div class="middle">users:</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="details-table">
+                        <table cellspacing="0">
+                            <thead>
+                                <tr class="sort-controller stripe">
+                                    <th scope="col" class="sort-assetName"><span>Key</span></th>
+                                    <th scope="col" class="sort-size"><span>Size</span></th>
+                                    <th scope="col" class="sort-isJson"><span>Disassemble</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </li>
+            <% } %>
+        </ul>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_edit_game_template'>
+<![CDATA[
+    <div id="edit-form">
+        <form action="" method="post" class="top-rounded" enctype="multipart/form-data">
+            <fieldset id="directory-fieldset" class="enabled <%= this.data.status.directory %>">
+                <legend class="top-rounded">
+                    Game Directory <span></span>
+                </legend>
+                <div class="field <%= this.data.status.path %>">
+                    <label for="path_id">Game Directory</label>
+                    <% if (this.data.isTemporary) { %>
+                        <input type="text" name="path" id="path_id" value="<%= this.data.path %>" class="unlocked validate custom-button">
+                        <input type="button" id="lock_id" value="unlocked" class="unlocked">
+                    <% } else { %>
+                        <input type="text" disabled="disabled" name="path" id="path_id" value="<%= this.data.path %>" class="validate custom-button">
+                        <input type="button" id="lock_id" value="locked">
+                    <% } %>
+                    <span class="status-icon"></span>
+                    <p>
+                        The local directory containing the game files.<br>
+                        You can use either an absolute path or a path relative to:&nbsp;<br>
+                        <%= this.data.gameRoot %>
+                    </p>
+                    <% if (this.data.path === '') { %>
+                        <div id="path_error"><%= this.data.path %></div>
+                    <% } %>
+                    <div id="directory-options"></div>
+                </div>
+            </fieldset>
+            <% if (this.data.isTemporary) { %>
+                <fieldset id="definition-fieldset" class="<%= this.data.status.definition %>">
+            <% } else { %>
+                <fieldset id="definition-fieldset" class="enabled">
+            <% } %>
+            <legend>
+                Game Definition <span></span>
+            </legend>
+            <div class="field">
+                <label for="title_id">Title</label>
+                <input type="text" name="title" id="title_id" value="<%= this.data.title %>" class="validate">
+                <span class="status-icon"></span>
+                <p>
+                    The full title of your game, including punctuation.
+                </p>
+            </div>
+            <div class="field">
+                <label for="slug_id">Slug</label>
+                <input type="text" name="slug" id="slug_id" value="<%= this.data.slug %>" class="validate">
+                <span class="status-icon"></span>
+                <p>
+                    The slug will be used for the part of your game URL.<br>
+                    This should be representative of the game title, but can be shortened or an acronym for longer titles.
+                </p>
+                <div id="slug_message" style="font-size:91%; margin-left:34px; width: 290px; color: #898989;" ></div>
+                <% if (this.data.slug === '') { %>
+                    <div id="slug_error"></div>
+                <% } %>
+            </div>
+            <div class="field">
+                <label for="plugin_main_id">Plugin Main</label>
+                <input type="text" id="plugin_main_text" class="validate custom-button" value="<%= this.data.pluginMain %>">
+                <input type="file" name="plugin_main" id="plugin_main_id" class="browse-dialog">
+                <input type="button" class="browse_btn" id="browse_plugin_main_id">
+                <span class="status-icon"></span>
+                <p>
+                    The main plugin executable to play your game.<br>
+                    It will be the TZJS file (<i>name</i>.tzjs) or the HTML file that embeds your game,
+                    which should be contained in the game directory.<br>
+                    Click on the field to browse for a desired filename.</p>
+            </div>
+            <div class="field">
+                <label for="canvas_main_id">Canvas Main</label>
+                <input type="text" id="canvas_main_text" class="validate custom-button" value="<%= this.data.canvasMain %>">
+                <input type="file" name="canvas_main" id="canvas_main_id" class="browse-dialog">
+                <input type="button" class="browse_btn" id="browse_canvas_main_id">
+                <span class="status-icon"></span>
+                <p>
+                    The main canvas executable to play your game.<br>
+                    It will be the Canvas JS file (<i>name</i>.canvas.js) or the HTML file that embeds your game,
+                    which should be contained in the game directory.<br>
+                    Click on the field to browse for a desired filename.</p>
+            </div>
+            <div class="field">
+                <label for="mapping_table_id">Mapping Table</label>
+                <input type="text" id="mapping_table_text" class="validate custom-button" value="<%= this.data.mappingTable %>">
+                <input type="file" name="mapping_table" id="mapping_table_id" class="browse-dialog">
+                <input type="button" class="browse_btn" id="browse_mapping_id">
+                <span class="status-icon"></span>
+                <p>
+                    The JSON file with the mapping information for your game, contained in the game directory.<br>
+                    Click on the field to browse for a desired filename.</p>
+            </div>
+            <div class="field">
+                <label for="deploy_file_patterns_id">Deploy Files</label>
+                <input type="text" class="validate" id="deploy_file_pattern_id"><br>
+                <label for="deploy_files_id">&nbsp;</label>
+                <select multiple size="10" type="text" name="deploy_files" id="deploy_files_id" class="validate" style="width:293px;">
+                <option id="plugin_main_opt" value="<%= this.data.pluginMain %>"><%= this.data.pluginMain %></option>
+                <option id="canvas_main_opt" value="<%= this.data.canvasMain %>"><%= this.data.canvasMain %></option>
+                <option id="mapping_table_opt" value="<%= this.data.mappingTable %>"><%= this.data.mappingTable %></option>
+                <% var that = this; %>
+                <% var deploy_files_list = this.data.deployFiles; %>
+                <% if (deploy_files_list[0] != 'null') { %>
+                    <% _(deploy_files_list).each(function(file) { %>
+                        <% if ((file !== that.data.pluginMain) && (file !== that.data.canvasMain) && (file !== that.data.mappingTable)) { %>
+                            <option value="<%= file %>"><%= file %></option>
+                        <% } %>
+                    <% }); %>
+                <% } %>
+                </select>
+                <span class="status-icon"></span>
+                <p>
+                    A list of filenames or wildcard patterns (e.g. 'img/*'),
+                    that specify the files to upload when you deploy your game.<br>
+                    To add a pattern, type it in the edit box and press Enter.<br>
+                    To delete a pattern from the list, click on the desired select box option
+                    and press Delete (or Fn+Backspace on a Mac keyboard).</p>
+            </div>
+            <div class="field">
+                <label for="is_multiplayer_id">Multiplayer</label>
+                <select name="is_multiplayer" id="is_multiplayer_id" class="validate">
+                    <% if (true === this.data.is_multiplayer) { %>
+                        <option value=true selected="selected">Supported</option>
+                        <option value=false>Not supported</option>
+                    <% } else { %>
+                        <option value=true>Supported</option>
+                        <option value=false selected="selected">Not supported</option>
+                    <% } %>
+                </select>
+                <p>
+                    Select the appropriate option based on whether or not your game supports a multiplayer mode.
+                </p>
+            </div>
+            <div class="field">
+                <label for="aspect_ratio_id">Aspect Ratio</label>
+                <input type="text" name="aspect_ratio" id="aspect_ratio_id" value="<%= this.data.aspect_ratio %>" class="validate">
+                <span class="status-icon"></span>
+                <p>
+                    The aspect ratio for your game (in the format X:Y).
+                </p>
+            </div>
+            <div class="field">
+                <label for="engine_version_id">Engine Version</label>
+                <input type="text" name="engine_version" id="engine_version_id" value="<%= this.data.engine_version %>" class="validate">
+                <span class="status-icon"></span>
+                <p>
+                    The Turbulenz Engine version your game is compatible with (in the format X.Y).
+                </p>
+            </div>
+            <div id="file-options" class="field buttons">
+                <a href="<%= this.saveUrl %>" class="save">Save</a>
+                <a href="<%= this.deleteUrl %>" class="delete">Delete</a>
+            </div>
+        </fieldset>
+        </form>
+    </div>
+]]>
+</script>
+
+<script type='text/html' id='local_directory_options_template'>
+<![CDATA[
+    <% if (this.data.usable) { %>
+        <p>Use directory?</p>
+        <p class="directory"><%= this.data.absDir %></p>
+        <p>
+            Please&nbsp;<a id="confirm-path" title="This creates a new 'manifest.yaml' file" href='#'>CONFIRM</a>
+            &nbsp;that you want to use this directory or choose a different one.
+        </p>
+
+    <% } else if (this.data.overwrite) { %>
+        <p>Game data was found in this directory</p>
+        <p class="directory"><%= this.data.absDir %></p>
+        <p>
+            You can&nbsp;
+            <a id="use-data" title="This uses the present 'manifest.yaml' file." href='#'>USE</a>
+            &nbsp;the data,&nbsp;
+            <a id="overwrite-data" title="This overwrites the present 'manifest.yaml' file." href='#'>OVERWRITE</a>
+            &nbsp;it with a new, empty project or select a different directory.<br>
+        </p>
+
+    <% } else if (this.data.create) { %>
+        <p>Directory or game data not found:</p>
+        <p class="directory"><%= this.data.absDir %></p>
+        <p>
+            You can&nbsp;
+            <a id="create-path" title="This creates a new, empty game-directory and a new 'manifest.yaml' file." href="#">CREATE</a>
+            &nbsp;it or choose a different directory.
+        </p>
+
+    <% } else if (this.data.inUse) { %>
+        <p>Directory is already in use by a game.</p>
+        <p class="directory"><%= this.data.absDir %></p>
+        <p>
+            Please choose a different directory or delete the other game and reload this page.
+        </p>
+
+    <% } else { %>
+        <p>Directory is inaccessible.</p>
+        <p class="directory"><%= this.data.absDir %></p>
+        <p>
+            Please choose a different directory or change the directory's settings and reload this page.
+        </p>
+
+    <% } %>
+]]>
+</script>
+
+
+<script type='text/html' id='local_no_plugin_template'>
+<![CDATA[
+    <div class="play install">
+        <div class="install-message">
+            <p>Turbulenz Engine not installed.</p>
+            <p class="bold">You need it to play 3D games in your browser.</p>
+            <% if (this.engine.download !== '') { %>
+                <p><a href="<%= this.engine.download %>" id="install-engine-btn" target="_blank" style="color: #97c9f3;">Download the latest Turbulenz Engine</a></p>
+            <% } else { %>
+                <p>Unfortunately, Turbulenz currently does not support your OS.</p>
+            <% } %>
+            <p>
+                <a href="https://hub.turbulenz.com/download" id="install-engine-btn" target="_blank" style="color: #97c9f3;">View All Versions</a>
+            </p>
+        </div>
+    </div>
+]]>
+</script>

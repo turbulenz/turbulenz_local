@@ -1,0 +1,192 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+#games .viewport {
+    clear: both;
+    height: 26.3em;;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    width: 960px;
+}
+
+#games .viewport #carousel {
+    list-style-type: none;
+    /*clip: rect(0px 960px 344px 0px);*/
+    left: 0;
+    margin: 0 auto;
+    padding: 12px 0 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+}
+
+#games .carousel-btn {
+    position: absolute;
+    display: none;
+    background-image: url(/img/carousel-controls.png);
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 25px;
+    padding: 0;
+    text-indent: -9999em;
+    overflow: hidden;
+    top: 145px;
+    left: 50%;
+    cursor: pointer;
+}
+
+#games .carousel-btn.prev {
+    background-position: 0 -71px;
+    margin: 0 0 0 -514px;
+}
+
+#games .carousel-btn.prev:hover {
+    background-position: 0 -121px;
+}
+
+#games .carousel-btn.next {
+    background-position: 0 -46px;
+    margin: 0 0 0 490px;
+}
+
+#games .carousel-btn.next:hover {
+    background-position: 0 -96px;
+}
+
+#games li {
+    position: relative;
+    line-height: 1.15em;
+    float: left;
+}
+
+.game-box {
+    float: left;
+    position: relative;
+    width: 192px;
+    margin: 0 0 10px;
+    line-height: 1.15em;
+    font-weight: bold;
+}
+
+.game-box img {
+    background: url(/img/game-bg.png) no-repeat -29px -19px;
+    cursor: pointer;
+    display: block;
+    height: 234px;
+    left: 0;
+    margin: 0 0 5px;
+    padding: 15px;
+    position: relative;
+    top: -19px;
+    width: 160px;
+}
+
+.game-box h2 {
+    color: #1d1d1d;
+    position: relative;
+    top: 270px;
+    padding: 0 0 0 15px;
+    text-shadow: 0px 1px 0.5px #FFFFFF;
+    font-size: 92.3%;
+    white-space: nowrap;
+}
+
+h2.no-title {
+    font-style: italic;
+}
+
+.game-box p {
+    color: #898989;
+    padding: 0 0 0 15px;
+    text-shadow: 0px 1px 0.5px #FFFFFF;
+    font-size: 92.3%;
+}
+
+.actions {
+    list-style-type: none;
+}
+
+.game-panel .actions {
+    width: 0;
+    height: 0;
+}
+
+.actions li {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 193px;
+}
+
+.actions .play {
+    width: 198px;
+}
+
+.actions .assets {
+    width: 198px;
+}
+
+.actions a {
+    background: url(/img/all-buttons-new.png) no-repeat 0 -355px;
+    height: 145px;
+    margin: 0;
+}
+
+.actions .note, .actions a {
+    display: block;
+    text-indent: -9999em;
+    line-height: 0;
+}
+
+.actions .play a {
+    background-position: 0 -355px;
+}
+
+.actions .edit a {
+    background-position: -198px -355px;
+}
+
+.actions .metrics a {
+    background-position: -391px -355px;
+}
+
+.actions .assets a {
+    background-position: -584px -355px;
+}
+
+.actions .userdata a {
+    background-position: -782px -355px;
+}
+
+
+.actions .play .selected {
+    background-position: 0 -8px;
+}
+
+.actions .edit .selected {
+    background-position: -198px -8px;
+}
+
+.actions .metrics .selected {
+    background-position: -391px -8px;
+}
+
+.actions .assets .selected {
+    background-position: -584px -8px;
+}
+
+.actions .userdata .selected {
+    background-position: -782px -8px;
+}
+
+
+#actionspacer {
+    background: url('/img/all-buttons-new.png') no-repeat 0 -168px;
+    height: 140px;
+    margin: 25px auto 0;
+    overflow: hidden;
+    width: 979px;
+    zoom: 1;
+}

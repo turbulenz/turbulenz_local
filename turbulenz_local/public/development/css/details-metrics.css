@@ -1,0 +1,93 @@
+/* Copyright (c) 2010-2011 Turbulenz Limited */
+
+/******** general **********/
+
+#metrics-form .hide-show-controller {
+    background: url(/img/title-bar-expand-controls-1.png) no-repeat;
+    cursor: pointer;
+}
+
+#metrics-form .hide-show-controller:hover {
+    background-image: url(/img/title-bar-expand-controls-3.png);
+}
+
+#metrics-form .hide-show-controller.active {
+    background-image: url(/img/title-bar-expand-controls-2.png);
+}
+
+#metrics-form .hide-show-controller.active:hover {
+    background-image: url(/img/title-bar-expand-controls-4.png);
+}
+
+
+/******** list of sessions **********/
+
+
+#metrics-form>ul>li.active {
+    height: auto;
+}
+
+#metrics-form>ul>li {
+    height: 29px;
+}
+
+#metrics-form>ul>li.error  p {
+    margin-top: 15px;
+    text-align: center;
+    color: #000;
+}
+
+
+/******** session content **********/
+
+#metrics-form .session-content {
+    margin: 1px;
+    padding: 10px 24px;
+}
+
+#metrics-form .session-content table {
+    width:  100%;
+    padding: 10px 20px;
+    text-align: left;
+    color: #555;
+}
+
+#metrics-form .session-content th {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 9px;
+}
+
+#metrics-form .session-content td {
+    font-size: 56px;
+    font-weight: bold;
+}
+
+#metrics-form .unit {
+    font-size: 24px;
+    margin-left: -12px;
+}
+
+
+/******** session details header **********/
+
+
+#metrics-form .session-details .details-header>div {
+    margin: 6px 0 4px 5px;
+    padding: 2px 0 4px 25px;
+    width: 150px;
+    float: left;
+}
+
+#metrics-form .details-table th:last-child,
+#metrics-form .details-table td:last-child {
+    padding-right: 30px;
+}
+
+
+#metrics-form .details-table tr.highlighted {
+    background-color: #ffefef;
+}
+
+#metrics-form .details-table tr.stripe.highlighted {
+    background-color: #eecfcf;
+}

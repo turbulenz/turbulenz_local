@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>local.turbulenz</title>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+        <script type="text/javascript">
+            // creating Turbulenz namespaces
+            Turbulenz = {
+                Classes: {},
+                Services: {},
+                Data: {}
+            };
+        </script>
+
+{% if config.get('scripts.development') == 'true' %}
+        {{ h.stylesheet_link('/css/base.css') }}
+        {{ h.stylesheet_link('/css/edit-progress.css') }}
+        {{ h.stylesheet_link('/css/panel.css') }}
+        {{ h.stylesheet_link('/css/details.css') }}
+        {{ h.stylesheet_link('/css/details-play.css') }}
+        {{ h.stylesheet_link('/css/details-edit.css') }}
+        {{ h.stylesheet_link('/css/details-metrics.css') }}
+        {{ h.stylesheet_link('/css/jquery-ui.css') }}
+        {{ h.stylesheet_link('/summarybar/summarybar.css') }}
+        {{ h.javascript_link('/js/jquery-1.7.1.js') }}
+        {{ h.javascript_link('/js/jquery.clipanim-0.1.2b.js') }}
+        {{ h.javascript_link('/js/jquery-ui-1.8.5.custom.min.js') }}
+        {{ h.javascript_link('/js/jquery.cookie.js') }}
+        {{ h.javascript_link('/js/jquery.ba-bbq-1.2.1.js') }}
+        {{ h.javascript_link('/js/jquery.jqote2.js') }}
+        {{ h.javascript_link('/js/underscore-1.1.4.js') }}
+        {{ h.javascript_link('/js/backbone-0.3.3.js') }}
+        {{ h.javascript_link('/js/jslocalstore.js') }}
+        {{ h.javascript_link('/js/swfobject-2.2.js') }}
+{% else %}
+        {{ h.stylesheet_link('/css/_merged.css') }}
+        {{ h.javascript_link('/js/jquery-1.7.1.min.js') }}
+        {{ h.javascript_link('/js/jquery.clipanim-0.1.2b.min.js') }}
+        {{ h.javascript_link('/js/jquery-ui-1.8.5.custom.min.js') }}
+        {{ h.javascript_link('/js/jquery.cookie.min.js') }}
+        {{ h.javascript_link('/js/jquery.ba-bbq-1.2.1.min.js') }}
+        {{ h.javascript_link('/js/jquery.jqote2.min.js') }}
+        {{ h.javascript_link('/js/underscore-1.1.4.min.js') }}
+        {{ h.javascript_link('/js/backbone-0.3.3.min.js') }}
+        {{ h.javascript_link('/js/jslocalstore.min.js') }}
+        {{ h.javascript_link('/js/swfobject-2.2.min.js') }}
+{% endif %}
+
+        {{ h.javascript_link('/js/plugindetection.js') }}
+        {{ h.javascript_link('/js/EventEmitter-3.1.3.js') }}
+        {{ h.javascript_link('/js/turbulenzbridge.js') }}
+        {{ h.javascript_link('/js/turbulenzstore.js') }}
+
+        {{ h.javascript_link('/summarybar/summarybar.js') }}
+
+        {{ h.javascript_link('/js/mvc/controllers/application.js') }}
+
+        {{ h.javascript_link('/js/mvc/views/carousel.js') }}
+        {{ h.javascript_link('/js/mvc/views/play.js') }}
+        {{ h.javascript_link('/js/mvc/views/list.js') }}
+        {{ h.javascript_link('/js/mvc/views/metrics.js') }}
+        {{ h.javascript_link('/js/mvc/views/message.js') }}
+        {{ h.javascript_link('/js/mvc/views/userdata.js') }}
+        {{ h.javascript_link('/js/mvc/views/deploy.js') }}
+        {{ h.javascript_link('/js/mvc/views/edit.js') }}
+
+         <script type="text/javascript">
+            var Templates = {};
+
+            $(function ()
+            {
+                $.get('{{ h.html_url('/html/templates.html') }}', function (doc)
+                {
+                    var tmpls = $(doc).filter('script');
+                    tmpls.each(function ()
+                    {
+                        Templates[this.id] = $.jqotec(this);
+                    });
+
+                    var Router = {
+                        routes: { {% for name, route in c.routes %}
+                            '{{ name }}': '{{ route }}'{% if not loop.last %},{% endif %}{% endfor %}
+                        },
+                        get: function (label, params) {
+                            var route = this.routes[label];
+
+                            for (param in params)
+                            {
+                                if (params[param] === undefined)
+                                {
+                                    params[param] = '';
+                                }
+
+                                var re = new RegExp('{' + param + '(|:.+)}');
+                                route = route.replace(re, params[param]);
+                            }
+                            return route;
+                        }
+                    };
+                    Backbone.emulateHTTP = true;
+                    Backbone.emulateJSON = true;
+
+                    {% set plugin = h.plugin_info() %}
+                    {% set sdk = h.sdk_info() %}
+
+                    var pluginInfo = {{ plugin }};
+                    var OSString = PluginDetection.getPlatform();
+
+                    window.Controller = new LocalApplicationController({
+                        pluginInfo: pluginInfo[OSString],
+                        sdkUrl: {{ sdk }},
+                        router: Router,
+                        viewer_enabled: {{ h.viewer_enabled() }}
+                    });
+                    Backbone.history.start();
+                });
+            });
+        </script>
+
+{% if config.googleanalytics == 'true' %}
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-10614584-2']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+{% endif %}
+
+    </head>
+    <body id="local_application" class="games">
+        <div class="messages"></div>
+        <div id="header">
+            <a href="#" id="logo">Turbulenz</a>
+        </div>
+        <div id="content"></div>
+        <div id="game_player" style="display:none;"></div>
+
+{% if config.getsatisfaction == 'true' %}
+        <script type="text/javascript" charset="utf-8">
+            var is_ssl = ("https:" == document.location.protocol);
+            var asset_host = is_ssl ? "https://s3.amazonaws.com/getsatisfaction.com/" : "http://s3.amazonaws.com/getsatisfaction.com/";
+            document.write(unescape("%3Cscript src='" + asset_host + "javascripts/feedback-v2.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript" charset="utf-8">
+            var feedback_widget_options = {};
+            feedback_widget_options.display = "overlay";
+            feedback_widget_options.company = "turbulenz";
+            feedback_widget_options.placement = "right";
+            feedback_widget_options.color = "#cc244d";
+            feedback_widget_options.style = "question";
+            var feedback_widget = new GSFN.feedback_widget(feedback_widget_options);
+        </script>
+{% endif %}
+
+    </body>
+</html>

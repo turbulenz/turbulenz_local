@@ -1,20 +1,27 @@
 # Copyright (c) 2011-2013 Turbulenz Limited
 
-from turbulenz_local.decorators import jsonify
+from pylons import request, response
+
+from turbulenz_local.decorators import jsonify, postonly
 from turbulenz_local.controllers import BaseController
-from turbulenz_local.models.userlist import set_current_user, get_current_user
+from turbulenz_local.models.userlist import login_user, get_current_user
 
 
 class UserController(BaseController):
 
     @classmethod
+    @postonly
     @jsonify
-    def set_user(cls, username):
-        set_current_user(str(username))
+    def login(cls):
+        username = request.params.get('username')
+        login_user(str(username))
         return {'ok': True}
 
 
     @classmethod
     @jsonify
     def get_user(cls):
-        return {'ok': True, 'data': get_current_user().username}
+        username = get_current_user().username
+        # 315569260 seconds = 10 years
+        response.set_cookie('local', username.lower(), httponly=False, max_age=315569260)
+        return {'ok': True, 'data': {'username': username}}

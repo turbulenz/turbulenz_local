@@ -9,8 +9,11 @@ import yaml
 from pylons import config
 # pylint: enable=F0401
 
+from pylons import request, response
+
 from turbulenz_local.models.user import User
 from turbulenz_local.tools import get_absolute_path
+from turbulenz_local.lib.exceptions import BadRequest
 from turbulenz_local import CONFIG_PATH
 
 LOG = getLogger(__name__)
@@ -29,7 +32,6 @@ class UserList(object):
 
     def __init__(self):
         self.users = {}
-        self.active = None
         self.lock = Lock()
         self._read_users()
 
@@ -46,7 +48,6 @@ class UserList(object):
         except AttributeError:
             pass
         return {
-            'active': self.active,
             'users': users
         }
 
@@ -72,14 +73,10 @@ class UserList(object):
                 try:
                     user_info = yaml.load(f)
                     if 'users' in user_info:
-                        self.active = user_info.get('active', None)
                         for u in user_info['users']:
                             user = self._add_user(u)
-                            if self.active is None:
-                                self.active = user.username
                     else:
                         user = self._add_user(user_info)
-                        self.active = user.username
                         do_save = True
                 finally:
                     f.close()
@@ -87,7 +84,6 @@ class UserList(object):
                 LOG.error('Failed loading users: %s' % str(e))
         else:
             self._add_user(User.default_username)
-            self.active = User.default_username
             do_save = True
 
         try:
@@ -118,20 +114,32 @@ class UserList(object):
         try:
             return self.users[username.lower()]
         except KeyError:
-            LOG.info('No user with username %s adding user with defaults' % username)
-            return self._add_user(username)
+            LOG.info('No user with username "%s" adding user with defaults' % username)
+            try:
+                return self._add_user(username)
+            except ValueError as e:
+                raise BadRequest(str(e))
 
     def get_current_user(self):
-        return self.users[self.active.lower()]
+        username = request.cookies.get('local')
+        if username:
+            return self.get_user(username.lower())
+        else:
+            return self.login_user(User.default_username)
 
-    def set_current_user(self, username):
+    def login_user(self, username):
         with self.lock:
-            if username in self.users:
-                self.active = username
-                return self.users[username.lower()]
+            if username.lower() in self.users:
+                user = self.users[username.lower()]
             else:
-                self.active = username
-                return self._add_user(username)
+                try:
+                    user = self._add_user(username)
+                except ValueError as e:
+                    raise BadRequest(str(e))
+
+        # 315569260 seconds = 10 years
+        response.set_cookie('local', username.lower(), httponly=False, max_age=315569260)
+        return user
 
 
 def get_user(username):
@@ -142,5 +150,5 @@ def get_current_user():
     return UserList.get_instance().get_current_user()
 
 
-def set_current_user(username):
-    UserList.get_instance().set_current_user(username)
+def login_user(username):
+    return UserList.get_instance().login_user(username)

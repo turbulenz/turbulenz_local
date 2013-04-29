@@ -137,6 +137,9 @@ class Leaderboard(object):
                     continue
                 try:
                     user = email.split('@', 1)[0]
+                    # for tests
+                    if user.startswith('no-reply+'):
+                        user = user[9:]
                 except AttributeError:
                     warning('Default score email "%s" must be a string for key "%s"' % (email, key))
                     continue

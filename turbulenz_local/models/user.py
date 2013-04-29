@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2013 Turbulenz Limited
 
 from getpass import getuser as _get_user_name
+from re import compile as re_compile
 
 # pylint: disable=F0401
 from pylons import config
@@ -10,6 +11,8 @@ from turbulenz_local.lib.tools import create_id
 
 
 class User(object):
+
+    username_pattern = re_compile('^[a-z0-9]+[a-z0-9-]*$')
 
     default_username = str(_get_user_name())
     default_age = 18
@@ -26,6 +29,10 @@ class User(object):
             else:
                 raise KeyError('username missing')
 
+            if not self.username_pattern.match(self.username):
+                raise ValueError('Username "%s" is invalid. '
+                    'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+
             self.age = user_data.get('age', self.default_age)
             self.country = user_data.get('country', self.default_country)
             self.language = user_data.get('language', self.default_language)
@@ -37,6 +44,9 @@ class User(object):
                 self.avatar = self.get_default_avatar()
 
         else:
+            if not self.username_pattern.match(user_data):
+                raise ValueError('Username "%s" is invalid. '
+                    'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
             self.username = user_data
             self.age = self.default_age
             self.country = self.default_country

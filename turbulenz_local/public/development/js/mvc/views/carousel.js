@@ -31,12 +31,33 @@ var CarouselView = Backbone.View.extend({
         this.game_progress_panel_template = Templates.local_progress_panel_template;
         this.action_buttons_template = Templates.local_action_buttons_template;
         /*jshint nomen: false*/
-        _.bindAll(this, 'render', 'expand', 'makeCarousel', 'moveToFocus', 'collapse', 'getActionButtons', 'setActionspacerListeners');
+        _.bindAll(this, 'render', 'expand', 'makeCarousel', 'moveToFocus', 'collapse', 'getActionButtons', 'setActionspacerListeners',
+                        'onLogin', 'onLoginKeyUp', 'onUsernameChange');
         /*jshint nomen: true*/
         this.app.bind('carousel:make', this.makeCarousel);
         this.app.bind('carousel:collapse', this.collapse);
         this.app.bind('slug:change', this.setActionButtons);
         this.app.bind('carousel:refresh', this.render);
+
+        this.username = $.cookie('local');
+        if (!this.username)
+        {
+            var that = this;
+            $.ajax({
+                url: '/local/v1/user/get',
+                async: false,
+                type: 'GET',
+                success: function successFn(data) {
+                    that.username = data.username;
+                    var localLoginDiv = $('#local-login');
+                    if (localLoginDiv)
+                    {
+                        var localLoginText = localLoginDiv.find('.local-login-text');
+                        localLoginText.text('Currently logged in as ' + that.username);
+                    }
+                }
+            });
+        }
 
         this.carouselGlobals =
         {
@@ -52,6 +73,16 @@ var CarouselView = Backbone.View.extend({
     render: function renderFn()
     {
         $(this.el).jqotesub(this.template);
+        var localLoginInput = $('#local-login').find('.local-login-input');
+        var localLoginButton = $('#local-login').find('.local-login-button');
+        var localLoginText = $('#local-login').find('.local-login-text');
+        if (this.username)
+        {
+            localLoginText.text('Currently logged in as ' + this.username);
+        }
+
+        localLoginButton.on('click', this.onLogin);
+        localLoginInput.on('keyup', this.onLoginKeyUp);
 
         var thisView = this;
         var url = this.router.get('games-list');
@@ -68,7 +99,7 @@ var CarouselView = Backbone.View.extend({
                     if (games.hasOwnProperty(a))
                     {
                         carousel.jqoteapp(thisView.game_panel_template, {'game': games[a],
-                                                                                  'loop_index': index});
+                                                                         'loop_index': index});
                         index += 1;
                     }
                 }
@@ -76,6 +107,43 @@ var CarouselView = Backbone.View.extend({
             }
         });
         return this;
+    },
+
+    onLogin: function onLoginFn()
+    {
+        var localLoginInput = $('#local-login').find('.local-login-input');
+        var localLoginText = $('#local-login').find('.local-login-text');
+        var newUsername = localLoginInput.val();
+        var that = this;
+        $.ajax({
+            url: '/local/v1/user/login',
+            data: {
+                'username': newUsername
+            },
+            async: false,
+            type: 'POST',
+            success: function successFn(/* data */) {
+                localLoginText.text('Currently logged in as ' + newUsername);
+                that.username = newUsername;
+            },
+            error: function errorFn(jqxhr, status /*, errorThrown */)
+            {
+                if (status === 'error' && jqxhr.status === 400)
+                {
+                    var msg = JSON.parse(jqxhr.responseText).msg;
+                    window.alert(msg);
+                    localLoginInput.val('');
+                }
+            }
+        });
+    },
+
+    onLoginKeyUp: function onLoginKeyUp(event)
+    {
+        if (event.keyCode === 13) // 13 = enter
+        {
+            this.onLogin();
+        }
     },
 
     // expand an action once an action button is clicked

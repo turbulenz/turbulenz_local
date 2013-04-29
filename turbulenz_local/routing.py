@@ -67,7 +67,7 @@ def make_map():
         m.connect('deploy-check', '/check/{slug:[A-Za-z0-9\-]+}', action='check')
 
     with router.submapper(controller="localv1/user", path_prefix='/local/v1/user') as m:
-        m.connect('set-user', '/set/{username:[A-Za-z0-9\-]+}', action='set_user')
+        m.connect('login-user', '/login', action='login')
         m.connect('get-user', '/get', action='get_user')
 
     # global game API for local, hub and the gaming site

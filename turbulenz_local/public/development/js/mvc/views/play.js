@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2012 Turbulenz Limited
+// Copyright (c) 2011-2013 Turbulenz Limited
 
 /*global Backbone*/
 /*global Templates*/
@@ -6,6 +6,7 @@
 /*global Turbulenz*/
 /*global TurbulenzEngine: true*/
 /*global window*/
+/*global console*/
 /*jshint nomen: false*/
 /*global $*/
 /*global _*/
@@ -167,8 +168,9 @@ var LocalPlayView = Backbone.View.extend({
 
     playOn: function (slug, version)
     {
-        var that = this;
-        var hash = document.location.hash;
+        var that = this,
+            app = this.app,
+            hash = document.location.hash;
         var src = hash.slice(1);
 
         $('#header').hide();
@@ -323,10 +325,31 @@ var LocalPlayView = Backbone.View.extend({
                 window.onbeforeunload = that.tearDownPlugin;
             });
         }
+
+        var url = app.router.get('games-details', {slug: slug});
+        $.get(url, function (res) {
+
+            if (res.data.has_notifications)
+            {
+                var gn = that.app.gameNotifications;
+                gn.getNotificationKeys(slug, function (keys) {
+                    gn.startPolling(slug, function (notification) {
+
+                        var time = (new Date()).toTimeString().substring(0, 8),
+                            notificationType = keys[notification.key];
+
+                        console.log(time + ' - ' + notificationType.title + ' received: ', notification.message);
+
+                    });
+                });
+            }
+
+        });
     },
 
     playOff: function ()
     {
+        this.app.gameNotifications.stopPolling();
         Turbulenz.Services.bridge.removeAllGamesListeners();
         this.tearDownPlugin();
         window.setTimeout(function () {

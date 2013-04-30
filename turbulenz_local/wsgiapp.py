@@ -69,6 +69,7 @@ def __init_controllers():
     ServiceStatus.set_ok('multiplayer')
     ServiceStatus.set_ok('customMetrics')
     ServiceStatus.set_ok('store')
+    ServiceStatus.set_ok('notifications')
 
     GameSessionList.get_instance().purge_sessions()
 

@@ -17,6 +17,7 @@ from turbulenz_local.models.userlist import get_current_user
 from turbulenz_local.models.gamelist import get_game_by_slug
 from turbulenz_local.models.gamesessionlist import GameSessionList
 from turbulenz_local.models.apiv1.store import StoreList
+from turbulenz_local.models.apiv1.gamenotifications import GameNotificationKeysList
 
 LOG = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ class GamesController(BaseController):
         game_session_id = game_session_list.create_session(user, game)
 
         StoreList.reset()
+        GameNotificationKeysList.reset()
 
         return {
             'ok': True,

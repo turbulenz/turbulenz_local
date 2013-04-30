@@ -2,6 +2,7 @@
 
 /*global Backbone*/
 /*global TurbulenzStore*/
+/*global TurbulenzGameNotifications*/
 /*global TurbulenzBridge*/
 /*global LocalMessageView*/
 /*global LocalPlayView*/
@@ -63,6 +64,7 @@ var LocalApplicationController = Backbone.Controller.extend({
 
         this.turbulenzBridge = TurbulenzBridge.create(this);
         this.store = TurbulenzStore.create(this);
+        this.gameNotifications = TurbulenzGameNotifications.create(this);
 
         this.playingGameSlug = null;
         var that = this;

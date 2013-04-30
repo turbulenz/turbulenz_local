@@ -20,7 +20,10 @@ from turbulenz_local.models.gamedetails import GameDetail, PathDetail, SlugDetai
 from turbulenz_local.models.metrics import MetricsSession
 from turbulenz_local.models.apiv1.badges import GameBadges, BadgesUnsupportedException
 from turbulenz_local.models.apiv1.leaderboards import LeaderboardsList, LeaderboardError, \
-                                                          LeaderboardsUnsupported
+                                                      LeaderboardsUnsupported
+from turbulenz_local.models.apiv1.gamenotifications import GameNotificationKeysList, \
+                                                           GameNotificationsUnsupportedException
+
 from turbulenz_local.models.apiv1.store import StoreList, StoreError, \
                                                    StoreUnsupported
 from turbulenz_local.tools import get_absolute_path, create_dir, load_json_asset
@@ -234,6 +237,7 @@ class Game(object):
             'deploy_files': self.deploy_files.items,
             'engine_version': self.engine_version,
             'is_multiplayer': self.is_multiplayer,
+            'has_notifications': self.has_notifications,
             'aspect_ratio': self.aspect_ratio
         }
         # attempt to format the data correctly
@@ -331,6 +335,15 @@ class Game(object):
     def has_assets(self):
         asset_list = self.get_asset_list('')
         return len(asset_list) > 0
+
+    @property
+    def has_notifications(self):
+        try:
+            GameNotificationKeysList.get(self)
+        except GameNotificationsUnsupportedException:
+            return False
+
+        return True
 
     def get_versions(self):
         # if the game path is defined, find play-html files.
@@ -459,6 +472,19 @@ class Game(object):
             issues = badges.validate()
             if issues:
                 result['Badges'] = issues
+
+        try:
+            notification_keys = GameNotificationKeysList.get(self)
+        except GameNotificationsUnsupportedException:
+            pass
+        except ApiException as e:
+            result['Notifications'] = [('notifications.yaml', {
+                'errors': ['%s' % e]
+            })]
+        else:
+            issues = notification_keys.validate()
+            if issues:
+                result['Notifications'] = issues
 
         try:
             leaderboards = LeaderboardsList.load(self)

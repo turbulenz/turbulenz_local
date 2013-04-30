@@ -140,6 +140,22 @@ def make_map():
         m.connect("/user", action="user")
         #m.connect("/game/{slug:[A-Za-z0-9\-]+}", action="game")
 
+    with router.submapper(controller='apiv1/gamenotifications', path_prefix='/api/v1/game-notifications') as m:
+        m.connect('/usersettings/read/{slug:[A-Za-z0-9\-]+}', action='read_usersettings')
+        m.connect('/usersettings/update/{slug:[A-Za-z0-9\-]+}', action='update_usersettings')
+
+        m.connect('/keys/read/{slug:[A-Za-z0-9\-]+}', action='read_notification_keys')
+
+        m.connect('/send-instant/{slug:[A-Za-z0-9\-]+}', action='send_instant_notification')
+        m.connect('/send-delayed/{slug:[A-Za-z0-9\-]+}', action='send_delayed_notification')
+        m.connect('/poll/{slug:[A-Za-z0-9\-]+}', action='poll_notifications')
+
+        m.connect('/cancel-by-id/{slug:[A-Za-z0-9\-]+}', action='cancel_notification_by_id')
+        m.connect('/cancel-by-key/{slug:[A-Za-z0-9\-]+}', action='cancel_notification_by_key')
+        m.connect('/cancel-all/{slug:[A-Za-z0-9\-]+}', action='cancel_all_notifications')
+
+        m.connect('/init-manager/{slug:[A-Za-z0-9\-]+}', action='init_manager')
+
     with router.submapper(controller="apiv1/multiplayer", path_prefix='/api/v1/multiplayer') as m:
         # Multiplayer public API
         with m.submapper(path_prefix='/session') as ms:

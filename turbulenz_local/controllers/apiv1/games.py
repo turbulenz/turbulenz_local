@@ -18,6 +18,7 @@ from turbulenz_local.models.gamelist import get_game_by_slug
 from turbulenz_local.models.gamesessionlist import GameSessionList
 from turbulenz_local.models.apiv1.store import StoreList
 from turbulenz_local.models.apiv1.datashare import DataShareList
+from turbulenz_local.models.apiv1.gamenotifications import GameNotificationKeysList
 
 LOG = logging.getLogger(__name__)
 
@@ -55,6 +56,7 @@ class GamesController(BaseController):
 
         StoreList.reset()
         DataShareList.reset()
+        GameNotificationKeysList.reset()
 
         return {
             'ok': True,

@@ -258,6 +258,7 @@ var CarouselView = Backbone.View.extend({
                 type: 'get',
                 url: that.router.get('deploy-check', {slug: slug}),
                 success: function successFn(data) {
+
                     if (!data.ok)
                     {
                         var text = that.format_deploy_check_response(data.msg);

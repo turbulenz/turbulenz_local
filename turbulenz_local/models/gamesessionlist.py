@@ -36,7 +36,7 @@ class GameSession(object):
     @classmethod
     def from_dict(cls, gamesession):
         game = get_game_by_slug(gamesession['game'])
-        # remove any sessions pointing at old games/users
+        # remove any sessions pointing at old games / users
         if game:
             return GameSession(game,
                                get_user(gamesession['user']),

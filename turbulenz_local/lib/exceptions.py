@@ -15,11 +15,21 @@ class PostOnlyException(BaseException):
         return self.value
 
 
+class GetOnlyException(BaseException):
+    def __init__(self, value):
+        super(GetOnlyException, self).__init__()
+        self.value = value
+
+    def __str__(self):
+        return self.value
+
+
 class ApiException(BaseException):
-    def __init__(self, value, status='500 Internal Server Error'):
+    def __init__(self, value, status='500 Internal Server Error', json_data=None):
         super(ApiException, self).__init__()
         self.value = value
         self.status = status
+        self.json_data = json_data
 
     def __str__(self):
         return self.value
@@ -31,13 +41,23 @@ class InvalidGameSession(ApiException):
 
 
 class NotFound(ApiException):
-    def __init__(self, value):
-        ApiException.__init__(self, value, '404 Not Found')
+    def __init__(self, value, json_data=None):
+        ApiException.__init__(self, value, '404 Not Found', json_data)
 
 
 class BadRequest(ApiException):
-    def __init__(self, value):
-        ApiException.__init__(self, value, '400 Bad Request')
+    def __init__(self, value, json_data=None):
+        ApiException.__init__(self, value, '400 Bad Request', json_data)
+
+
+class Unauthorized(ApiException):
+    def __init__(self, value, json_data=None):
+        ApiException.__init__(self, value, '401 Unauthorized', json_data)
+
+
+class Forbidden(ApiException):
+    def __init__(self, value, json_data=None):
+        ApiException.__init__(self, value, '403 Forbidden', json_data)
 
 
 class ApiUnavailable(ApiException):

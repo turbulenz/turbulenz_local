@@ -50,8 +50,11 @@ class ErrorMiddleware(object):
             start_response('501 Not Implemented', self.error_headers)
             return self.error_headers
         except ApiException as e:
-            json_data = _json_encoder.encode(e.value)
-            msg = '{"ok":false,"msg":%s}' % json_data
+            json_msg_data = _json_encoder.encode(e.value)
+            if e.json_data:
+                msg = '{"ok":false,"msg":%s,"data":%s}' % (json_msg_data, _json_encoder.encode(e.json_data))
+            else:
+                msg = '{"ok":false,"msg":%s}' % json_msg_data
             headers = [('Content-Type', 'application/json; charset=utf-8'),
                        ('Content-Length', str(len(msg)))]
             start_response(e.status, headers)

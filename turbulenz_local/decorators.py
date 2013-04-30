@@ -33,6 +33,16 @@ def _postonly():
         response.status_int = 405
         raise PostOnlyException('{"ok":false,"msg":"Post Only!"}')
 
+
+def _getonly():
+    if request.method != 'GET':
+        headers = response.headers
+        headers['Content-Type'] = 'application/json; charset=utf-8'
+        headers['Cache-Control'] = 'no-store, no-cache, max-age=0'
+        headers['Allow'] = 'GET'
+        response.status_int = 405
+        raise GetOnlyException('{"ok":false,"msg":"Get Only!"}')
+
 @decorator
 def jsonify(func, *args, **kwargs):
     return _jsonify(func(*args, **kwargs))
@@ -61,7 +71,11 @@ def _jsonify(data):
 
 @decorator
 def secure_get(func, *args, **kwargs):
-    return _secure(request.GET, func, *args, **kwargs)
+    try:
+        _getonly()
+        return _secure(request.GET, func, *args, **kwargs)
+    except GetOnlyException as e:
+        return e.value
 
 @decorator
 def secure_post(func, *args, **kwargs):
@@ -69,7 +83,7 @@ def secure_post(func, *args, **kwargs):
         _postonly()
         return _secure(request.POST, func, *args, **kwargs)
     except PostOnlyException as e:
-        return e
+        return e.value
 
 def _secure(requestparams, func, *args, **kwargs):
     if 'data' in requestparams:

@@ -120,6 +120,21 @@ def make_map():
         # Local API for testing only
         #m.connect('/progress/remove-all/{slug:[A-Za-z0-9\-]+}', action='remove_all')
 
+    with router.submapper(controller="apiv1/datashare", path_prefix='/api/v1/data-share') as m:
+        m.connect('/create', action='create')
+        m.connect('/find', action='find')
+        m.connect('/join/{datashare_id:[A-Za-z0-9]+}', action='join')
+        m.connect('/leave/{datashare_id:[A-Za-z0-9]+}', action='leave')
+        m.connect('/read/{datashare_id:[A-Za-z0-9]+}', action='read')
+        m.connect('/read/{datashare_id:[A-Za-z0-9]+}/{key:[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*}', action='read_key')
+        m.connect('/set/{datashare_id:[A-Za-z0-9]+}/{key:[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*}', action='set_key')
+        m.connect('/set-properties/{datashare_id:[A-Za-z0-9]+}', action='set_properties')
+        m.connect('/compare-and-set/{datashare_id:[A-Za-z0-9]+}/{key:[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*}',
+            action='compare_and_set_key')
+
+        # Local API for testing only
+        m.connect('/remove-all/{slug:[A-Za-z0-9\-]+}', action='remove_all')
+
     with router.submapper(controller="apiv1/profiles", path_prefix='/api/v1/profiles') as m:
         # Profiles
         m.connect("/user", action="user")

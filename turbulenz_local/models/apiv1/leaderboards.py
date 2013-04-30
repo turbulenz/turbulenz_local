@@ -163,12 +163,7 @@ class Leaderboard(object):
         return {'key': self.key,
                 'index': self.index,
                 'title': self.title,
-                'sortBy': self.sort_by,
-                'images': {
-                    'img32': u'',
-                    'img48': u'',
-                    'img256': u'',
-                }}
+                'sortBy': self.sort_by}
 
     def _set_path(self):
         if not self.path:

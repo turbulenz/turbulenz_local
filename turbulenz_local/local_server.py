@@ -226,6 +226,10 @@ def main():
 
     args = parser.parse_args(sys.argv[1:])
 
+    if not (args.init or args.launch or args.clean or args.compile):
+        parser.print_help()
+        exit(0)
+
     if args.init:
         init_devserver(args.home)
 

@@ -148,6 +148,7 @@ def make_map():
     with router.submapper(controller="apiv1/custommetrics", path_prefix='/api/v1/custommetrics') as m:
         # Custom Metrics
         m.connect("/add-event/{slug:[A-Za-z0-9\-]+}", action="add_event")
+        m.connect("/add-event-batch/{slug:[A-Za-z0-9\-]+}", action="add_event_batch")
 
     with router.submapper(controller="apiv1/store", path_prefix='/api/v1/store') as m:
         # Store Public API

@@ -1,6 +1,6 @@
 # Copyright (c) 2010-2013 Turbulenz Limited
 
-__version__ = '0.9'
+__version__ = '1.0'
 
 import os.path
 CONFIG_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config')

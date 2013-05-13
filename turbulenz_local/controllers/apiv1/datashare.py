@@ -12,6 +12,7 @@ from turbulenz_local.controllers import BaseController
 
 from turbulenz_local.models.gamesessionlist import GameSessionList
 from turbulenz_local.models.apiv1.datashare import DataShareList, CompareAndSetInvalidToken
+from turbulenz_local.models.userlist import get_current_user
 
 from turbulenz_local.models.gamelist import get_game_by_slug
 
@@ -40,51 +41,51 @@ class DatashareController(BaseController):
     @postonly
     @datashare_service
     @jsonify
-    def create(cls):
-        session = cls._get_gamesession(request.POST)
-        datashare = DataShareList.get(session.game).create_datashare(session.user)
+    def create(cls, slug):
+        game = get_game_by_slug(slug)
+        datashare = DataShareList.get(game).create_datashare(get_current_user())
         return {'ok': True, 'data': {'datashare': datashare.summary_dict()}}
 
     @classmethod
     @postonly
     @datashare_service
     @jsonify
-    def join(cls, datashare_id):
-        session = cls._get_gamesession(request.params)
-        datashare = DataShareList.get(session.game).get(datashare_id)
-        datashare.join(session.user)
+    def join(cls, slug, datashare_id):
+        game = get_game_by_slug(slug)
+        datashare = DataShareList.get(game).get(datashare_id)
+        datashare.join(get_current_user())
         return {'ok': True, 'data': {'users': datashare.users}}
 
     @classmethod
     @postonly
     @datashare_service
     @jsonify
-    def leave(cls, datashare_id):
-        session = cls._get_gamesession(request.params)
-        DataShareList.get(session.game).leave_datashare(session.user, datashare_id)
+    def leave(cls, slug, datashare_id):
+        game = get_game_by_slug(slug)
+        datashare = DataShareList.get(game).leave_datashare(get_current_user(), datashare_id)
         return {'ok': True}
 
     @classmethod
     @datashare_service
     @secure_post
-    def set_properties(cls, datashare_id, params=None):
-        session = cls._get_gamesession(params)
-        datashare = DataShareList.get(session.game).get(datashare_id)
+    def set_properties(cls, slug, datashare_id, params=None):
+        game = get_game_by_slug(slug)
+        datashare = DataShareList.get(game).get(datashare_id)
         if 'joinable' in params:
             try:
                 joinable = asbool(params['joinable'])
             except ValueError:
                 raise BadRequest('Joinable must be a boolean value')
-            datashare.set_joinable(session.user, joinable)
+            datashare.set_joinable(get_current_user(), joinable)
         return {'ok': True}
 
     @classmethod
     @datashare_service
     @jsonify
-    def find(cls):
-        session = cls._get_gamesession(request.params)
+    def find(cls, slug):
+        game = get_game_by_slug(slug)
         username = request.params.get('username')
-        datashares = DataShareList.get(session.game).find(session.user, username_to_find=username)
+        datashares = DataShareList.get(game).find(get_current_user(), username_to_find=username)
         return {'ok': True, 'data': {'datashares': [datashare.summary_dict() for datashare in datashares]}}
 
     @classmethod

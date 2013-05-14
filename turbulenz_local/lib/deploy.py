@@ -41,6 +41,10 @@ def _get_upload_file_token(index, filename):
     # about the actual filename only the extension
     return '%d%s' % (index, splitext(filename)[1])
 
+def _get_cached_file_name(file_name, file_hash, file_length):
+    return '%s%x%s' % (file_hash, file_length, splitext(file_name)[1])
+
+
 # pylint: disable=R0902
 class Deployment:
 
@@ -246,6 +250,7 @@ class Deployment:
         gzip_cache_dir = self.get_gzip_dir()
         compressor_path = get_7zip_path()
         empty_meta_data = self._empty_meta_data
+        get_cached_file_name = _get_cached_file_name
 
         while start < end:
             if self.stopped:
@@ -331,7 +336,7 @@ class Deployment:
                         file_hash = hash_file_sha256(abs_path)
                         file_md5 = hash_file_md5(deploy_file_name)
 
-                if file_size != hashes.get(file_hash):
+                if get_cached_file_name(relative_path, file_hash, file_size) not in hashes:
                     file_item = (deploy_file_name, relative_path, file_size, file_hash, file_md5, file_time)
                     files_to_batch_check.append(file_item)
                     if len(files_to_batch_check) >= 10:
@@ -380,10 +385,10 @@ class Deployment:
         return list(files)
 
     def load_hashes(self, project):
-        hashes = {}
+        hashes = set()
 
         try:
-            # Files containing cached hashes are stored in a folder called "hashes".
+            # Files containing cached hashes are stored in a folder called "__cached_hashes__".
             # The name of the file contains the creation time
             # so we skip files that are too old
             hashes_folder = join(self.cache_dir, self._cached_hash_folder)
@@ -401,7 +406,7 @@ class Deployment:
                         file_obj.close()
                         # pylint: disable=E1103
                         hashes_version = hashes_meta.get('version', 0)
-                        if 1 <= hashes_version:
+                        if 2 <= hashes_version:
                             cached_hashes = hashes_meta.get('hashes', None)
                             if cached_hashes:
                                 delete_file = False
@@ -427,20 +432,25 @@ class Deployment:
 
     def request_hashes(self, project):
         try:
+            min_version = 2
             r = self.hub_pool.urlopen('GET',
-                                      '/dynamic/upload/list?project=%s' % project,
+                                      '/dynamic/upload/list?version=%d&project=%s' % (min_version, project),
                                       headers={'Cookie': self.hub_cookie,
                                                'Accept-Encoding': 'gzip'},
                                       redirect=False,
                                       assert_same_host=False)
             if r.status == 200:
-                return json_loads(r.data)['hashes']
+                response = json_loads(r.data)
+                # pylint: disable=E1103
+                if response.get('version', 1) >= min_version:
+                    return response['hashes']
+                # pylint: enable=E1103
 
         except (HTTPError, SSLError, TypeError, ValueError):
             pass
         except Exception as e:
             LOG.error(str(e))
-        return {}
+        return []
 
     def save_hashes(self, hashes):
         try:
@@ -458,14 +468,9 @@ class Deployment:
                     file_obj = open(file_path, 'rb')
                     hashes_meta = json_load(file_obj)
                     file_obj.close()
-                    # pylint: disable=E1103
                     hashes_host = hashes_meta['host']
                     if hashes_host == self.hub_pool.host:
-                        cached_hashes = hashes_meta['hashes']
-                        for key in cached_hashes.iterkeys():
-                            if key in hashes:
-                                del hashes[key]
-                    # pylint: enable=E1103
+                        hashes.difference_update(hashes_meta['hashes'])
                 except (IOError, TypeError, ValueError, KeyError, AttributeError):
                     pass
 
@@ -473,9 +478,9 @@ class Deployment:
                 try:
                     file_path = join(hashes_folder, '%d.json' % long(time()))
                     file_obj = open(file_path, 'wb')
-                    hashes_meta = {'version': 1,
+                    hashes_meta = {'version': 2,
                                    'host': self.hub_pool.host,
-                                   'hashes': hashes}
+                                   'hashes': list(hashes)}
                     json_dump(hashes_meta, file_obj, separators=(',', ':'))
                     file_obj.close()
                 except IOError:
@@ -535,12 +540,12 @@ class Deployment:
                 if len(item) == 4: # Nothing to do for this file
                     relative_path, file_size, file_hash, file_time = item
                     meta_data[relative_path] = meta_data_cache[relative_path]
-                    files_scanned.append((file_size, file_hash))
+                    files_scanned.append((relative_path, file_size, file_hash))
 
                 else:
                     if len(item) == 5: # Only need to update meta data cache
                         relative_path, file_size, file_hash, file_md5, file_time = item
-                        files_scanned.append((file_size, file_hash))
+                        files_scanned.append((relative_path, file_size, file_hash))
 
                     else: # Need to upload too
                         deploy_path, relative_path, file_size, file_hash, file_md5, file_time = item
@@ -671,7 +676,7 @@ class Deployment:
                 continue
             # pylint: enable=E1103
 
-            uploaded_queue_put((file_size, file_hash))
+            uploaded_queue_put((relative_path, file_size, file_hash))
 
             answer = None
             r = None
@@ -791,13 +796,10 @@ class Deployment:
 
         self.hub_session = hub_session
 
-        for file_size, file_hash in files_scanned:
-            if file_hash in hashes:
-                if hashes[file_hash] != file_size:
-                    # Collision, set to invalid
-                    hashes[file_hash] = -1
-            else:
-                hashes[file_hash] = file_size
+        get_cached_file_name = _get_cached_file_name
+
+        for file_name, file_size, file_hash in files_scanned:
+            hashes.add(get_cached_file_name(file_name, file_hash, file_size))
 
             self.uploaded_bytes += file_size
             self.uploaded_files += 1
@@ -817,14 +819,9 @@ class Deployment:
             if item is None or self.stopped:
                 break
 
-            file_size, file_hash = item
+            file_name, file_size, file_hash = item
 
-            if file_hash in hashes:
-                if hashes[file_hash] != file_size:
-                    # Collision, set to invalid
-                    hashes[file_hash] = -1
-            else:
-                hashes[file_hash] = file_size
+            hashes.add(get_cached_file_name(file_name, file_hash, file_size))
 
             self.uploaded_bytes += file_size
             self.uploaded_files += 1

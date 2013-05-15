@@ -16,6 +16,7 @@ from paste.deploy.converters import asbool, asint
 from pylons import config
 from pylons.wsgiapp import PylonsApp
 from routes.middleware import RoutesMiddleware
+from webob.util import status_reasons
 
 from turbulenz_local.helpers import make_helpers
 from turbulenz_local.routing import make_map
@@ -57,6 +58,10 @@ def load_environment(global_conf, app_conf):
     # any Pylons config options)
     config['pylons.response_options']['headers'] = {'Cache-Control': 'public, max-age=0',
                                                     'Pragma': 'no-cache'}
+
+
+def __add_customisations():
+    status_reasons[429] = 'Too Many Requests'
 
 
 def __init_controllers():
@@ -153,6 +158,7 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     app = MetricsMiddleware(app, config)
     app = LoggingMiddleware(app, config)
 
+    __add_customisations()
     __init_controllers()
 
     # Last middleware is the first middleware that gets executed for a request, and last for a response

@@ -32,7 +32,14 @@ class SaveFileHandler(RequestHandler):
             self.set_status(403)
             return self.finish({'ok': False, 'msg': 'Cannot write outside game folder'})
 
-        content = self.get_argument('content')
+        content_type = self.request.headers.get('Content-Type', '')
+        if content_type and 'application/x-www-form-urlencoded' in content_type:
+            content = self.get_argument('content')
+            binary = False
+        else:
+            content = self.request.body
+            binary = True
+
         self.request.body = None
         self.request.arguments = None
 
@@ -45,12 +52,13 @@ class SaveFileHandler(RequestHandler):
             return self.finish({'ok': False, 'msg': 'Failed to create directory'})
 
         if content:
-            try:
-                content = content.encode('utf-8')
-            except UnicodeEncodeError as e:
-                LOG.error('Failed to encode file contents: %s', str(e))
-                self.set_status(500)
-                return self.finish({'ok': False, 'msg': 'Failed to encode file contents'})
+            if not binary:
+                try:
+                    content = content.encode('utf-8')
+                except UnicodeEncodeError as e:
+                    LOG.error('Failed to encode file contents: %s', str(e))
+                    self.set_status(500)
+                    return self.finish({'ok': False, 'msg': 'Failed to encode file contents'})
 
             LOG.info('Writing file at "%s" (%d bytes)', file_path, len(content))
 

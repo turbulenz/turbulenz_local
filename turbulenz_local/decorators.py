@@ -8,7 +8,7 @@ from simplejson import JSONEncoder, JSONDecoder
 from pylons import request, response
 from urlparse import urlparse
 
-from turbulenz_local.lib.exceptions import PostOnlyException
+from turbulenz_local.lib.exceptions import PostOnlyException, GetOnlyException
 
 # pylint: disable=C0103
 _json_encoder = JSONEncoder(encoding='utf-8', separators=(',',':'))

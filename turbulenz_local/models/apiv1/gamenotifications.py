@@ -219,7 +219,7 @@ class GameNotificationTask(object):
         return {
             'key': self.key,
             'sender': self.sender,
-            'message': self.msg,
+            'msg': self.msg,
             'sent': self.time or get_time()
         }
 

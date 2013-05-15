@@ -17,7 +17,7 @@ import yaml
 
 from turbulenz_local.tools import get_absolute_path, create_dir
 from turbulenz_local.lib.tools import create_id
-from turbulenz_local.lib.exceptions import BadRequest, Unauthorized, NotFound, Forbidden
+from turbulenz_local.lib.exceptions import BadRequest, NotFound, Forbidden
 
 class CompareAndSetInvalidToken(Exception):
     pass
@@ -69,7 +69,7 @@ class DataShare(object):
     def datashare_access(self, user):
         username = user.username
         if username not in self.users:
-            raise Unauthorized('User "%s" has not joined '
+            raise Forbidden('User "%s" has not joined '
                 'data-share with id "%s"' % (username, self.datashare_id))
 
     def join(self, user):
@@ -87,7 +87,7 @@ class DataShare(object):
             try:
                 self.users.remove(user.username)
             except ValueError:
-                raise Unauthorized('Cannot leave datashare "%s" current user has not joined' % self.datashare_id)
+                raise Forbidden('Cannot leave datashare "%s" current user has not joined' % self.datashare_id)
             if len(self.users) == 0:
                 self._delete()
             else:
@@ -209,11 +209,11 @@ class DataShare(object):
                 key_store = self.store[key]
 
                 if key_store['access'] != self.read_only:
-                    raise Unauthorized('Unauthorized: Key "%s" is read and write access (must use compare and set for read and write keys)' % key,
+                    raise Forbidden('Forbidden: Key "%s" is read and write access (must use compare and set for read and write keys)' % key,
                                        {'reason': 'read_and_write'})
                 owner = key_store['ownedBy']
                 if owner != user.username:
-                    raise Unauthorized('Unauthorized: Key "%s" is read only' % key, {'reason': 'read_only'})
+                    raise Forbidden('Forbidden: Key "%s" is read only' % key, {'reason': 'read_only'})
             else:
                 owner = user.username
             return self._set(key, value, owner, self.read_only)
@@ -230,11 +230,11 @@ class DataShare(object):
                 key_store = self.store[key]
 
                 if key_store['access'] != self.read_and_write:
-                    raise Unauthorized('Unauthorized: Key "%s" is read only access (must use set for read only keys)' % key,
+                    raise Forbidden('Forbidden: Key "%s" is read only access (must use set for read only keys)' % key,
                                        {'reason': 'read_only'})
                 owner = key_store['ownedBy']
                 if value == '' and owner != user.username:
-                    raise Unauthorized('Unauthorized: Only the key owner can delete a key', {'reason': 'unauthorized_delete'})
+                    raise Forbidden('Forbidden: Only the key owner can delete a key', {'reason': 'unauthorized_delete'})
 
                 # if the key is in the store then check its token
                 if key_store['token'] != token:

@@ -207,10 +207,6 @@ def command_devserver_clean(devserver_folder):
     rmdir('%s/public/release/html' % TURBULENZ_LOCAL)
     rm('%s/config/html_versions.yaml' % TURBULENZ_LOCAL)
     rmdir('%s/public/release' % TURBULENZ_LOCAL)
-    rmdir(os.path.join(devserver_folder, 'localdata'))
-    rmdir(os.path.join(devserver_folder, 'games'))
-    rm(os.path.join(devserver_folder, 'games.yaml'))
-    rm(os.path.join(devserver_folder, 'devserver.log'))
 
 def main():
     parser = argparse.ArgumentParser(description="Manages the turbulenz local development server.")

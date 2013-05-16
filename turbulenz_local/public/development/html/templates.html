@@ -245,6 +245,7 @@
                 <input type="password" name="password" id="deploy_password_id" value="" class="deploy-input ui-widget-content ui-corner-all" />
             </fieldset>
             <fieldset>
+                <div id="login_error" style="color: red; display: none">Username/Password incorrect</div>
                 <span style="float: right">
                     <input type="checkbox" name="rememberme"  id="rememberme"/>
                     <label for="rememberme">Remember me for this session</label>
@@ -275,7 +276,13 @@
                 <input id="deploy_new_version_name_id" type="text" name="newversionname" class="deploy-input ui-widget-content ui-corner-all" />
             </fieldset>
             <p class="deploy-validateTips">Only alphanumerical characters for new version numbers.</p>
-            <input class="button deploy-label" type="submit" name="submit" value="start"/>
+            <input class="button deploy-label" type="submit" name="submit" value="start" />
+
+            <input class="button" type="button" name="logout" value="logout" style="float: right;" />
+            <span style="float: right; padding: 5px 15px;">
+                Logged in as:&nbsp;<b id="hub_username"></b>
+            </span>
+
         </form>
     </div>
 ]]>

@@ -115,6 +115,42 @@ class DeployController(BaseController):
         deploy_key = hub_project + hub_version
         cls._deploying[deploy_key] = deploy_info
 
+
+    @classmethod
+    def _get_projects_for_upload(cls, hub_headers, user, rememberme=False):
+
+        try:
+            r = cls.hub_pool.request('POST',
+                                     '/dynamic/upload/projects',
+                                     headers=hub_headers,
+                                     redirect=False)
+
+        except (HTTPError, SSLError) as e:
+            LOG.error(e)
+            response.status_int = 500
+            return {'ok': False, 'msg': str(e)}
+
+        if r.status != 200:
+            if r.status == 503:
+                response.status_int = 503
+                # pylint: disable=E1103
+                return {'ok': False, 'msg': json_loads(r.data).get('msg', 'Service currently unavailable.')}
+                # pylint: enable=E1103
+            response.status_int = 500
+            return {'ok': False, 'msg': 'Wrong Hub answer.'}
+
+        response.headers['Cache-Control'] = 'no-store, no-cache, max-age=0'
+
+        return {
+            'ok': True,
+            'cookie': hub_headers.get('Cookie') if rememberme else None,
+            'user': user,
+            # pylint: disable=E1103
+            'projects': json_loads(r.data).get('projects', [])
+            # pylint: enable=E1103
+        }
+
+
     # pylint: disable=R0911
     @classmethod
     @jsonify
@@ -132,15 +168,15 @@ class DeployController(BaseController):
         cls.hub_pool = hub_pool
 
         form = request.params
-        credentials = {}
         try:
-            credentials['login'] = form['login']
-            credentials['password'] = form['password']
+            credentials = {
+                'login': form['login'],
+                'password': form['password'],
+                'source': '/local'
+            }
         except KeyError:
             response.status_int = 400
             return {'ok': False, 'msg': 'Missing user login information.'}
-
-        credentials['source'] = '/local'
 
         try:
             r = hub_pool.request('POST',
@@ -166,11 +202,11 @@ class DeployController(BaseController):
             return {'ok': False, 'msg': 'Wrong user login information.'}
         # pylint: enable=E1103
 
-        headers = {'Cookie': cookie}
+        hub_headers = {'Cookie': cookie}
         try:
             r = hub_pool.request('POST',
                                  '/dynamic/user',
-                                 headers=headers,
+                                 headers=hub_headers,
                                  redirect=False)
         except (HTTPError, SSLError) as e:
             LOG.error(e)
@@ -181,37 +217,48 @@ class DeployController(BaseController):
             response.status_int = 500
             return {'ok': False, 'msg': 'Wrong Hub answer.'}
 
-        hub_info = {
-            'ok': True,
-            'cookie': cookie.split(';')[0],
-            'user': json_loads(r.data)
-        }
+        return cls._get_projects_for_upload(hub_headers, login_info, form.get('rememberme'))
+    # pylint: enable=R0911
+
+
+    # pylint: disable=R0911
+    @classmethod
+    @jsonify
+    def try_login(cls):
+        """
+        Try to login automatically and return deployable projects.
+        """
+        response.headers['Cache-Control'] = 'no-store, no-cache, max-age=0'
+
+        hub_pool = connection_from_url(cls.base_url, maxsize=8, timeout=8.0)
+        if not hub_pool or not cls.cookie_name:
+            response.status_int = 500
+            return {'ok': False, 'msg': 'Wrong deployment configuration.'}
+
+        cls.hub_pool = hub_pool
+
+        hub_headers = {'Cookie': request.params.get('cookie', '')}
 
         try:
             r = hub_pool.request('POST',
-                                 '/dynamic/upload/projects',
-                                 headers=headers,
-                                 redirect=False)
+                                 '/dynamic/user',
+                                 headers=hub_headers,
+                                 retries=1,
+                                 redirect=False
+            )
+
         except (HTTPError, SSLError) as e:
             LOG.error(e)
             response.status_int = 500
             return {'ok': False, 'msg': str(e)}
 
         if r.status != 200:
-            if r.status == 503:
-                response.status_int = 503
-                # pylint: disable=E1103
-                return {'ok': False, 'msg': json_loads(r.data).get('msg', 'Service currently unavailable.')}
-                # pylint: enable=E1103
-            response.status_int = 500
-            return {'ok': False, 'msg': 'Wrong Hub answer.'}
+            response.status_int = 401
+            return {'ok': False, 'msg': 'Wrong user login information.'}
 
-        # pylint: disable=E1103
-        hub_info['projects'] = json_loads(r.data).get('projects', [])
-        # pylint: enable=E1103
-
-        return {'ok': True, 'data': hub_info}
+        return cls._get_projects_for_upload(hub_headers, json_loads(r.data), True)
     # pylint: enable=R0911
+
 
     @classmethod
     @jsonify

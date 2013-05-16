@@ -72,27 +72,22 @@ var LocalDeployView = Backbone.View.extend({
 
     initialiseDeployForms: function (slug)
     {
-        var router = this.app.router;
-        var deploy_login_url = router.get('deploy-login');
-        var deploy_start_url = router.get('deploy-start');
-        var deploy_progress_url = router.get('deploy-progress');
-        var deploy_postupload_progress_url = router.get('deploy-postupload-progress');
-        var deploy_cancel_url = router.get('deploy-cancel');
+        var rememberMeCookie = 'rememberme',
+            hubCookie = 'hubcookie',
+            router = this.app.router;
+        var deploy_start_url = router.get('deploy-start'),
+            deploy_progress_url = router.get('deploy-progress'),
+            deploy_postupload_progress_url = router.get('deploy-postupload-progress'),
+            deploy_cancel_url = router.get('deploy-cancel');
 
-
-        var deployLoginForm = $('#deploy_login_form_id'),
-            deployLoginDialog = $('#deploy_login_dialog_id'),
-            deploySelectForm = $('#deploy_select_form_id'),
-            deploySelectDialog = $('#deploy_select_dialog_id'),
+        var deploySelectDialog = $('#deploy_select_dialog_id'),
             deployUploadForm = $('#deploy_upload_form_id'),
             deployUploadDialog = $('#deploy_upload_dialog_id'),
             deployUploadBar = $('#deploy_upload_bar_id'),
             deployUploadFilesCounter = $('#deploy_upload_files_counter_id'),
             deployUploadBytesCounter = $('#deploy_upload_bytes_counter_id'),
             slugPattern = new RegExp('^[a-z0-9]+[a-z0-9-\\.]*$'),
-            progressInterval = 100,
-            loginCookie = null,
-            that = this;
+            progressInterval = 100;
 
         function commaFormatted(n)
         {
@@ -460,10 +455,64 @@ var LocalDeployView = Backbone.View.extend({
             });
         }
 
-        function onLogin(response)
+
+        function doSelect()
         {
-            var hub_info = response.data,
-                projects = hub_info.projects,
+            var correct = true,
+                deployInfo = {},
+                createSelectProjectInput = $('#deploy_select_project_id'),
+                createSelectVersionInput = $('#deploy_select_version_id'),
+                createNewVersionNumberInput = $('#deploy_new_version_number_id'),
+                createNewVersionNameInput = $('#deploy_new_version_name_id'),
+                createSelectProjectVal = createSelectProjectInput.val(),
+                createSelectVersionVal = createSelectVersionInput.val(),
+                createNewVersionNumberVal = $.trim(createNewVersionNumberInput.val()),
+                createNewVersionNameVal = $.trim(createNewVersionNameInput.val());
+
+            createNewVersionNumberInput.removeClass('ui-state-error');
+            createNewVersionNameInput.removeClass('ui-state-error');
+
+            if (createNewVersionNumberVal)
+            {
+                if (!slugPattern.test(createNewVersionNumberVal))
+                {
+                    createNewVersionNumberInput.addClass('ui-state-error');
+                    correct = false;
+                }
+                else
+                {
+                    deployInfo.version = createNewVersionNumberVal;
+                    deployInfo.versiontitle = createNewVersionNameVal;
+                }
+            }
+            else if (!createSelectVersionVal)
+            {
+                createNewVersionNumberInput.addClass('ui-state-error');
+                correct = false;
+            }
+            else
+            {
+                deployInfo.version = createSelectVersionVal;
+            }
+
+            if (correct)
+            {
+                deployInfo.project = createSelectProjectVal;
+                deployInfo.cookie = $.cookie(hubCookie);
+                deployInfo.local = slug;
+
+                deployUploadDialog.dialog('option', 'title', 'Deploying ' + slug + ' to ' + deployInfo.version);
+
+                startDeploy(deployInfo);
+            }
+
+            return false;
+        }
+
+
+        function onLogin(args)
+        {
+            var projects = args.projects,
                 numProjects = (projects ? projects.length : 0),
                 createNewVersionNumberInput = $('#deploy_new_version_number_id'),
                 createSelectProjectInput = $('#deploy_select_project_id'),
@@ -478,8 +527,6 @@ var LocalDeployView = Backbone.View.extend({
                 window.alert('This user has no projects on Hub that you can deploy to.');
                 return;
             }
-
-            loginCookie = hub_info.cookie;
 
             if (numProjects > 1)
             {
@@ -546,46 +593,39 @@ var LocalDeployView = Backbone.View.extend({
                 var versions = project.versions;
                 var numVersions, version, versionName, v;
 
-                if (versions)
-                {
+                if (versions) {
                     numVersions = versions.length;
-                    if (1 < numVersions)
-                    {
+                    if (1 < numVersions) {
                         versions.sort(sortVersions);
                     }
-                    for (v = 0; v < numVersions; v += 1)
-                    {
+                    for (v = 0; v < numVersions; v += 1) {
                         version = versions[v];
                         versionName = version.version;
                         createSelectVersionInput.append($('<option></option>')
-                            .attr('value', versionName)
-                            .text(versionName));
+                                                            .attr('value', versionName)
+                                                            .text(versionName));
                     }
                 }
                 var locked_versions = project.locked_versions;
-                if (locked_versions)
-                {
+                if (locked_versions) {
                     numVersions = locked_versions.length;
-                    if (1 < numVersions)
-                    {
+                    if (1 < numVersions) {
                         locked_versions.sort(sortVersions);
                     }
-                    for (v = 0; v < numVersions; v += 1)
-                    {
+                    for (v = 0; v < numVersions; v += 1) {
                         version = locked_versions[v];
                         versionName = version.version;
                         createSelectVersionInput.append($('<option></option>')
-                            .attr('disabled', 'disabled')
-                            .attr('value', versionName)
-                            .text(versionName + ' (locked)'));
+                                                            .attr('disabled', 'disabled')
+                                                            .attr('value', versionName)
+                                                            .text(versionName + ' (locked)'));
                     }
                 }
-                if (!versions || versions.length === 0)
-                {
+                if (!versions || versions.length === 0) {
                     createSelectVersionInput.prepend($('<option></option>')
-                            .attr('disabled', 'disabled')
-                            .attr('value', '')
-                            .text('No Writable Versions'));
+                                                         .attr('disabled', 'disabled')
+                                                         .attr('value', '')
+                                                         .text('No Writable Versions'));
                 }
             }
 
@@ -604,158 +644,145 @@ var LocalDeployView = Backbone.View.extend({
 
             projectChanged();
 
-            createSelectProjectInput.unbind();
-            createSelectProjectInput.change(projectChanged);
-
-            createNewVersionNumberInput.unbind();
-            createNewVersionNumberInput.change(versionNumberChanged);
-
+            createSelectProjectInput.unbind().change(projectChanged);
+            createNewVersionNumberInput.unbind().change(versionNumberChanged);
             deploySelectDialog.dialog('open');
+
+            $('#deploy_select_form_id')
+                .unbind()
+                .submit(doSelect)
+                .find('[name="logout"]')
+                    .unbind()
+                    .click(function () {
+                        deploySelectDialog.dialog('close');
+                        $.cookie(rememberMeCookie, false);
+                        $.cookie(hubCookie, null);
+                    });
         }
 
-        function doLogin()
+
+        function manualLogin()
         {
-            var correct = true,
-                loginInput = $('#deploy_login_id'),
-                passwordInput = $('#deploy_password_id'),
-                loginInputVal = $.trim(loginInput.val()),
-                passwordInputVal = $.trim(passwordInput.val()),
-                remembermeVal = $('#rememberme').attr('checked');
+            var deployLoginDialog = $('#deploy_login_dialog_id').dialog('open');
 
-            loginInput.removeClass('ui-state-error');
-            passwordInput.removeClass('ui-state-error');
+            $('#deploy_login_dialog_id').unbind().submit(function (event) {
+                event.preventDefault();
 
-            if (!loginInputVal)
-            {
-                loginInput.addClass('ui-state-error');
-                correct = false;
-            }
+                var $loginInput = $('#deploy_login_id').removeClass('ui-state-error'),
+                    $passwordInput = $('#deploy_password_id').removeClass('ui-state-error'),
+                    $loginError = $('#login_error').hide();
 
-            if (!passwordInputVal)
-            {
-                passwordInput.addClass('ui-state-error');
-                correct = false;
-            }
+                var loginInputVal = $.trim($loginInput.val()),
+                    passwordInputVal = $.trim($passwordInput.val()),
+                    rememberme = !!$('#rememberme').attr('checked'),
+                    correct = true;
 
-            if (correct)
-            {
-                var loginString = 'login=' + loginInputVal +
-                                  '&password=' + passwordInputVal;
-
-                $('body').css('cursor', 'wait');
-
-                $.ajax({
-                    timeout: 10000,
-                    type: 'POST',
-                    url: deploy_login_url,
-                    data: loginString,
-                    success: function onLoginSuccessFn() {
-                        if (remembermeVal)
-                        {
-                            that.tempLogin = loginInputVal;
-                            that.tempPassword = passwordInputVal;
-                            that.rememberme = true;
-                        }
-                        else
-                        {
-                            that.tempLogin = null;
-                            that.tempPassword = null;
-                            that.rememberme = false;
-                        }
-                        onLogin.apply(this, arguments);
-                    },
-                    error: function onLoginErrorFn(XMLHttpRequest, textStatus)
-                    {
-                        $('body').css('cursor', 'auto');
-
-                        var status = XMLHttpRequest.status;
-                        if ('timeout' === textStatus)
-                        {
-                            window.alert('The connection to the Hub timed out.');
-                        }
-                        else if (status === 500)
-                        {
-                            window.alert('Connection to the Hub failed. Please try again later');
-                        }
-                        else //('error' === textStatus)
-                        {
-                            var response = JSON.parse(XMLHttpRequest.responseText),
-                                msg = response ? response.msg : "unknown";
-                            window.alert('Hub log in failed.\n' + msg);
-                        }
-                    }
-                });
-
-                deployLoginDialog.dialog('close');
-            }
-
-            return false;
-        }
-
-        function doSelect()
-        {
-            var correct = true,
-                deployInfo = {},
-                createSelectProjectInput = $('#deploy_select_project_id'),
-                createSelectVersionInput = $('#deploy_select_version_id'),
-                createNewVersionNumberInput = $('#deploy_new_version_number_id'),
-                createNewVersionNameInput = $('#deploy_new_version_name_id'),
-                createSelectProjectVal = createSelectProjectInput.val(),
-                createSelectVersionVal = createSelectVersionInput.val(),
-                createNewVersionNumberVal = $.trim(createNewVersionNumberInput.val()),
-                createNewVersionNameVal = $.trim(createNewVersionNameInput.val());
-
-            createNewVersionNumberInput.removeClass('ui-state-error');
-            createNewVersionNameInput.removeClass('ui-state-error');
-
-            if (createNewVersionNumberVal)
-            {
-                if (!slugPattern.test(createNewVersionNumberVal))
+                if (!loginInputVal)
                 {
-                    createNewVersionNumberInput.addClass('ui-state-error');
+                    $loginInput.addClass('ui-state-error');
                     correct = false;
                 }
-                else
+                if (!passwordInputVal)
                 {
-                    deployInfo.version = createNewVersionNumberVal;
-                    deployInfo.versiontitle = createNewVersionNameVal;
+                    $passwordInput.addClass('ui-state-error');
+                    correct = false;
                 }
-            }
-            else if (!createSelectVersionVal)
-            {
-                createNewVersionNumberInput.addClass('ui-state-error');
-                correct = false;
-            }
-            else
-            {
-                deployInfo.version = createSelectVersionVal;
-            }
+                if (correct)
+                {
+                    var $body = $('body').css('cursor', 'wait');
 
-            if (correct)
-            {
-                deployInfo.project = createSelectProjectVal;
-                deployInfo.cookie = loginCookie;
-                deployInfo.local = slug;
+                    $.ajax({
+                        type: 'POST',
+                        url: router.get('deploy-login'),
+                        data: {
+                            login: loginInputVal,
+                            password: passwordInputVal,
+                            rememberme: rememberme
+                        },
+                        success: function (response) {
 
-                deployUploadDialog.dialog('option', 'title', 'Deploying ' + slug + ' to ' + deployInfo.version);
+                            if (rememberme)
+                            {
+                                $.cookie(rememberMeCookie, true);
+                                $.cookie(hubCookie, response.cookie, {expires: 7});
+                            }
+                            else
+                            {
+                                $.cookie(rememberMeCookie, false);
+                                $.cookie(hubCookie, null);
+                            }
+                            onLogin(response);
+                            deployLoginDialog.dialog('close');
+                        },
+                        error: function onLoginErrorFn(XMLHttpRequest, textStatus) {
+                            if (textStatus === 'timeout')
+                            {
+                                window.alert('The connection to the Hub timed out.');
+                            }
+                            else if (XMLHttpRequest.status === 500)
+                            {
+                                window.alert('Connection to the Hub failed. Please try again later');
+                            }
+                            else
+                            {
+                                $loginInput.addClass('ui-state-error');
+                                $passwordInput.addClass('ui-state-error').val('');
+                                $loginError.show();
+                            }
+                        },
+                        complete: function ()
+                        {
+                            $body.css('cursor', 'auto');
+                        }
+                    });
+                }
 
-                startDeploy(deployInfo);
-            }
-
-            return false;
+                return false;
+            });
         }
 
-        deployLoginForm.unbind();
-        deploySelectForm.unbind();
 
-        deployLoginForm.submit(doLogin);
-        deploySelectForm.submit(doSelect);
-
-        if (this.rememberme && this.tempLogin && this.tempPassword)
+        function autoLogin()
         {
-            deployLoginForm.find('input[name="login"]').val(this.tempLogin);
-            deployLoginForm.find('input[name="password"]').val(this.tempPassword);
-            deployLoginForm.find('input[name="rememberme"]').attr('checked', true);
+
+            var $body = $('body').css('cursor', 'wait');
+
+            $.ajax({
+                type: 'POST',
+                url: router.get('deploy-try-login'),
+                data: {
+                    cookie: $.cookie(hubCookie)
+                },
+                success: onLogin,
+                error: function (XMLHttpRequest, textStatus) {
+
+                    if (textStatus === 'timeout')
+                    {
+                        window.alert('The connection to the Hub timed out.');
+                    }
+                    else if (XMLHttpRequest.status === 500)
+                    {
+                        window.alert('Connection to the Hub failed. Please try again later');
+                    }
+                    else
+                    {
+                        $.cookie(rememberMeCookie, false);
+                        manualLogin();
+                    }
+                },
+                complete: function () {
+                    $body.css('cursor', 'auto');
+                }
+            });
+        }
+
+        if ($.cookie(rememberMeCookie) && $.cookie(hubCookie))
+        {
+            autoLogin();
+        }
+        else
+        {
+            manualLogin();
         }
     }
 });

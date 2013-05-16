@@ -209,7 +209,8 @@ class DataShare(object):
                 key_store = self.store[key]
 
                 if key_store['access'] != self.read_only:
-                    raise Forbidden('Forbidden: Key "%s" is read and write access (must use compare and set for read and write keys)' % key,
+                    raise Forbidden('Forbidden: Key "%s" is read and write access'
+                                    '(must use compare and set for read and write keys)' % key,
                                        {'reason': 'read_and_write'})
                 owner = key_store['ownedBy']
                 if owner != user.username:

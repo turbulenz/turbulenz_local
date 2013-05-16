@@ -62,7 +62,7 @@ class DatashareController(BaseController):
     @jsonify
     def leave(cls, slug, datashare_id):
         game = get_game_by_slug(slug)
-        datashare = DataShareList.get(game).leave_datashare(get_current_user(), datashare_id)
+        DataShareList.get(game).leave_datashare(get_current_user(), datashare_id)
         return {'ok': True}
 
     @classmethod

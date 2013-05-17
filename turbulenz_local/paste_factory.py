@@ -101,7 +101,7 @@ def run(wsgi_app, global_conf,
         handlers.append(('/raw-response/(.*)',
                          ResponseFromFileHandler, dict(path=raw_response_dir)))
 
-    handlers.append(('/local/v1/save/(\w+)/(.*)', SaveFileHandler))
+    handlers.append(('/local/v1/save/([^/]+)/(.*)', SaveFileHandler))
 
     handlers.append(('.*', FallbackHandler, dict(fallback=wsgi_app)))
 

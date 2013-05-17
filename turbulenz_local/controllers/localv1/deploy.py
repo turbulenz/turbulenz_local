@@ -117,7 +117,7 @@ class DeployController(BaseController):
 
 
     @classmethod
-    def _get_projects_for_upload(cls, hub_headers, user, rememberme=False):
+    def _get_projects_for_upload(cls, hub_headers, username, rememberme=False):
 
         try:
             r = cls.hub_pool.request('POST',
@@ -144,7 +144,7 @@ class DeployController(BaseController):
         return {
             'ok': True,
             'cookie': hub_headers.get('Cookie') if rememberme else None,
-            'user': user,
+            'user': username,
             # pylint: disable=E1103
             'projects': json_loads(r.data).get('projects', [])
             # pylint: enable=E1103
@@ -169,8 +169,9 @@ class DeployController(BaseController):
 
         form = request.params
         try:
+            login_name = form['login']
             credentials = {
-                'login': form['login'],
+                'login': login_name,
                 'password': form['password'],
                 'source': '/local'
             }
@@ -203,21 +204,8 @@ class DeployController(BaseController):
         # pylint: enable=E1103
 
         hub_headers = {'Cookie': cookie}
-        try:
-            r = hub_pool.request('POST',
-                                 '/dynamic/user',
-                                 headers=hub_headers,
-                                 redirect=False)
-        except (HTTPError, SSLError) as e:
-            LOG.error(e)
-            response.status_int = 500
-            return {'ok': False, 'msg': str(e)}
 
-        if r.status != 200:
-            response.status_int = 500
-            return {'ok': False, 'msg': 'Wrong Hub answer.'}
-
-        return cls._get_projects_for_upload(hub_headers, login_info, form.get('rememberme'))
+        return cls._get_projects_for_upload(hub_headers, login_name, form.get('rememberme'))
     # pylint: enable=R0911
 
 
@@ -246,6 +234,10 @@ class DeployController(BaseController):
                                  retries=1,
                                  redirect=False
             )
+            # pylint: disable=E1103
+            username = json_loads(r.data).get('username')
+            # pylint: enable=E1103
+
 
         except (HTTPError, SSLError) as e:
             LOG.error(e)
@@ -256,7 +248,7 @@ class DeployController(BaseController):
             response.status_int = 401
             return {'ok': False, 'msg': 'Wrong user login information.'}
 
-        return cls._get_projects_for_upload(hub_headers, json_loads(r.data), True)
+        return cls._get_projects_for_upload(hub_headers, username, True)
     # pylint: enable=R0911
 
 

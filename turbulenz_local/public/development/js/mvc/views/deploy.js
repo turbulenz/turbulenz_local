@@ -658,6 +658,8 @@ var LocalDeployView = Backbone.View.extend({
                         $.cookie(rememberMeCookie, false);
                         $.cookie(hubCookie, null);
                     });
+
+            $('#hub_username').text(args.user);
         }
 
 

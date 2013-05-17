@@ -12,8 +12,8 @@
 var LocalDeployView = Backbone.View.extend({
     el: 'body',
 
-    initialize: function ()
-    {
+    initialize: function () {
+
         this.app = this.options.app;
         this.login_template = Templates.local_deploy_login_template;
         this.select_template = Templates.local_deploy_select_template;
@@ -22,20 +22,25 @@ var LocalDeployView = Backbone.View.extend({
         _.bindAll(this, 'render', 'initialiseDeployForms');
         /*jshint nomen: true*/
 
-        this.app.bind('deploy:set', this.setDialogs);
-        this.app.bind('deploy:initialise', this.initialiseDeployForms);
+        this.app
+            .bind('deploy:set', this.setDialogs)
+            .bind('deploy:initialise', this.initialiseDeployForms);
+
         return this;
     },
 
-    render: function (/* slug */)
-    {
-        $(this.el).jqoteapp(this.login_template);
-        $(this.el).jqoteapp(this.select_template);
-        $(this.el).jqoteapp(this.upload_template);
+    render: function (/* slug */) {
+
+        $(this.el)
+            .jqoteapp(this.login_template)
+            .jqoteapp(this.select_template)
+            .jqoteapp(this.upload_template);
+
         return this;
     },
 
     setDialogs: function () {
+
         $('#deploy_login_dialog_id').dialog({
             autoOpen: false,
             height: 250,
@@ -70,8 +75,8 @@ var LocalDeployView = Backbone.View.extend({
         $('#deploy_upload_bar_id').progressbar({value: 0});
     },
 
-    initialiseDeployForms: function (slug)
-    {
+    initialiseDeployForms: function (slug) {
+
         var rememberMeCookie = 'rememberme',
             hubCookie = 'hubcookie',
             router = this.app.router;
@@ -456,71 +461,20 @@ var LocalDeployView = Backbone.View.extend({
         }
 
 
-        function doSelect()
-        {
-            var correct = true,
-                deployInfo = {},
-                createSelectProjectInput = $('#deploy_select_project_id'),
-                createSelectVersionInput = $('#deploy_select_version_id'),
-                createNewVersionNumberInput = $('#deploy_new_version_number_id'),
-                createNewVersionNameInput = $('#deploy_new_version_name_id'),
-                createSelectProjectVal = createSelectProjectInput.val(),
-                createSelectVersionVal = createSelectVersionInput.val(),
-                createNewVersionNumberVal = $.trim(createNewVersionNumberInput.val()),
-                createNewVersionNameVal = $.trim(createNewVersionNameInput.val());
-
-            createNewVersionNumberInput.removeClass('ui-state-error');
-            createNewVersionNameInput.removeClass('ui-state-error');
-
-            if (createNewVersionNumberVal)
-            {
-                if (!slugPattern.test(createNewVersionNumberVal))
-                {
-                    createNewVersionNumberInput.addClass('ui-state-error');
-                    correct = false;
-                }
-                else
-                {
-                    deployInfo.version = createNewVersionNumberVal;
-                    deployInfo.versiontitle = createNewVersionNameVal;
-                }
-            }
-            else if (!createSelectVersionVal)
-            {
-                createNewVersionNumberInput.addClass('ui-state-error');
-                correct = false;
-            }
-            else
-            {
-                deployInfo.version = createSelectVersionVal;
-            }
-
-            if (correct)
-            {
-                deployInfo.project = createSelectProjectVal;
-                deployInfo.cookie = $.cookie(hubCookie);
-                deployInfo.local = slug;
-
-                deployUploadDialog.dialog('option', 'title', 'Deploying ' + slug + ' to ' + deployInfo.version);
-
-                startDeploy(deployInfo);
-            }
-
-            return false;
-        }
-
-
         function onLogin(args)
         {
             var projects = args.projects,
                 numProjects = (projects ? projects.length : 0),
-                createNewVersionNumberInput = $('#deploy_new_version_number_id'),
-                createSelectProjectInput = $('#deploy_select_project_id'),
-                projectOptions = createSelectProjectInput[0].options,
-                createSelectVersionInput = $('#deploy_select_version_id'),
-                versionOptions = createSelectVersionInput[0].options;
+                selectedProject = null,
 
-            $('body').css('cursor', 'auto');
+                $deployNewVersionDiv = $('#deploy_new_version'),
+                $createNewVersionNumberInput = $('#deploy_new_version_number_id'),
+                $versionNameInput = $('#deploy_new_version_name_id'),
+                $selectProjectInput = $('#deploy_select_project_id'),
+                $selectVersionInput = $('#deploy_select_version_id'),
+
+                projectOptions = $selectProjectInput[0].options,
+                versionOptions = $selectVersionInput[0].options;
 
             if (numProjects < 1)
             {
@@ -556,7 +510,7 @@ var LocalDeployView = Backbone.View.extend({
                 projectOptions[projectOptions.length] = option;
                 if (p === 0)
                 {
-                    createSelectVersionInput.val(project.slug);
+                    $selectVersionInput.val(project.slug);
                 }
             }
 
@@ -588,25 +542,30 @@ var LocalDeployView = Backbone.View.extend({
 
                 versionOptions.length = 0;
 
-                var p = createSelectProjectInput.find('option:selected').index();
-                var project = projects[p];
-                var versions = project.versions;
-                var numVersions, version, versionName, v;
+                var p = $selectProjectInput.find('option:selected').index();
+                selectedProject = projects[p];
 
-                if (versions) {
+                var versions = selectedProject.versions,
+                    numVersions, version, versionName, v;
+
+                if (versions)
+                {
                     numVersions = versions.length;
-                    if (1 < numVersions) {
+                    if (1 < numVersions)
+                    {
                         versions.sort(sortVersions);
                     }
-                    for (v = 0; v < numVersions; v += 1) {
+                    for (v = 0; v < numVersions; v += 1)
+                    {
                         version = versions[v];
                         versionName = version.version;
-                        createSelectVersionInput.append($('<option></option>')
-                                                            .attr('value', versionName)
-                                                            .text(versionName));
+                        $selectVersionInput.append($('<option></option>')
+                            .attr('value', versionName)
+                            .attr('title', version.title || '')
+                            .text(versionName));
                     }
                 }
-                var locked_versions = project.locked_versions;
+                var locked_versions = selectedProject.locked_versions;
                 if (locked_versions) {
                     numVersions = locked_versions.length;
                     if (1 < numVersions) {
@@ -615,49 +574,118 @@ var LocalDeployView = Backbone.View.extend({
                     for (v = 0; v < numVersions; v += 1) {
                         version = locked_versions[v];
                         versionName = version.version;
-                        createSelectVersionInput.append($('<option></option>')
-                                                            .attr('disabled', 'disabled')
-                                                            .attr('value', versionName)
-                                                            .text(versionName + ' (locked)'));
+                        $selectVersionInput.append($('<option></option>')
+                            .attr('disabled', 'disabled')
+                            .attr('value', versionName)
+                            .text(versionName + ' (locked)'));
                     }
                 }
-                if (!versions || versions.length === 0) {
-                    createSelectVersionInput.prepend($('<option></option>')
-                                                         .attr('disabled', 'disabled')
-                                                         .attr('value', '')
-                                                         .text('No Writable Versions'));
-                }
+                $selectVersionInput.prepend($('<option></option>')
+                    .attr('value', '')
+                    .text('Create new version'));
             }
 
-            function versionNumberChanged()
+            function versionNumberSelected()
             {
-                var createNewVersionNumberVal = $.trim(createNewVersionNumberInput.val());
-                if (createNewVersionNumberVal)
+                var $selectedVersion = $selectVersionInput.find('option:selected');
+                if ($selectedVersion.val())
                 {
-                    createSelectVersionInput.attr('disabled', true);
+                    $deployNewVersionDiv.css({'opacity': '0.5'});
+                    $createNewVersionNumberInput
+                        .val('')
+                        .attr('disabled', true);
+                    $versionNameInput
+                        .val($selectedVersion.attr('title'))
+                        .attr('disabled', true);
                 }
                 else
                 {
-                    createSelectVersionInput.removeAttr('disabled');
+                    $deployNewVersionDiv.css({'opacity': '1'});
+                    $createNewVersionNumberInput
+                        .val('')
+                        .removeAttr('disabled');
+                    $versionNameInput
+                        .val('')
+                        .removeAttr('disabled');
                 }
             }
 
             projectChanged();
+            versionNumberSelected();
 
-            createSelectProjectInput.unbind().change(projectChanged);
-            createNewVersionNumberInput.unbind().change(versionNumberChanged);
+            $selectProjectInput.unbind().change(projectChanged);
+            $selectVersionInput.unbind().change(versionNumberSelected);
             deploySelectDialog.dialog('open');
 
-            $('#deploy_select_form_id')
-                .unbind()
-                .submit(doSelect)
-                .find('[name="logout"]')
-                    .unbind()
-                    .click(function () {
-                        deploySelectDialog.dialog('close');
-                        $.cookie(rememberMeCookie, false);
-                        $.cookie(hubCookie, null);
-                    });
+            $('#deploy_select_form_id').unbind().submit(function (event) {
+                event.preventDefault();
+
+                $createNewVersionNumberInput.removeClass('ui-state-error');
+                $versionNameInput.removeClass('ui-state-error');
+
+                var versionNumber = $.trim($createNewVersionNumberInput.val());
+
+                if (versionNumber)
+                {
+                    if (!slugPattern.test(versionNumber))
+                    {
+                        $createNewVersionNumberInput.addClass('ui-state-error');
+                        return false;
+                    }
+
+                    var versions = selectedProject.locked_versions,
+                        i, l;
+
+                    for (i = 0, l = versions.length; i < l; i += 1)
+                    {
+                        if (versions[i].version === versionNumber)
+                        {
+                            window.alert('The selected version ' + versionNumber + ' already exists on this project and is locked');
+                            return false;
+                        }
+                    }
+
+                    versions = selectedProject.versions;
+                    for (i = 0, l = versions.length; i < l; i += 1)
+                    {
+                        if (versions[i].version === versionNumber && !window.confirm('The selected version ' +
+                                                                                     versionNumber +
+                                                                                     ' already exists on this project.\n' +
+                                                                                     'Do you really want to overwrite it?'))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    versionNumber = $selectVersionInput.val();
+                    if (!versionNumber)
+                    {
+                        $createNewVersionNumberInput.addClass('ui-state-error');
+                        return false;
+                    }
+                }
+
+                deployUploadDialog.dialog('option', 'title', 'Deploying ' + slug + ' to ' + versionNumber);
+
+                startDeploy({
+                    version: versionNumber,
+                    versiontitle: $.trim($versionNameInput.val()),
+                    project: selectedProject.slug,
+                    cookie: $.cookie(hubCookie),
+                    local: slug
+                });
+
+                return false;
+
+            });
+
+            $('#logout_button_id').unbind().click(function () {
+                deploySelectDialog.dialog('close');
+                $.cookie(rememberMeCookie, false);
+                $.cookie(hubCookie, null);
+            });
 
             $('#hub_username').text(args.user);
         }
@@ -665,9 +693,10 @@ var LocalDeployView = Backbone.View.extend({
 
         function manualLogin()
         {
-            var deployLoginDialog = $('#deploy_login_dialog_id').dialog('open');
+            var $deployLoginDialog = $('#deploy_login_dialog_id').dialog('open');
 
-            $('#deploy_login_dialog_id').unbind().submit(function (event) {
+            $deployLoginDialog.unbind().submit(function (event) {
+
                 event.preventDefault();
 
                 var $loginInput = $('#deploy_login_id').removeClass('ui-state-error'),
@@ -714,7 +743,7 @@ var LocalDeployView = Backbone.View.extend({
                                 $.cookie(hubCookie, null);
                             }
                             onLogin(response);
-                            deployLoginDialog.dialog('close');
+                            $deployLoginDialog.dialog('close');
                         },
                         error: function onLoginErrorFn(XMLHttpRequest, textStatus) {
                             if (textStatus === 'timeout')
@@ -728,7 +757,7 @@ var LocalDeployView = Backbone.View.extend({
                             else
                             {
                                 $loginInput.addClass('ui-state-error');
-                                $passwordInput.addClass('ui-state-error').val('');
+                                $passwordInput.addClass('ui-state-error');
                                 $loginError.show();
                             }
                         },

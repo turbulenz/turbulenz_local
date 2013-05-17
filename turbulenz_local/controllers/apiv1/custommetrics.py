@@ -2,10 +2,6 @@
 
 from simplejson import loads
 
-# pylint: disable=F0401
-from pylons import response
-# pylint: enable=F0401
-
 from turbulenz_local.lib.exceptions import ApiException, BadRequest
 from turbulenz_local.lib.servicestatus import ServiceStatus
 from turbulenz_local.decorators import secure_post

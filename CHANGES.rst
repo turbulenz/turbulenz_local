@@ -11,6 +11,9 @@ Turbulenz Local Development Server
 -------
 
 2013-05-17
+  - Add support to the customevents api for sending batches of events to minimize http requests
+
+2013-05-17
   - Update the routing for the save file handler which was not allowing saves when slugs contained non ascii
     characters
 

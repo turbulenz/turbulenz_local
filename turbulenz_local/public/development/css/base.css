@@ -36,7 +36,7 @@ a {
     margin: 0 auto;
     overflow: hidden;
     width: 960px;
-    height: 94px;
+    padding: 40px 0 30px 0;
 }
 
 #logo {
@@ -45,7 +45,18 @@ a {
     height: 23px;
     text-indent: -999em;
     width: 202px;
-    margin-top: 40px;
+}
+
+#local-login {
+    float: right;
+}
+
+#local-login .local-login-input {
+    margin: 0 5px 0 10px;
+}
+
+#local-login .local-login-text {
+    color: #808080;;
 }
 
 #content {

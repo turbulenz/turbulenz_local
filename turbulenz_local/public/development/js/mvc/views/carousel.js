@@ -73,16 +73,15 @@ var CarouselView = Backbone.View.extend({
     render: function renderFn()
     {
         $(this.el).jqotesub(this.template);
-        var localLoginInput = $('#local-login').find('.local-login-input');
-        var localLoginButton = $('#local-login').find('.local-login-button');
-        var localLoginText = $('#local-login').find('.local-login-text');
+        var $login = $('#local-login');
+
         if (this.username)
         {
-            localLoginText.text('Currently logged in as ' + this.username);
+            $login.find('.local-login-text').text('Currently logged in as ' + this.username);
         }
 
-        localLoginButton.on('click', this.onLogin);
-        localLoginInput.on('keyup', this.onLoginKeyUp);
+        $login.find('.local-login-button').on('click', this.onLogin);
+        $login.find('.local-login-input').on('keyup', this.onLoginKeyUp);
 
         var thisView = this;
         var url = this.router.get('games-list');
@@ -111,8 +110,9 @@ var CarouselView = Backbone.View.extend({
 
     onLogin: function onLoginFn()
     {
-        var localLoginInput = $('#local-login').find('.local-login-input');
-        var localLoginText = $('#local-login').find('.local-login-text');
+        var $login = $('#local-login');
+        var localLoginInput = $login.find('.local-login-input');
+
         var newUsername = localLoginInput.val();
         var that = this;
         $.ajax({
@@ -123,7 +123,7 @@ var CarouselView = Backbone.View.extend({
             async: false,
             type: 'POST',
             success: function successFn(/* data */) {
-                localLoginText.text('Currently logged in as ' + newUsername);
+                $login.find('.local-login-text').text('Currently logged in as ' + newUsername);
                 that.username = newUsername;
             },
             error: function errorFn(jqxhr, status /*, errorThrown */)

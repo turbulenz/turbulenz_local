@@ -16,6 +16,7 @@ except ImportError:
     exit(1)
 
 from turbulenz_local.lib.compact import compact
+from turbulenz_local import __version__ as local_version
 
 TURBULENZ_LOCAL = os.path.dirname(__file__)
 DEV_INI = os.path.join(TURBULENZ_LOCAL, 'config', 'development.ini')
@@ -214,6 +215,7 @@ def main():
     parser.add_argument('--development', action='store_true', help="Run the local development server in dev mode")
     parser.add_argument('--compile', action='store_true', help="Compile development scripts for release mode")
     parser.add_argument('--clean', action='store_true', help="Clean built development scripts")
+    parser.add_argument('--version', action='store_true')
     parser.add_argument('--uglifyjs', help="Set the path to uglifyjs")
     parser.add_argument('--yuicompressor', help="Set the path to yuicompressor jar")
     parser.add_argument('--init', action='store_true', help="Initialize the local server folder with default settings")
@@ -221,6 +223,10 @@ def main():
     parser.add_argument('--home', default='devserver', help="Set the home folder for the local development server")
 
     args = parser.parse_args(sys.argv[1:])
+
+    if args.version:
+        print local_version
+        exit(0)
 
     if not (args.init or args.launch or args.clean or args.compile):
         parser.print_help()

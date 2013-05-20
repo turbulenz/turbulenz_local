@@ -47,8 +47,8 @@ var CarouselView = Backbone.View.extend({
                 url: '/local/v1/user/get',
                 async: false,
                 type: 'GET',
-                success: function successFn(data) {
-                    that.username = data.username;
+                success: function successFn(jsonData) {
+                    that.username = jsonData.data.username;
                     var localLoginDiv = $('#local-login');
                     if (localLoginDiv)
                     {

@@ -4,7 +4,7 @@ import os
 import re
 import platform
 
-from os.path import isabs, realpath, normpath, dirname, join, isdir
+from os.path import isabs, realpath, normpath, dirname, join, isdir, exists
 from errno import EEXIST
 from io import BytesIO
 from gzip import GzipFile
@@ -163,7 +163,10 @@ def get_7zip_path():
         path_7zip = join(sdk_root, 'external/7-Zip/bin/macosx/7za')
     else:
         raise Exception('Unknown OS!')
-    return path_7zip
+    if exists(path_7zip):
+        return path_7zip
+    else:
+        return None
 
 def get_remote_addr(request, keep_forwarding_chain=False):
     forward_chain = request.headers.get('X-Forwarded-For')

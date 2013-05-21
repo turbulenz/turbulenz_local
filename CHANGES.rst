@@ -10,22 +10,23 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
-2013-05-17
-  - Add support to the customevents api for sending batches of events to minimize http requests
+2013-05-21
+  - Fixed deployment of games to the Turbulenz Hub when 7-zip binaries are not installed
 
-2013-05-17
-  - Update the routing for the save file handler which was not allowing saves when slugs contained non ascii
-    characters
+.. _version-1.0.1:
 
-2013-05-16
-  - Fix the --clean command to match the documentation
+1.0.1
+-----
 
-2013-05-14
-  - Support new format of cached upload hashes from the Turbulenz Hub. This avoids the issue where files with matching
-    content are uploaded with different filenames
+:release-date: 2013-05-20
 
-2013-05-08
-  - Support saving of binary data in the local server save api
+- Add support to the customevents api for sending batches of events to minimize http requests
+- Update the routing for the save file handler which was not allowing saves when slugs contained non ascii
+  characters
+- Fix the --clean command to match the documentation
+- Support new format of cached upload hashes from the Turbulenz Hub. This avoids the issue where files with matching
+  content are uploaded with different filenames
+- Support saving of binary data in the local server save api
 
 
 .. _version-1.0:

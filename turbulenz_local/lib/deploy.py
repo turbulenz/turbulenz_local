@@ -6,7 +6,7 @@ from urllib3.exceptions import HTTPError, SSLError
 from simplejson import dump as json_dump, load as json_load, loads as json_loads, JSONDecodeError
 
 from os import stat, sep, error, rename, remove, makedirs, utime, access, R_OK, walk
-from os.path import join, basename, abspath, splitext, sep, isdir
+from os.path import join, basename, abspath, splitext, sep, isdir, dirname
 from errno import EEXIST
 from stat import S_ISREG
 from glob import iglob
@@ -297,27 +297,56 @@ class Deployment:
                     except error:
                         do_compress = True
                     if do_compress:
-                        if ultra:
-                            process = Popen([compressor_path,
-                                             'a', '-tgzip',
-                                             '-mx=9', '-mfb=257', '-mpass=15',
-                                             deploy_file_name, abs_path],
-                                            stdout=PIPE, stderr=PIPE)
-                        else:
-                            process = Popen([compressor_path,
-                                             'a', '-tgzip',
-                                             deploy_file_name, abs_path],
-                                            stdout=PIPE, stderr=PIPE)
-                        update_meta_data = True
+                        if compressor_path:
+                            if ultra:
+                                process = Popen([compressor_path,
+                                                 'a', '-tgzip',
+                                                 '-mx=9', '-mfb=257', '-mpass=15',
+                                                 deploy_file_name, abs_path],
+                                                stdout=PIPE, stderr=PIPE)
+                            else:
+                                process = Popen([compressor_path,
+                                                 'a', '-tgzip',
+                                                 deploy_file_name, abs_path],
+                                                stdout=PIPE, stderr=PIPE)
+                            update_meta_data = True
 
-                        if calculate_hash:
-                            calculate_hash = False
-                            file_hash = hash_file_sha256(abs_path)
-                        output, _ = process.communicate()
-                        if process.poll():
-                            self.stop('Error compressing file "%s": "%s".' % (relative_path, str(output)))
-                            continue
+                            if calculate_hash:
+                                calculate_hash = False
+                                file_hash = hash_file_sha256(abs_path)
+                            output, _ = process.communicate()
+                            if process.poll():
+                                self.stop('Error compressing file "%s": "%s".' % (relative_path, str(output)))
+                                continue
+                            else:
+                                try:
+                                    if stat(deploy_file_name).st_size >= file_size:
+                                        deploy_file_name = abs_path
+                                except error as e:
+                                    self.stop('Error opening compressed file "%s": "%s".' % (deploy_file_name, str(e)))
+                                    continue
+                                file_md5 = hash_file_md5(deploy_file_name)
                         else:
+                            # Compress with Python gzip, will warn that 7zip is preferred
+                            cache_dir = dirname(deploy_file_name)
+                            try:
+                                makedirs(cache_dir)
+                            except OSError as e:
+                                if e.errno != EEXIST:
+                                    self.stop('Error compressing file "%s": "%s".' % (relative_path, str(e)))
+                                    continue
+                            try:
+                                with GzipFile(deploy_file_name, mode='wb', compresslevel=9) as gzipfile:
+                                    with open(abs_path, 'rb') as f:
+                                        gzipfile.write(f.read())
+                            except IOError as e:
+                                self.stop('Error compressing file "%s": "%s".' % (relative_path, str(e)))
+                                continue
+                            LOG.warning('Using Python for GZip compression, install 7zip for optimal performance')
+                            update_meta_data = True
+                            if calculate_hash:
+                                calculate_hash = False
+                                file_hash = hash_file_sha256(abs_path)
                             try:
                                 if stat(deploy_file_name).st_size >= file_size:
                                     deploy_file_name = abs_path

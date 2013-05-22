@@ -10,8 +10,14 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
-2013-05-21
-  - Fixed deployment of games to the Turbulenz Hub when 7-zip binaries are not installed
+.. _version-1.0.2:
+
+1.0.2
+-----
+
+:release-date: 2013-05-21
+
+- Fixed deployment of games to the Turbulenz Hub when 7-zip binaries are not installed
 
 .. _version-1.0.1:
 

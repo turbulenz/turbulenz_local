@@ -225,9 +225,8 @@ class DeployController(BaseController):
 
         cls.hub_pool = hub_pool
 
-        hub_headers = {'Cookie': request.params.get('cookie', '')}
-
         try:
+            hub_headers = {'Cookie': request.params['cookie']}
             r = hub_pool.request('POST',
                                  '/dynamic/user',
                                  headers=hub_headers,
@@ -238,13 +237,16 @@ class DeployController(BaseController):
             username = json_loads(r.data).get('username')
             # pylint: enable=E1103
 
+            status = r.status
 
         except (HTTPError, SSLError) as e:
             LOG.error(e)
             response.status_int = 500
             return {'ok': False, 'msg': str(e)}
+        except KeyError:
+            status = 400
 
-        if r.status != 200:
+        if status != 200:
             response.status_int = 401
             return {'ok': False, 'msg': 'Wrong user login information.'}
 

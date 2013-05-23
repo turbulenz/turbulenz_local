@@ -77,13 +77,13 @@ var LocalDeployView = Backbone.View.extend({
 
     initialiseDeployForms: function (slug) {
 
-        var rememberMeCookie = 'rememberme',
+        var rememberMeCookie = 'deployrememberme',
             hubCookie = 'hubcookie',
             router = this.app.router;
 
-        if (!$.cookie(rememberMeCookie))
+        if (!localStorage.getItem(rememberMeCookie))
         {
-            $.cookie(hubCookie, null);
+            localStorage.removeItem(hubCookie);
         }
 
         var deploy_start_url = router.get('deploy-start'),
@@ -679,7 +679,7 @@ var LocalDeployView = Backbone.View.extend({
                     version: versionNumber,
                     versiontitle: $.trim($versionNameInput.val()),
                     project: selectedProject.slug,
-                    cookie: $.cookie(hubCookie),
+                    cookie: localStorage.getItem(hubCookie),
                     local: slug
                 });
 
@@ -689,8 +689,8 @@ var LocalDeployView = Backbone.View.extend({
 
             $('#logout_button_id').unbind().click(function () {
                 deploySelectDialog.dialog('close');
-                $.cookie(rememberMeCookie, null);
-                $.cookie(hubCookie, null);
+                localStorage.removeItem(rememberMeCookie);
+                localStorage.removeItem(hubCookie);
             });
 
             $('#hub_username').text(args.user);
@@ -738,15 +738,14 @@ var LocalDeployView = Backbone.View.extend({
                         },
                         success: function (response) {
 
+                            localStorage.setItem(hubCookie, response.cookie);
                             if (rememberme)
                             {
-                                $.cookie(rememberMeCookie, true);
-                                $.cookie(hubCookie, response.cookie, {expires: 7});
+                                localStorage.setItem(rememberMeCookie, true);
                             }
                             else
                             {
-                                $.cookie(rememberMeCookie, null);
-                                $.cookie(hubCookie, response.cookie, {expires: 1.0 / 24.0});
+                                localStorage.removeItem(rememberMeCookie);
                             }
                             onLogin(response);
                             $deployLoginDialog.dialog('close');
@@ -788,7 +787,7 @@ var LocalDeployView = Backbone.View.extend({
                 type: 'POST',
                 url: router.get('deploy-try-login'),
                 data: {
-                    cookie: $.cookie(hubCookie)
+                    cookie: localStorage.getItem(hubCookie)
                 },
                 success: onLogin,
                 error: function (XMLHttpRequest, textStatus) {
@@ -803,7 +802,7 @@ var LocalDeployView = Backbone.View.extend({
                     }
                     else
                     {
-                        $.cookie(rememberMeCookie, null);
+                        localStorage.removeItem(rememberMeCookie);
                         manualLogin();
                     }
                 },
@@ -813,7 +812,7 @@ var LocalDeployView = Backbone.View.extend({
             });
         }
 
-        if ($.cookie(rememberMeCookie) && $.cookie(hubCookie))
+        if (localStorage.getItem(rememberMeCookie))
         {
             autoLogin();
         }

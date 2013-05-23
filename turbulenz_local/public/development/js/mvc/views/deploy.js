@@ -80,6 +80,12 @@ var LocalDeployView = Backbone.View.extend({
         var rememberMeCookie = 'rememberme',
             hubCookie = 'hubcookie',
             router = this.app.router;
+
+        if (!$.cookie(rememberMeCookie))
+        {
+            $.cookie(hubCookie, null);
+        }
+
         var deploy_start_url = router.get('deploy-start'),
             deploy_progress_url = router.get('deploy-progress'),
             deploy_postupload_progress_url = router.get('deploy-postupload-progress'),
@@ -683,7 +689,7 @@ var LocalDeployView = Backbone.View.extend({
 
             $('#logout_button_id').unbind().click(function () {
                 deploySelectDialog.dialog('close');
-                $.cookie(rememberMeCookie, false);
+                $.cookie(rememberMeCookie, null);
                 $.cookie(hubCookie, null);
             });
 
@@ -739,8 +745,8 @@ var LocalDeployView = Backbone.View.extend({
                             }
                             else
                             {
-                                $.cookie(rememberMeCookie, false);
-                                $.cookie(hubCookie, null);
+                                $.cookie(rememberMeCookie, null);
+                                $.cookie(hubCookie, response.cookie, {expires: 1.0 / 24.0});
                             }
                             onLogin(response);
                             $deployLoginDialog.dialog('close');
@@ -797,7 +803,7 @@ var LocalDeployView = Backbone.View.extend({
                     }
                     else
                     {
-                        $.cookie(rememberMeCookie, false);
+                        $.cookie(rememberMeCookie, null);
                         manualLogin();
                     }
                 },

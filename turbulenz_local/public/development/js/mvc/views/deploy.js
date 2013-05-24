@@ -482,9 +482,18 @@ var LocalDeployView = Backbone.View.extend({
                 projectOptions = $selectProjectInput[0].options,
                 versionOptions = $selectVersionInput[0].options;
 
+            function logout()
+            {
+                deploySelectDialog.dialog('close');
+                localStorage.removeItem(rememberMeCookie);
+                localStorage.removeItem(hubCookie);
+            }
+
+
             if (numProjects < 1)
             {
                 window.alert('This user has no projects on Hub that you can deploy to.');
+                logout();
                 return;
             }
 
@@ -687,11 +696,7 @@ var LocalDeployView = Backbone.View.extend({
 
             });
 
-            $('#logout_button_id').unbind().click(function () {
-                deploySelectDialog.dialog('close');
-                localStorage.removeItem(rememberMeCookie);
-                localStorage.removeItem(hubCookie);
-            });
+            $('#logout_button_id').unbind().click(logout);
 
             $('#hub_username').text(args.user);
         }

@@ -239,15 +239,16 @@
     <div id="deploy_login_dialog_id" title="Hub Log In" style="display:none;">
         <form id="deploy_login_form_id">
             <fieldset class="deploy-fieldset">
-                <label for="login" class="deploy-label">Username or Email</label>
-                <input type="text" name="login" id="deploy_login_id" class="deploy-input ui-widget-content ui-corner-all" />
-                <label for="password" class="deploy-label">Password</label>
-                <input type="password" name="password" id="deploy_password_id" value="" class="deploy-input ui-widget-content ui-corner-all" autocomplete="on" />
+                <label for="deploy_login_id" class="deploy-label">Username or Email</label>
+                <input type="text" name="login" id="deploy_login_id" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
+                <label for="deploy_password_id" class="deploy-label">Password</label>
+                <input type="password" name="password" id="deploy_password_id" value="" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
             </fieldset>
             <fieldset>
+                <div id="login_error" style="color: red; display: none">Username/Password incorrect</div>
                 <span style="float: right">
                     <input type="checkbox" name="rememberme"  id="rememberme"/>
-                    <label for="rememberme">Remember me for this session</label>
+                    <label for="rememberme">Remember me</label>
                 </span>
                 <input class="button" type="submit" name="submit" value="login"/>
             </fieldset>
@@ -261,21 +262,27 @@
     <div id="deploy_select_dialog_id" title="Select Hub Project Version" style="display:none;">
         <form id="deploy_select_form_id">
             <fieldset class="deploy-fieldset">
-                <label for="project" class="deploy-label">Project</label>
+                <label for="deploy_select_project_id" class="deploy-label">Project</label>
                 <select id="deploy_select_project_id" name="project" class="deploy-select ui-widget-content ui-corner-all"></select>
                 <div style="float:left; width:45%;">
-                    <label for="newversionnumber" class="deploy-label">New Version Number</label>
-                    <input id="deploy_new_version_number_id" type="text" name="newversionnumber" class="deploy-input ui-widget-content ui-corner-all" />
-                </div>
-                <div style="float:right; width:45%;">
-                    <label for="selectversion" class="deploy-label">Select Version</label>
+                    <label for="deploy_select_version_id" class="deploy-label">Select Version</label>
                     <select id="deploy_select_version_id" name="selectversion" class="deploy-select ui-widget-content ui-corner-all"></select>
                 </div>
-                <label for="newversionname" class="deploy-label">New Version Name</label>
-                <input id="deploy_new_version_name_id" type="text" name="newversionname" class="deploy-input ui-widget-content ui-corner-all" />
+                <div id="deploy_new_version" style="float:right; width:45%;">
+                    <label for="deploy_new_version_number_id" class="deploy-label">New Version Number</label>
+                    <input id="deploy_new_version_number_id" type="text" name="newversionnumber" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
+                </div>
+                <label for="deploy_new_version_name_id" class="deploy-label">New Version Name</label>
+                <input id="deploy_new_version_name_id" type="text" name="newversionname" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
             </fieldset>
             <p class="deploy-validateTips">Only alphanumerical characters for new version numbers.</p>
-            <input class="button deploy-label" type="submit" name="submit" value="start"/>
+            <input class="button deploy-label" type="submit" name="submit" value="start" />
+
+            <input class="button" id="logout_button_id" type="button" name="logout" value="logout" style="float: right;" />
+            <span style="float: right; padding: 5px 15px;">
+                Logged in as:&nbsp;<b id="hub_username"></b>
+            </span>
+
         </form>
     </div>
 ]]>

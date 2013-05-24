@@ -271,7 +271,7 @@ var CarouselView = Backbone.View.extend({
 
                     that.app.trigger('deploy:set');
                     that.app.trigger('deploy:initialise', slug);
-                    $('#deploy_login_dialog_id').dialog('open');
+//                    $('#deploy_login_dialog_id').dialog('open');
                     return true;
                 },
 

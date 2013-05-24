@@ -11,6 +11,8 @@ from pylons import config
 from routes import Mapper
 # pylint: enable=F0401
 
+
+# pylint: disable=R0915
 def make_map():
     """Create, configure and return the routes Mapper"""
     router = Mapper(directory=config['pylons.paths']['controllers'])
@@ -60,6 +62,7 @@ def make_map():
 
     with router.submapper(controller="localv1/deploy", path_prefix='/local/v1/deploy') as m:
         m.connect('deploy-login', '/login', action='login')
+        m.connect('deploy-try-login', '/try-login', action='try_login')
         m.connect('deploy-start', '/start', action='start')
         m.connect('deploy-progress', '/progress', action='progress')
         m.connect('deploy-postupload-progress', '/postupload_progress', action='postupload_progress')
@@ -180,6 +183,7 @@ def make_map():
     with router.submapper(controller="apiv1/custommetrics", path_prefix='/api/v1/custommetrics') as m:
         # Custom Metrics
         m.connect("/add-event/{slug:[A-Za-z0-9\-]+}", action="add_event")
+        m.connect("/add-event-batch/{slug:[A-Za-z0-9\-]+}", action="add_event_batch")
 
     with router.submapper(controller="apiv1/store", path_prefix='/api/v1/store') as m:
         # Store Public API
@@ -205,3 +209,6 @@ def make_map():
 
 
     return router
+
+
+# pylint: enable=R0915

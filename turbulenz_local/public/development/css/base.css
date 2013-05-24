@@ -189,7 +189,6 @@ a {
 .deploy-label {
     display: block;
     margin-bottom:5px;
-    float:left;
 }
 
  .deploy-select {
@@ -201,11 +200,10 @@ a {
 }
 
  .deploy-input {
-    display:block;
+    box-sizing: border-box;
     margin-bottom:12px;
     width:100%;
     padding: .4em;
-    float:left;
 }
 
  .deploy-fieldset {
@@ -220,7 +218,7 @@ a {
 
  .deploy-validateTips {
     border: 1px solid transparent;
-    margin-bottom:5px;
+    margin-bottom: 20px;
     padding: 0.3em;
 }
 

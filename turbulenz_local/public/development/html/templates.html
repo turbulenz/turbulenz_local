@@ -264,24 +264,28 @@
             <fieldset class="deploy-fieldset">
                 <label for="deploy_select_project_id" class="deploy-label">Project</label>
                 <select id="deploy_select_project_id" name="project" class="deploy-select ui-widget-content ui-corner-all"></select>
-                <div style="float:left; width:45%;">
+                <div style="float:left; width:60%;">
                     <label for="deploy_select_version_id" class="deploy-label">Select Version</label>
                     <select id="deploy_select_version_id" name="selectversion" class="deploy-select ui-widget-content ui-corner-all"></select>
                 </div>
-                <div id="deploy_new_version" style="float:right; width:45%;">
-                    <label for="deploy_new_version_number_id" class="deploy-label">New Version Number</label>
+                <div class="deploy_new_version" style="float:right; width:35%; margin-left: 5%;">
+                    <label for="deploy_new_version_number_id" class="deploy-label">Version Number</label>
                     <input id="deploy_new_version_number_id" type="text" name="newversionnumber" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
                 </div>
-                <label for="deploy_new_version_name_id" class="deploy-label">New Version Name</label>
-                <input id="deploy_new_version_name_id" type="text" name="newversionname" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
+                <div class="deploy_new_version" style="clear: left;">
+                    <label for="deploy_new_version_name_id" class="deploy-label">Version Name</label>
+                    <input id="deploy_new_version_name_id" type="text" name="newversionname" class="deploy-input ui-widget-content ui-corner-all" placeholder="" />
+                </div>
             </fieldset>
-            <p class="deploy-validateTips">Only alphanumerical characters for new version numbers.</p>
-            <input class="button deploy-label" type="submit" name="submit" value="start" />
+            <fieldset>
+                <p class="deploy-validateTips">Only alphanumerical characters for new version numbers.</p>
+                <input class="button" id="logout_button_id" type="button" name="logout" value="logout" style="float: right;" />
+                <span style="float: right; padding: 5px 15px;">
+                    Logged in as:&nbsp;<b id="hub_username"></b>
+                </span>
+                <input class="button deploy-label" type="submit" name="submit" value="start" />
 
-            <input class="button" id="logout_button_id" type="button" name="logout" value="logout" style="float: right;" />
-            <span style="float: right; padding: 5px 15px;">
-                Logged in as:&nbsp;<b id="hub_username"></b>
-            </span>
+            </fieldset>
 
         </form>
     </div>

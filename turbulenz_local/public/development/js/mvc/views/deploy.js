@@ -473,7 +473,7 @@ var LocalDeployView = Backbone.View.extend({
                 numProjects = (projects ? projects.length : 0),
                 selectedProject = null,
 
-                $deployNewVersionDiv = $('#deploy_new_version'),
+                $deployNewVersionDivs = $('.deploy_new_version'),
                 $createNewVersionNumberInput = $('#deploy_new_version_number_id'),
                 $versionNameInput = $('#deploy_new_version_name_id'),
                 $selectProjectInput = $('#deploy_select_project_id'),
@@ -596,7 +596,7 @@ var LocalDeployView = Backbone.View.extend({
                 var $selectedVersion = $selectVersionInput.find('option:selected');
                 if ($selectedVersion.val())
                 {
-                    $deployNewVersionDiv.css({'opacity': '0.5'});
+                    $deployNewVersionDivs.css({'opacity': '0.5'});
                     $createNewVersionNumberInput
                         .val('')
                         .attr('disabled', true);
@@ -606,7 +606,7 @@ var LocalDeployView = Backbone.View.extend({
                 }
                 else
                 {
-                    $deployNewVersionDiv.css({'opacity': '1'});
+                    $deployNewVersionDivs.css({'opacity': '1'});
                     $createNewVersionNumberInput
                         .val('')
                         .removeAttr('disabled');

@@ -234,8 +234,6 @@ class DataShare(object):
                     raise Forbidden('Forbidden: Key "%s" is read only access (must use set for read only keys)' % key,
                                        {'reason': 'read_only'})
                 owner = key_store['ownedBy']
-                if value == '' and owner != user.username:
-                    raise Forbidden('Forbidden: Only the key owner can delete a key', {'reason': 'unauthorized_delete'})
 
                 # if the key is in the store then check its token
                 if key_store['token'] != token:

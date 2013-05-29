@@ -38,6 +38,7 @@ class UserList(object):
     def _add_user(self, user_info):
         user = User(user_info)
         self.users[user.username.lower()] = user
+        self._write_users()
         return user
 
     def to_dict(self):
@@ -111,14 +112,15 @@ class UserList(object):
             self._write_users()
 
     def get_user(self, username):
-        try:
-            return self.users[username.lower()]
-        except KeyError:
-            LOG.info('No user with username "%s" adding user with defaults' % username)
+        with self.lock:
             try:
-                return self._add_user(username)
-            except ValueError as e:
-                raise BadRequest(str(e))
+                return self.users[username.lower()]
+            except KeyError:
+                LOG.info('No user with username "%s" adding user with defaults' % username)
+                try:
+                    return self._add_user(username)
+                except ValueError as e:
+                    raise BadRequest(str(e))
 
     def get_current_user(self):
         username = request.cookies.get('local')

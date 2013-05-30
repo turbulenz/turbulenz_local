@@ -73,12 +73,13 @@ class UserList(object):
                 f = open(path, 'rt')
                 try:
                     user_info = yaml.load(f)
-                    if 'users' in user_info:
-                        for u in user_info['users']:
-                            user = self._add_user(u)
-                    else:
-                        user = self._add_user(user_info)
-                        do_save = True
+                    if user_info is not None:
+                        if 'users' in user_info:
+                            for u in user_info['users']:
+                                user = self._add_user(u)
+                        else:
+                            user = self._add_user(user_info)
+                            do_save = True
                 finally:
                     f.close()
             except IOError as e:

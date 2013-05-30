@@ -10,6 +10,12 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+2013-05-30
+
+- Added a login panel (no password required) for cookie based logins. This allows testing multiple users on local.
+- Added Data Shares API endpoints.
+- Added Notifications API endpoints.
+
 .. _version-1.0.2:
 
 1.0.2

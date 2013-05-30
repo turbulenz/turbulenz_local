@@ -19,8 +19,11 @@ from turbulenz_local.lib.compact import compact
 from turbulenz_local import __version__ as local_version
 
 TURBULENZ_LOCAL = os.path.dirname(__file__)
+COMMON_INI = os.path.join(TURBULENZ_LOCAL, 'config', 'common.ini')
 DEV_INI = os.path.join(TURBULENZ_LOCAL, 'config', 'development.ini')
 RELEASE_INI = os.path.join(TURBULENZ_LOCAL, 'config', 'release.ini')
+DEFAULT_GAMES = os.path.join(TURBULENZ_LOCAL, 'config', 'defaultgames.yaml')
+
 
 #######################################################################################################################
 
@@ -170,16 +173,41 @@ def command_devserver_html():
 def init_devserver(devserver_folder):
     if not os.path.exists(devserver_folder):
         mkdir(devserver_folder)
-    default_games = os.path.join(TURBULENZ_LOCAL, 'config', 'defaultgames.yaml')
     games_yaml_path = os.path.join(devserver_folder, 'games.yaml')
-    if not os.path.exists(games_yaml_path):
-        cp(default_games, games_yaml_path)
+    common_ini_path = os.path.join(devserver_folder, 'common.ini')
     dev_ini_path = os.path.join(devserver_folder, 'development.ini')
+    release_ini_path = os.path.join(devserver_folder, 'release.ini')
+
+    # We always overwrite the common ini file, but keep silent if it was there already
+    if not os.path.exists(common_ini_path):
+        cp(COMMON_INI, common_ini_path)
+    else:
+        cp(COMMON_INI, common_ini_path, verbose=False)
+
+    # Only copy config where it doesn't exist yet
+    old_ini = None
+    if not os.path.exists(games_yaml_path):
+        cp(DEFAULT_GAMES, games_yaml_path)
     if not os.path.exists(dev_ini_path):
         cp(DEV_INI, dev_ini_path)
-    release_ini_path = os.path.join(devserver_folder, 'release.ini')
+    else:
+        old_ini = dev_ini_path
     if not os.path.exists(release_ini_path):
         cp(RELEASE_INI, release_ini_path)
+    else:
+        old_ini = release_ini_path
+
+    # If there were existing ini files check for the old format, if so overwrite both ini's
+    if old_ini:
+        f = open(old_ini, 'r')
+        old_conf = f.read()
+        f.close()
+        if old_conf.find('config:common.ini') == -1:
+            echo('WARNING: Overwriting legacy format development and release ini files. Existing files renamed to .bak')
+            cp(dev_ini_path, '%s.bak' % dev_ini_path)
+            cp(release_ini_path, '%s.bak' % release_ini_path)
+            cp(DEV_INI, dev_ini_path)
+            cp(RELEASE_INI, release_ini_path)
 
 def command_devserver(args):
     # Devserver requires release Javascript and CSS

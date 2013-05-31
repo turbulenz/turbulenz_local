@@ -31,5 +31,6 @@ class ProfilesController(BaseController):
                         'age': user.age,
                         'language': user.language,
                         'country': user.country,
-                        'avatar': user.avatar}
+                        'avatar': user.avatar,
+                        'guest': user.guest}
         return {'ok': True, 'data': user_profile}

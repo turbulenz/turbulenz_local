@@ -19,13 +19,14 @@ class User(object):
     default_country = 'GB'
     default_language = 'en'
     default_email = None
+    default_guest = False
 
     def __init__(self, user_data, default=False):
         if isinstance(user_data, dict):
             if 'username' in user_data:
-                self.username = user_data['username']
+                self.username = str(user_data['username'])
             elif 'name' in user_data:
-                self.username = user_data['name']
+                self.username = str(user_data['name'])
             else:
                 raise KeyError('username missing')
 
@@ -37,6 +38,7 @@ class User(object):
             self.country = user_data.get('country', self.default_country)
             self.language = user_data.get('language', self.default_language)
             self.email = user_data.get('email', self.default_email)
+            self.guest = user_data.get('guest', self.default_guest)
 
             if 'avatar' in user_data:
                 self.avatar = user_data['avatar']
@@ -47,11 +49,12 @@ class User(object):
             if not self.username_pattern.match(user_data):
                 raise ValueError('Username "%s" is invalid. '
                     'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
-            self.username = user_data
+            self.username = str(user_data)
             self.age = self.default_age
             self.country = self.default_country
             self.language = self.default_language
             self.email = self.default_email
+            self.guest = self.default_guest
             self.avatar = self.get_default_avatar()
 
         self.default = default
@@ -76,5 +79,6 @@ class User(object):
             'language': self.language,
             'avatar': self.avatar,
             'email': self.email,
-            'default': self.default
+            'default': self.default,
+            'guest': self.guest
         }

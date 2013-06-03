@@ -10,8 +10,16 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
-2013-05-30
+.. _version-1.1:
 
+1.1
+-----
+
+:release-date: 2013-06-03
+
+- Updated hub login to support remembering a users login details.
+- Improved project upload dialogs.
+- Moved common settings into a shared ini file between development and release environments.
 - Added a login panel (no password required) for cookie based logins. This allows testing multiple users on local.
 - Added Data Shares API endpoints.
 - Added Notifications API endpoints.

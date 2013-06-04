@@ -763,7 +763,7 @@ class Deployment:
                           'aspectratio': self.aspect_ratio,
                           'numfiles': str(num_files),
                           'numbytes': str(self.num_bytes),
-                          'sdkversion': __version__}
+                          'localversion': __version__}
                 r = self.hub_pool.request('POST',
                                           '/dynamic/upload/begin',
                                            fields=params,
@@ -787,7 +787,7 @@ class Deployment:
                                ('aspectratio', self.aspect_ratio),
                                ('numfiles', num_files),
                                ('numbytes', self.num_bytes),
-                               ('sdkversion', __version__)],
+                               ('localversion', __version__)],
                               boundary)
         except IOError:
             self.stop('Error opening file "%s".' % self.get_meta_data_path())

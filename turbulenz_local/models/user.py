@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2013 Turbulenz Limited
 
 from getpass import getuser as _get_user_name
-from re import compile as re_compile
+from re import compile as re_compile, sub as re_sub
 
 # pylint: disable=F0401
 from pylons import config
@@ -12,9 +12,13 @@ from turbulenz_local.lib.tools import create_id
 
 class User(object):
 
-    username_pattern = re_compile('^[a-z0-9]+[a-z0-9-]*$')
+    username_regex_pattern = '^[A-Za-z0-9]+[A-Za-z0-9-]*$'
+    username_pattern = re_compile(username_regex_pattern)
 
-    default_username = str(_get_user_name())
+    default_username = re_sub('[^A-Za-z0-9-]', '', str('Alfr3d'))
+    if len(default_username) == 0 or default_username[0] == '-':
+        default_username = 'default'
+
     default_age = 18
     default_country = 'GB'
     default_language = 'en'

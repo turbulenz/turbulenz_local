@@ -23,5 +23,5 @@ class UserController(BaseController):
     def get_user(cls):
         username = get_current_user().username
         # 315569260 seconds = 10 years
-        response.set_cookie('local', username.lower(), httponly=False, max_age=315569260)
+        response.set_cookie('local', username, httponly=False, max_age=315569260)
         return {'ok': True, 'data': {'username': username}}

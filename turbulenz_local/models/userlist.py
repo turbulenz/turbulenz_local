@@ -38,7 +38,6 @@ class UserList(object):
     def _add_user(self, user_info):
         user = User(user_info)
         self.users[user.username.lower()] = user
-        self._write_users()
         return user
 
     def to_dict(self):
@@ -119,7 +118,9 @@ class UserList(object):
             except KeyError:
                 LOG.info('No user with username "%s" adding user with defaults' % username)
                 try:
-                    return self._add_user(username)
+                    user = self._add_user(username)
+                    self._write_users()
+                    return user
                 except ValueError as e:
                     raise BadRequest(str(e))
 
@@ -137,6 +138,8 @@ class UserList(object):
             else:
                 try:
                     user = self._add_user(username)
+                    self._write_users()
+                    return user
                 except ValueError as e:
                     raise BadRequest(str(e))
 

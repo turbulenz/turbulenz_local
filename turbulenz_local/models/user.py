@@ -15,7 +15,7 @@ class User(object):
     username_regex_pattern = '^[A-Za-z0-9]+[A-Za-z0-9-]*$'
     username_pattern = re_compile(username_regex_pattern)
 
-    default_username = re_sub('[^A-Za-z0-9-]', '', str('Alfr3d'))
+    default_username = re_sub('[^A-Za-z0-9-]', '', str(_get_user_name()))
     if len(default_username) == 0 or default_username[0] == '-':
         default_username = 'default'
 

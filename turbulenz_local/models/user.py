@@ -15,6 +15,7 @@ class User(object):
     username_regex_pattern = '^[A-Za-z0-9]+[A-Za-z0-9-]*$'
     username_pattern = re_compile(username_regex_pattern)
 
+    # remove any characters that do not match the regex
     default_username = re_sub('[^A-Za-z0-9-]', '', str(_get_user_name()))
     if len(default_username) == 0 or default_username[0] == '-':
         default_username = 'default'
@@ -28,9 +29,9 @@ class User(object):
     def __init__(self, user_data, default=False):
         if isinstance(user_data, dict):
             if 'username' in user_data:
-                self.username = str(user_data['username'])
+                self.username = str(user_data['username']).lower()
             elif 'name' in user_data:
-                self.username = str(user_data['name'])
+                self.username = str(user_data['name']).lower()
             else:
                 raise KeyError('username missing')
 
@@ -53,7 +54,7 @@ class User(object):
             if not self.username_pattern.match(user_data):
                 raise ValueError('Username "%s" is invalid. '
                     'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
-            self.username = str(user_data)
+            self.username = str(user_data).lower()
             self.age = self.default_age
             self.country = self.default_country
             self.language = self.default_language

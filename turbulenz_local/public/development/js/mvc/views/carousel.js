@@ -113,7 +113,7 @@ var CarouselView = Backbone.View.extend({
         var $login = $('#local-login');
         var localLoginInput = $login.find('.local-login-input');
 
-        var newUsername = localLoginInput.val();
+        var newUsername = localLoginInput.val().toLowerCase();
         var that = this;
         $.ajax({
             url: '/local/v1/user/login',

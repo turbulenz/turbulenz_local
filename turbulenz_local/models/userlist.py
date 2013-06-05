@@ -37,7 +37,7 @@ class UserList(object):
 
     def _add_user(self, user_info):
         user = User(user_info)
-        self.users[user.username.lower()] = user
+        self.users[user.username] = user
         return user
 
     def to_dict(self):
@@ -112,13 +112,14 @@ class UserList(object):
             self._write_users()
 
     def get_user(self, username):
+        username_lower = username.lower()
         with self.lock:
             try:
-                return self.users[username.lower()]
+                return self.users[username_lower]
             except KeyError:
                 LOG.info('No user with username "%s" adding user with defaults' % username)
                 try:
-                    user = self._add_user(username)
+                    user = self._add_user(username_lower)
                     self._write_users()
                     return user
                 except ValueError as e:
@@ -127,24 +128,23 @@ class UserList(object):
     def get_current_user(self):
         username = request.cookies.get('local')
         if username:
-            return self.get_user(username.lower())
+            return self.get_user(username)
         else:
             return self.login_user(User.default_username)
 
-    def login_user(self, username):
+    def login_user(self, username_lower):
         with self.lock:
-            if username.lower() in self.users:
-                user = self.users[username.lower()]
+            if username_lower in self.users:
+                user = self.users[username_lower]
             else:
                 try:
-                    user = self._add_user(username)
+                    user = self._add_user(username_lower)
                     self._write_users()
-                    return user
                 except ValueError as e:
                     raise BadRequest(str(e))
 
         # 315569260 seconds = 10 years
-        response.set_cookie('local', username.lower(), httponly=False, max_age=315569260)
+        response.set_cookie('local', username_lower, httponly=False, max_age=315569260)
         return user
 
 

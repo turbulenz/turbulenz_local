@@ -14,7 +14,7 @@ class UserController(BaseController):
     @jsonify
     def login(cls):
         username = request.params.get('username')
-        login_user(str(username))
+        login_user(str(username).lower())
         return {'ok': True}
 
 

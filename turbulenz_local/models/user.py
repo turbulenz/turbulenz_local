@@ -16,8 +16,11 @@ class User(object):
     username_pattern = re_compile(username_regex_pattern)
 
     # remove any characters that do not match the regex
-    default_username = re_sub('[^A-Za-z0-9-]', '', str(_get_user_name()))
-    if len(default_username) == 0 or default_username[0] == '-':
+    try:
+        default_username = re_sub('[^A-Za-z0-9-]', '', str(_get_user_name()))
+        if len(default_username) == 0 or default_username[0] == '-':
+            default_username = 'default'
+    except UnicodeEncodeError:
         default_username = 'default'
 
     default_age = 18
@@ -28,16 +31,20 @@ class User(object):
 
     def __init__(self, user_data, default=False):
         if isinstance(user_data, dict):
-            if 'username' in user_data:
-                self.username = str(user_data['username']).lower()
-            elif 'name' in user_data:
-                self.username = str(user_data['name']).lower()
-            else:
-                raise KeyError('username missing')
+            try:
+                if 'username' in user_data:
+                    self.username = str(user_data['username']).lower()
+                elif 'name' in user_data:
+                    self.username = str(user_data['name']).lower()
+                else:
+                    raise KeyError('username missing')
 
-            if not self.username_pattern.match(self.username):
+                if not self.username_pattern.match(self.username):
+                    raise ValueError('Username "%s" is invalid. '
+                        'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+            except UnicodeEncodeError:
                 raise ValueError('Username "%s" is invalid. '
-                    'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+                        'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
 
             self.age = user_data.get('age', self.default_age)
             self.country = user_data.get('country', self.default_country)
@@ -51,10 +58,16 @@ class User(object):
                 self.avatar = self.get_default_avatar()
 
         else:
-            if not self.username_pattern.match(user_data):
+            try:
+                if not self.username_pattern.match(user_data):
+                    raise ValueError('Username "%s" is invalid. '
+                        'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
+                self.username = str(user_data).lower()
+
+            except UnicodeEncodeError:
                 raise ValueError('Username "%s" is invalid. '
-                    'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
-            self.username = str(user_data).lower()
+                        'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+
             self.age = self.default_age
             self.country = self.default_country
             self.language = self.default_language

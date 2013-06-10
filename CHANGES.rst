@@ -10,10 +10,19 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+.. _version-1.1.1:
+
+1.1.1
+-----
+
+:release-date: 2013-06-10
+
+- Fix issues with non lowercase and non alphanumeric characters in usernames
+
 .. _version-1.1:
 
 1.1
------
+---
 
 :release-date: 2013-06-03
 

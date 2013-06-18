@@ -89,7 +89,7 @@ class StoreItem(object):
 
         if 'icon' in meta_data:
             self.warning('"icon" yaml property has been deprecated please use '
-                         '"icon256", "icon48" or "icon32" for leaderboard key "%s"' % key)
+                         '"icon256", "icon48" or "icon32" for store key "%s"' % key)
 
     def error(self, msg):
         self.errors.append(msg)

@@ -249,6 +249,6 @@ class GamenotificationsController(BaseController):
 
         game = _get_game(slug)
 
-        GameNotificationTaskListManager.cancel_all_pending_notifications(game, _get_user_name())
+        GameNotificationTaskListManager.cancel_all_notifications(game, _get_user_name())
 
         return {'ok': True}

@@ -159,7 +159,7 @@ def _load_tasks(slug, recipient, notification_type):
             with open(file_path, 'rb') as f:
                 json_dict = _json_decoder.decode(f.read())
                 task = GameNotificationTask(**json_dict)
-                task_ids.add(task.id)
+                task_ids.add(task.task_id)
                 tasks.append(task)
                 num_tasks_per_sender[task.sender] += 1
         except (IOError, OSError, TypeError) as e:
@@ -188,7 +188,7 @@ class GameNotificationTask(object):
     }
 
     def __init__(self, slug, task_id, key, sender, recipient, msg, time):
-        self.id = task_id
+        self.task_id = task_id
         self.slug = slug
         self.key = key
         self.sender = sender
@@ -226,7 +226,7 @@ class GameNotificationTask(object):
 
     def get_path(self):
 
-        filename = str(self.id) + '.txt'
+        filename = str(self.task_id) + '.txt'
         return _get_task_path(self.slug, self.recipient, self.notification_type, filename)
 
 
@@ -248,7 +248,7 @@ class GameNotificationTaskList(object):
         delayed = GameNotificationTask.DELAYED
 
         instant_tasks, instant_task_ids, num_instant_tasks_per_sender = \
-            _load_tasks(slug,recipient, GameNotificationTask.INSTANT)
+            _load_tasks(slug, recipient, GameNotificationTask.INSTANT)
 
         delayed_tasks, delayed_task_ids, num_delayed_tasks_per_sender = \
             _load_tasks(slug, recipient, GameNotificationTask.DELAYED)
@@ -291,7 +291,7 @@ class GameNotificationTaskList(object):
                     break
 
             tasks.insert(index, task)
-            self._task_ids[notification_type].add(task.id)
+            self._task_ids[notification_type].add(task.task_id)
             self._num_tasks_per_sender[notification_type][sender] += 1
 
             return True
@@ -322,7 +322,7 @@ class GameNotificationTaskList(object):
         for tasks_by_type in self._tasks.itervalues():
             for task in tasks_by_type:
 
-                if task.id == task_id:
+                if task.task_id == task_id:
                     self.remove_task(task)
                     break
 
@@ -374,7 +374,7 @@ class GameNotificationTaskList(object):
         notification_type = task.notification_type
 
         self._tasks[notification_type].remove(task)
-        self._task_ids[notification_type].remove(task.id)
+        self._task_ids[notification_type].remove(task.task_id)
         self._num_tasks_per_sender[notification_type][task.sender] -= 1
 
         task.remove()

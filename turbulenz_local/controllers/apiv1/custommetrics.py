@@ -128,8 +128,8 @@ class CustommetricsController(BaseController):
             except ValueError:
                 raise BadRequest('Event time offset should be a float')
 
-            if event_time >= 0:
-                raise BadRequest('Event time offsets should be a negative to represent older events')
+            if event_time > 0:
+                raise BadRequest('Event time offsets should be <= 0 to represent older events')
 
         # If reaches this point, assume success
         return  {'ok': True, 'data': {'msg': 'Added %d events ' \

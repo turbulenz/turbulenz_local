@@ -173,6 +173,9 @@ class LeaderboardsController(BaseController):
             if isinf(score):
                 response.status_int = 400
                 return {'ok': False, 'msg': '"score" must be a finite number'}
+            if score < 0:
+                response.status_int = 400
+                return {'ok': False, 'msg': '"score" cannot be a negative number'}
 
             return {'ok': True, 'data': leaderboards.set(key, session.user, score)}
 

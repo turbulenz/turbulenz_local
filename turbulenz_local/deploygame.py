@@ -11,7 +11,7 @@ from urllib3 import connection_from_url
 from urllib3.exceptions import HTTPError, SSLError
 from simplejson import loads as json_loads
 from threading import Thread
-from time import sleep, clock
+from time import sleep, time
 from re import compile as re_compile
 from sys import stdin
 from getpass import getpass, GetPassWarning
@@ -21,7 +21,7 @@ from turbulenz_local.models.game import Game, GameError
 from turbulenz_local.lib.deploy import Deployment
 
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 
 HUB_COOKIE_NAME = 'hub'
@@ -76,6 +76,9 @@ def _create_parser():
 
     parser.add_option("--project", action="store", dest="project", help="project to deploy to")
     parser.add_option("--projectversion", action="store", dest="projectversion", help="project version to deploy to")
+    parser.add_option("--projectversiontitle", action="store", dest="projectversiontitle",
+                      help="project version title, for existing project versions this will overwrite the existing " \
+                           "title if supplied. For new versions this defaults to the project version")
 
     parser.add_option("-c", "--cache", action="store", dest="cache", help="folder to be used for caching")
 
@@ -163,6 +166,14 @@ def _check_options():
         error('Incorrect "projectversion" format!')
         exit(-1)
 
+
+    if options.projectversiontitle is not None:
+        options.projectversiontitle = options.projectversiontitle.decode('UTF-8')
+        if len(options.projectversiontitle) > 48:
+            error('"projectversiontitle" too long (max length 48 characters)!')
+            exit(-1)
+
+
     if options.hub is None:
         options.hub = 'http://127.0.0.1:8080'
 
@@ -224,6 +235,7 @@ def logout(connection, cookie):
 def _check_project(connection, options, cookie):
     project = options.project
     projectversion = options.projectversion
+    projectversion_title = options.projectversiontitle
 
     try:
         r = connection.request('POST',
@@ -244,15 +256,19 @@ def _check_project(connection, options, cookie):
 
     upload_access = False
     new_version = True
-    projectversion_title = projectversion
     for project_info in projects:
         if project_info['slug'] == project:
             upload_access = True
             for version_info in project_info['versions']:
                 if version_info['version'] == projectversion:
                     new_version = False
-                    projectversion_title = version_info['title']
+                    # Use the supplied project version title or the existing one as a fallback
+                    existingversion_title = version_info['title']
+                    projectversion_title = projectversion_title or existingversion_title
                     break
+
+    # If projectversion_title is still unset this is a new version with no supplied title, default to the version
+    projectversion_title = projectversion_title or projectversion
 
     if not upload_access:
         error('Project "%s" does not exist or you are not authorized to upload new versions!' % project)
@@ -263,6 +279,9 @@ def _check_project(connection, options, cookie):
             log('Uploading to new version "%s" on project "%s".' % (projectversion, project))
         else:
             log('Uploading to existing version "%s" on project "%s".' % (projectversion, project))
+            if projectversion_title != existingversion_title:
+                log('Changing project version title from "%s" to "%s".' % (existingversion_title,
+                                                                           projectversion_title))
 
     return (project, projectversion, projectversion_title)
 
@@ -496,14 +515,14 @@ def main():
             deploy_thread = Thread(target=deploy_info.deploy, args=[options.ultra])
             deploy_thread.start()
 
-            start_time = clock()
+            start_time = time()
 
             result = _progress(deploy_info, silent, verbose)
             if (0 == result):
                 result = _postupload_progress(deploy_info, connection, cookie, silent, verbose)
                 if (0 == result):
                     if not silent:
-                        log('Deployment time: %s' % _fmt_time((clock() - start_time)))
+                        log('Deployment time: %s' % _fmt_time((time() - start_time)))
                     game.set_deployed()
 
         except KeyboardInterrupt:

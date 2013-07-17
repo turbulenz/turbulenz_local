@@ -13,7 +13,7 @@ from simplejson import loads as json_loads
 from threading import Thread
 from time import sleep, time
 from re import compile as re_compile
-from sys import stdin
+from sys import stdin, stdout
 from getpass import getpass, GetPassWarning
 from math import modf
 
@@ -35,6 +35,7 @@ PROJECT_VERSION_PATTERN = re_compile('^[a-zA-Z0-9\-\.]*$') # game and versions
 
 
 def log(message, new_line=True):
+    message = message.encode(stdout.encoding, 'ignore')
     print ' >> %s' % message,
     if new_line:
         print

@@ -10,6 +10,8 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+- Support for launching .tzjs files in the native client on Android
+
 .. _version-1.1.1:
 
 1.1.1

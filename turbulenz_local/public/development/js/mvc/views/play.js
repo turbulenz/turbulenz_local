@@ -189,6 +189,16 @@ var LocalPlayView = Backbone.View.extend({
             }
         }
 
+        // If Android
+        if (-1 != navigator.userAgent.indexOf("Android"))
+        {
+            if (version.search(/\.tzjs/) > 0)
+            {
+                window.location.href = "/play/" + slug + "/" + version;
+                return;
+            }
+        }
+
         //remove previous iframe
         if ($('#game_player_frame').length || window.game !== null)
         {

@@ -190,7 +190,7 @@ var LocalPlayView = Backbone.View.extend({
         }
 
         // If Android
-        if (-1 != navigator.userAgent.indexOf("Android"))
+        if (-1 !== navigator.userAgent.indexOf("Android"))
         {
             if (version.search(/\.tzjs/) > 0)
             {

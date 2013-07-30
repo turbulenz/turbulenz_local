@@ -10,7 +10,20 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+.. _version-1.1.2:
+
+1.1.2
+-----
+
+:release-date: 2013-07-30
+
 - Support for launching .tzjs files in the native client on Android
+- Fix issues with unicode characters in usernames
+- Fix import of Turbulenz SDK version
+- Fix for custom metrics events passed in batches with time offsets of 0
+- Refuse negative scores passed to leaderboards
+- Allow the deploygame tool to set the title on a project version
+- Fix expired delayed notifications not being deleted from the file system
 
 .. _version-1.1.1:
 

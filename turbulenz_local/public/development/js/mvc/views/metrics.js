@@ -218,6 +218,7 @@ var LocalMetricsView = Backbone.View.extend({
         ".jpg":   new ResourceCategory('jpg',   'JPEG',        '#00ffff'),
         ".tga":   new ResourceCategory('tga',   'TGA',         '#008080'),
         ".dds":   new ResourceCategory('dds',   'DDS',         '#0000ff'),
+        ".ktx":   new ResourceCategory('ktx',   'KTX',         '#0000ff'),
         ".ogg":   new ResourceCategory('ogg',   'OGG',         '#000080'),
         ".wav":   new ResourceCategory('wav',   'WAV',         '#ff00ff'),
         other: new ResourceCategory('other', 'Other',       '#ffffff'),

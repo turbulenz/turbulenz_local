@@ -52,6 +52,7 @@ def _add_missing_mime_types():
     mimetypes.add_type('application/json', '.json')
     mimetypes.add_type('image/dds', '.dds')
     mimetypes.add_type('image/tga', '.tga')
+    mimetypes.add_type('image/ktx', '.ktx')
     mimetypes.add_type('image/x-icon', '.ico')
     mimetypes.add_type('text/cgfx', '.cgfx')
     mimetypes.add_type('application/javascript', '.js')

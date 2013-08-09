@@ -35,7 +35,7 @@ PROJECT_VERSION_PATTERN = re_compile('^[a-zA-Z0-9\-\.]*$') # game and versions
 
 
 def log(message, new_line=True):
-    message = message.encode(stdout.encoding, 'ignore')
+    message = message.encode(stdout.encoding or 'UTF-8', 'ignore')
     print ' >> %s' % message,
     if new_line:
         print

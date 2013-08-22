@@ -189,12 +189,28 @@ var LocalPlayView = Backbone.View.extend({
             }
         }
 
+        var userAgent = navigator.userAgent;
+
         // If Android
-        if (-1 !== navigator.userAgent.indexOf("Android"))
+        if (-1 !== userAgent.indexOf("Android"))
         {
             if (version.search(/\.tzjs/) > 0)
             {
                 window.location.href = "/play/" + slug + "/" + version;
+                return;
+            }
+        }
+
+        // iOS looks something like:
+        // "Mozilla/5.0 (iPad; CPU OS 6_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B141 Safari/8536.25"
+
+        if (-1 !== userAgent.indexOf("Safari/") &&
+            -1 !== userAgent.indexOf("Mobile/"))
+        {
+            if (version.search(/\.tzjs/) > 0)
+            {
+                window.location.href = "tblz://" + window.location.host +
+                    "/play/" + slug + "/" + version;
                 return;
             }
         }

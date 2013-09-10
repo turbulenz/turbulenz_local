@@ -57,7 +57,7 @@ class LoggingMiddleware(object):
                 LOG.info("Request Headers:")
                 for k, v in environ.iteritems():
                     if k.startswith('HTTP_'):
-                        LOG.info("\t%s: %s" % (k, v))
+                        LOG.info("\t%s: %s", k, v)
 
         # capture headers from response
         start_response_args = {}
@@ -77,12 +77,12 @@ class LoggingMiddleware(object):
                                          request_path,
                                          self.remove_letters_re.sub('', status),
                                          response_headers.get('Content-Length', 0))
-            LOG.info("[%s] %s" % (now, message))
+            LOG.info("[%s] %s", now, message)
 
         if log_headers:
             if self.log_response_headers:
                 LOG.info("Response Headers:")
                 for (k, v) in response_headers.iteritems():
-                    LOG.info("\t%s: %s" % (k, v))
+                    LOG.info("\t%s: %s", k, v)
 
         return response

@@ -175,7 +175,7 @@ class Leaderboard(object):
 
             path = join_path(path, self.game.slug)
             if not create_dir(path):
-                LOG.error('Game leaderboards path \"%s\" could not be created.' % path)
+                LOG.error('Game leaderboards path \"%s\" could not be created.', path)
 
             self.path = join_path(path, self.key + '.yaml')
 
@@ -199,7 +199,7 @@ class Leaderboard(object):
             if path_exists(unicode_path):
                 try:
                     try:
-                        f = open(unicode_path, 'rt')
+                        f = open(unicode_path, 'r')
                         file_leaderboard = yaml.load(f)
 
                         if file_leaderboard:
@@ -209,7 +209,7 @@ class Leaderboard(object):
                         f.close()
 
                 except (IOError, KeyError, yaml.YAMLError) as e:
-                    LOG.error('Failed loading leaderboards file "%s": %s' % (self.path, str(e)))
+                    LOG.error('Failed loading leaderboards file "%s": %s', self.path, str(e))
                     raise LeaderboardError('Failed loading leaderboard file "%s": %s' % (self.path, str(e)))
 
             else:
@@ -232,12 +232,12 @@ class Leaderboard(object):
             self._set_path()
             with self.lock:
                 try:
-                    f = open(unicode(self.path), 'wt')
+                    f = open(unicode(self.path), 'w')
                     yaml.dump([s.to_dict() for s in self.scores], f, default_flow_style=False)
                 finally:
                     f.close()
         except IOError as e:
-            LOG.error('Failed writing leaderboard file "%s": %s' % (self.path, str(e)))
+            LOG.error('Failed writing leaderboard file "%s": %s', self.path, str(e))
             raise LeaderboardError('Failed writing leaderboard file %s' % self.path)
 
 
@@ -253,10 +253,10 @@ class Leaderboard(object):
 
         with self.lock:
             try:
-                f = open(unicode_path, 'wt')
+                f = open(unicode_path, 'w')
                 f.close()
             except IOError as e:
-                LOG.error('Failed emptying leaderboard file "%s": %s' % (self.path, str(e)))
+                LOG.error('Failed emptying leaderboard file "%s": %s', self.path, str(e))
                 raise LeaderboardError('Failed emptying leaderboard file %s' % self.path)
 
 
@@ -535,7 +535,7 @@ class GameLeaderboards(object):
         total_yaml_errors = 0
         if path_exists(yaml_path):
             try:
-                f = open(yaml_path, 'rt')
+                f = open(yaml_path, 'r')
                 try:
                     file_meta = yaml.load(f)
 
@@ -561,7 +561,7 @@ class GameLeaderboards(object):
                 finally:
                     f.close()
             except (IOError, yaml.YAMLError) as e:
-                LOG.error('Failed loading leaderboards: %s' % str(e))
+                LOG.error('Failed loading leaderboards: %s', str(e))
                 raise LeaderboardError('Failed loading leaderboards.yaml file: %s' % str(e))
         else:
             raise LeaderboardsUnsupported()

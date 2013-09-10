@@ -41,14 +41,14 @@ class GameBadges(object):
             yaml_path = norm_path(get_absolute_path(join_path(game.path, 'badges.yaml')))
             if not access(yaml_path, R_OK):
                 raise BadgesUnsupportedException()
-            f = open(unicode(yaml_path), 'rt')
+            f = open(unicode(yaml_path), 'r')
             try:
                 self.badges = yaml.load(f)
 
             finally:
                 f.close()
         except IOError as e:
-            LOG.error('Failed loading badges: %s' % str(e))
+            LOG.error('Failed loading badges: %s', str(e))
             raise ApiException('Failed loading badges.yaml file %s' % str(e))
         finally:
             self.lock.release()
@@ -93,14 +93,14 @@ class GameBadges(object):
                 return
 
             if not create_dir(path):
-                LOG.error('Game badges path \"%s\" could not be created.' % path)
+                LOG.error('Game badges path \"%s\" could not be created.', path)
             self.userbadges_path = norm_path(join_path(get_absolute_path(path), self.game.slug) + '.yaml')
 
     def upsert_badge(self, ub):
         self._set_userbadges_path()
         self.lock.acquire()
         try:
-            with open(unicode(self.userbadges_path), 'rt') as f:
+            with open(unicode(self.userbadges_path), 'r') as f:
                 self.userbadges = yaml.load(f)
         except IOError:
             pass
@@ -111,10 +111,10 @@ class GameBadges(object):
                 self.userbadges[ub['username']] = {}
             self.userbadges[ub['username']][ub['badge_key']] = ub
 
-            with open(unicode(self.userbadges_path), 'wt') as f:
+            with open(unicode(self.userbadges_path), 'w') as f:
                 yaml.dump(self.userbadges, f, default_flow_style=False)
         except IOError as e:
-            LOG.error('Failed writing userbadges file "%s": %s' % (self.userbadges_path, str(e)))
+            LOG.error('Failed writing userbadges file "%s": %s', self.userbadges_path, str(e))
             raise Exception('Failed writing userbadge file %s %s' % (self.userbadges_path, str(e)))
         finally:
             self.lock.release()
@@ -125,7 +125,7 @@ class GameBadges(object):
         try:
             self.userbadges = {}
 
-            f = open(unicode(self.userbadges_path), 'rt')
+            f = open(unicode(self.userbadges_path), 'r')
             try:
                 self.userbadges = yaml.load(f)
                 f.close()
@@ -147,7 +147,7 @@ class GameBadges(object):
         try:
             self.userbadges = {}
 
-            f = open(unicode(self.userbadges_path), 'rt')
+            f = open(unicode(self.userbadges_path), 'r')
             try:
                 self.userbadges = yaml.load(f)
                 f.close()

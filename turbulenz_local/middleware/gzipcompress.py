@@ -81,7 +81,7 @@ class GzipMiddleware(object):
         self.do_not_compress = set(aslist(config.get('gzip.do_not_compress', ''), ',', strip=True))
         for m in (self.compress | self.do_not_compress):
             if mimetypes.guess_extension(m) is None:
-                LOG.warning('Unrecognised mimetype in server configuration: %s' % m)
+                LOG.warning('Unrecognised mimetype in server configuration: %s', m)
         self.cache_dir = normpath(config.get('deploy.cache_dir', None))
 
     def __call__(self, environ, start_response):
@@ -116,7 +116,7 @@ class GzipMiddleware(object):
 
                 if not mimetype:
                     # This has no mimetype.
-                    LOG.warning('Response with no mimetype: %s' % environ.get('PATH_INFO', ''))
+                    LOG.warning('Response with no mimetype: %s', environ.get('PATH_INFO', ''))
                     compression_level = 0
                 elif mimetype in self.do_not_compress:
                     # This is a known mimetype that we don't want to compress.
@@ -125,7 +125,7 @@ class GzipMiddleware(object):
                     # This is a know mimetype that we *do* want to compress.
                     compression_level = self.compress_level
                 else:
-                    LOG.warning('Response with mimetype not in compression lists: %s' % mimetype)
+                    LOG.warning('Response with mimetype not in compression lists: %s', mimetype)
                     compression_level = 1
 
                 if compression_level != 0:

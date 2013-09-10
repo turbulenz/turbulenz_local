@@ -38,8 +38,8 @@ def turbulenz_api(endpoint, timeout=5):
         finally:
             f.close()
     except urllib2.URLError as e:
-        LOG.error('Failed contacting: %s' % endpoint)
-        LOG.error(' >> %s' % str(e))
+        LOG.error('Failed contacting: %s', endpoint)
+        LOG.error(' >> %s', str(e))
         data = { }
     return data
 

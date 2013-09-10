@@ -115,7 +115,7 @@ class MetricsController(BaseController):
                 self._session_overviews.append((timestamp, s))
 
             except KeyError as e:
-                LOG.error("Potentially corrupted file found. Can't extract metrics data: %s" % str(e))
+                LOG.error("Potentially corrupted file found. Can't extract metrics data: %s", str(e))
 
     def _get_overviews(self, game, reverse=True):
         self._session_overviews.sort(reverse=reverse)

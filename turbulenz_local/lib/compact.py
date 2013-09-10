@@ -43,7 +43,7 @@ def compact(dev_path, rel_path, versions_yaml, src_type, compactor_fn, merge=Fal
         rel_filename = _join(rel_path, src_type, '%s.%s' % (current_hash, src_type))
         if not path_exists(rel_filename):
             # Merge the compacted files.
-            with open(rel_filename, 'wt') as t:
+            with open(rel_filename, 'w') as t:
                 for _, v in new_versions.iteritems():
                     with open('%s%s' % (rel_path, v)) as f:
                         t.write(f.read())

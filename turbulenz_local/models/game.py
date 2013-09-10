@@ -64,7 +64,7 @@ def read_manifest(game_path, manifest_name):
         finally:
             f.close()
     except IOError as e:
-        LOG.error('Failed loading manifest: %s' % str(e))
+        LOG.error('Failed loading manifest: %s', str(e))
         raise GameError
     else:
         return data
@@ -87,7 +87,7 @@ def write_manifest(data, manifest_name):
         finally:
             f.close()
     except IOError as e:
-        LOG.error('Failed writing manifest: %s' % str(e))
+        LOG.error('Failed writing manifest: %s', str(e))
         raise GamePathError('Failed writing manifest file.')
 
 #######################################################################################################################

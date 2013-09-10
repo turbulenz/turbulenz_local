@@ -212,7 +212,7 @@ class StoreUserGameItems(object):
             unicode_path = unicode('%s/%s.yaml' % (self.path, self.user.username))
             if path_exists(unicode_path):
                 try:
-                    with open(unicode_path, 'rt') as f:
+                    with open(unicode_path, 'r') as f:
                         file_store_items = yaml.load(f)
 
                         self.user_items = {}
@@ -223,7 +223,7 @@ class StoreUserGameItems(object):
                                     'amount': item_amount
                                 }
                 except (IOError, KeyError, yaml.YAMLError) as e:
-                    LOG.error('Failed loading store items file "%s": %s' % (self.path, str(e)))
+                    LOG.error('Failed loading store items file "%s": %s', self.path, str(e))
                     raise StoreError('Failed loading store items file "%s": %s' % (self.path, str(e)))
 
             else:
@@ -233,10 +233,10 @@ class StoreUserGameItems(object):
     def _write(self):
         with self.lock:
             try:
-                with open(unicode('%s/%s.yaml' % (self.path, self.user.username)), 'wt') as f:
+                with open(unicode('%s/%s.yaml' % (self.path, self.user.username)), 'w') as f:
                     yaml.dump(self.user_items, f, default_flow_style=False)
             except IOError as e:
-                LOG.error('Failed writing store items file "%s": %s' % (self.path, str(e)))
+                LOG.error('Failed writing store items file "%s": %s', self.path, str(e))
                 raise StoreError('Failed writing store items file %s' % self.path)
 
 
@@ -334,7 +334,7 @@ class GameStoreItems(object):
         yaml_path = unicode(get_absolute_path(join_path(game.path, 'storeitems.yaml')))
         if path_exists(yaml_path):
             try:
-                with open(yaml_path, 'rt') as f:
+                with open(yaml_path, 'r') as f:
                     items_meta = yaml.load(f)
 
                     resource_keys = set()
@@ -402,7 +402,7 @@ class GameStoreItems(object):
                     else:
                         raise StoreError('Store items YAML file must be a dictionary or list')
             except (IOError, yaml.YAMLError) as e:
-                LOG.error('Failed loading store items: %s' % str(e))
+                LOG.error('Failed loading store items: %s', str(e))
                 raise StoreError('Failed loading storeitems.yaml file: %s' % str(e))
         else:
             raise StoreUnsupported()

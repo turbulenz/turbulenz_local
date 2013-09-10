@@ -115,7 +115,7 @@ class GameSessionList(object):
         self._sessions = {}
 
         if exists(path):
-            f = open(path, 'rt')
+            f = open(path, 'r')
             try:
                 gamesessions = yaml.load(f)
                 if isinstance(gamesessions, dict):
@@ -134,7 +134,7 @@ class GameSessionList(object):
 
 
     def write_sessions(self):
-        f = open(self.path, 'wt')
+        f = open(self.path, 'w')
         file_sessions = {}
         ghost_sessions = set()
         for string_id in self._sessions:

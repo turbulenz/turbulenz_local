@@ -55,10 +55,10 @@ class UserList(object):
         yaml_obj = self.to_dict()
         path = config['user.yaml']
         try:
-            with open(path, 'wt') as f:
+            with open(path, 'w') as f:
                 yaml.dump(yaml_obj, f)
         except IOError as e:
-            LOG.error('Failed writing users: %s' % str(e))
+            LOG.error('Failed writing users: %s', str(e))
 
     def _read_users(self):
         do_save = False
@@ -69,7 +69,7 @@ class UserList(object):
 
         if exists(get_absolute_path(path)):
             try:
-                f = open(path, 'rt')
+                f = open(path, 'r')
                 try:
                     user_info = yaml.load(f)
                     if user_info is not None:
@@ -82,14 +82,14 @@ class UserList(object):
                 finally:
                     f.close()
             except IOError as e:
-                LOG.error('Failed loading users: %s' % str(e))
+                LOG.error('Failed loading users: %s', str(e))
         else:
             self._add_user(User.default_username)
             do_save = True
 
         try:
             path = path_join(CONFIG_PATH, 'defaultusers.yaml')
-            f = open(path, 'rt')
+            f = open(path, 'r')
             try:
                 user_info = yaml.load(f)
                 for u in user_info['users']:
@@ -102,7 +102,7 @@ class UserList(object):
             finally:
                 f.close()
         except IOError as e:
-            LOG.error('Failed loading default users: %s' % str(e))
+            LOG.error('Failed loading default users: %s', str(e))
         except KeyError:
             LOG.error('Username missing for default user "defaultusers.yaml"')
         except ValueError:
@@ -117,7 +117,7 @@ class UserList(object):
             try:
                 return self.users[username_lower]
             except KeyError:
-                LOG.info('No user with username "%s" adding user with defaults' % username)
+                LOG.info('No user with username "%s" adding user with defaults', username)
                 try:
                     user = self._add_user(username_lower)
                     self._write_users()

@@ -142,7 +142,7 @@ def command_devserver_html():
     def compactor(dev_filename, rel_filename):
         # Use compactor to generate release version.
         echo('Compacting: %s -> %s' % (dev_filename, rel_filename))
-        source_data = open(dev_filename, 'rt').read()
+        source_data = open(dev_filename, 'r').read()
         try:
             # Verify that the html file is correct
             htmlparser = HTMLParser(NullFormatter())

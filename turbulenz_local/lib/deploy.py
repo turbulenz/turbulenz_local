@@ -46,7 +46,7 @@ def _get_cached_file_name(file_name, file_hash, file_length):
 
 
 # pylint: disable=R0902
-class Deployment:
+class Deployment(object):
 
     _batch_checks = True
 
@@ -447,7 +447,7 @@ class Deployment:
                     pass
 
                 if delete_file:
-                    LOG.info('Deleting stale cache file: %s' % file_path)
+                    LOG.info('Deleting stale cache file: %s', file_path)
                     remove(file_path)
 
         except (IOError, error):
@@ -885,7 +885,7 @@ class Deployment:
 # pylint: enable=R0902
 
 
-class MultipartReader:
+class MultipartReader(object):
     def __init__(self, params, boundary):
         self.params = params
         self.boundary = boundary

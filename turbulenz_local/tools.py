@@ -67,7 +67,7 @@ def create_dir(directory):
             os.makedirs(absDir)
         except OSError as e:
             if e.errno != EEXIST:
-                LOG.error('Failed creating meta dir: %s' % str(e))
+                LOG.error('Failed creating meta dir: %s', str(e))
                 return False
         return os.access(absDir, os.W_OK)
 
@@ -95,7 +95,7 @@ def compress_file(file_path, compress_path):
         output, _ = process.communicate()
         retcode = process.poll()
         if retcode:
-            LOG.error('Failed to compress file "%s" as "%s": %s' % (file_path, compress_path, str(output)))
+            LOG.error('Failed to compress file "%s" as "%s": %s', file_path, compress_path, str(output))
             return False
         else:
             return True

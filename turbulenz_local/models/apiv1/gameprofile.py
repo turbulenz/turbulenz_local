@@ -45,12 +45,12 @@ class GameProfile(object):
         self.defaults = {}
         default_yaml_path = unicode(get_absolute_path(join_path(game.path, 'defaultgameprofiles.yaml')))
         if path_exists(default_yaml_path):
-            with open(default_yaml_path, 'rt') as f:
+            with open(default_yaml_path, 'r') as f:
                 try:
                     file_defaults = yaml.load(f)
                     self.defaults = dict((v['user'], v['value']) for v in file_defaults['profiles'])
                 except (yaml.YAMLError, KeyError, TypeError) as e:
-                    LOG.error('Failed loading default game profiles: %s' % str(e))
+                    LOG.error('Failed loading default game profiles: %s', str(e))
 
 
     def get(self, usernames):

@@ -60,13 +60,13 @@ class GameList(object):
                 game = Game(self, path, games_root=games_root, deploy_enable=deploy_enable)
 
             except GameError, e:
-                LOG.error('error loading game from %s: %s' % (path, e))
+                LOG.error('error loading game from %s: %s', path, e)
             else:
                 if game.slug in self._slugs.keys():
                     new_slug = self.make_slug_unique(game.slug)
                     game.slug = SlugDetail(new_slug)
                 self._slugs[game.slug] = game
-                LOG.info('game loaded from %s' % path)
+                LOG.info('game loaded from %s', path)
 
 
     def _reload_game(self, slug):
@@ -81,7 +81,7 @@ class GameList(object):
                 game = Game(self, path, games_root=games_root, deploy_enable=deploy_enable)
 
             except GameError, e:
-                LOG.error('error loading game from %s: %s' % (path, e))
+                LOG.error('error loading game from %s: %s', path, e)
             else:
                 self._slugs[game.slug] = game
 
@@ -230,7 +230,7 @@ def load_paths(games_file):
         finally:
             f.close()
     except IOError, e:
-        LOG.error('Exception when loading \'games.yaml\': %s' % str(e))
+        LOG.error('Exception when loading \'games.yaml\': %s', str(e))
         return []
     if paths is None:
         LOG.warn('No paths found in \'games.yaml\'')

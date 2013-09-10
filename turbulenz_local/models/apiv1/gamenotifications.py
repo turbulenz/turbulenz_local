@@ -62,7 +62,7 @@ class GameNotificationKeys(object):
             if not access(yaml_path, R_OK):
                 raise GameNotificationsUnsupportedException()
 
-            with open(unicode(yaml_path), 'rt') as f:
+            with open(unicode(yaml_path), 'r') as f:
                 notifications = {}
                 for n_key in yaml.load(f):
                     notifications[n_key['key']] = n_key
@@ -70,7 +70,7 @@ class GameNotificationKeys(object):
                 self._notifications = notifications
 
         except (IOError, KeyError) as e:
-            LOG.error('Failed loading gamenotifications: %s' % str(e))
+            LOG.error('Failed loading gamenotifications: %s', str(e))
             raise ApiException('Failed loading gamenotifications.yaml file %s' % str(e))
 
 
@@ -163,7 +163,7 @@ def _load_tasks(slug, recipient, notification_type):
                 tasks.append(task)
                 num_tasks_per_sender[task.sender] += 1
         except (IOError, OSError, TypeError) as e:
-            LOG.error('Failed loading GameNotificationTask "%s": %s' % (file_path, str(e)))
+            LOG.error('Failed loading GameNotificationTask "%s": %s', file_path, str(e))
 
     tasks.sort(key=lambda task: task.time)
 

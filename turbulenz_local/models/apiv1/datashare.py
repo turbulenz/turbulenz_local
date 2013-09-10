@@ -123,7 +123,7 @@ class DataShare(object):
         if not path_exists(path):
             raise NotFound('No data share with id "%s"' % self.datashare_id)
         try:
-            with open(path, 'rt') as f:
+            with open(path, 'r') as f:
                 yaml_data = yaml.load(f)
                 self.owner = yaml_data['owner']
                 self.created = yaml_data['created']
@@ -132,16 +132,16 @@ class DataShare(object):
                 self.joinable = yaml_data['joinable']
 
         except (IOError, KeyError, yaml.YAMLError) as e:
-            LOG.error('Failed loading datashare file "%s": %s' % (self.path, str(e)))
+            LOG.error('Failed loading datashare file "%s": %s', self.path, str(e))
             raise
 
     def write(self):
         path = self.get_path()
         try:
-            with open(path, 'wt') as f:
+            with open(path, 'w') as f:
                 yaml.dump(self.to_dict(), f)
         except IOError as e:
-            LOG.error('Failed writing datashare file "%s": %s' % (self.path, str(e)))
+            LOG.error('Failed writing datashare file "%s": %s', self.path, str(e))
             raise
 
     def to_dict(self):
@@ -295,7 +295,7 @@ class GameDataShareList(object):
         # Create datashare folder
         path = join_path(path, self.game.slug)
         if not create_dir(path):
-            LOG.error('DataShare path \"%s\" could not be created.' % path)
+            LOG.error('DataShare path \"%s\" could not be created.', path)
             raise IOError('DataShare path \"%s\" could not be created.' % path)
         return get_absolute_path(path)
 

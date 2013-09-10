@@ -38,7 +38,7 @@ class MetricsSession(object):
         # work out the filename to be used
         self.file_name = MetricsSession.get_file_name(slug, timestamp)
 
-        LOG.info('New metrics session started timestamp %s' % timestamp)
+        LOG.info('New metrics session started timestamp %s', timestamp)
 
     def __del__(self):
         self.finish()
@@ -74,12 +74,12 @@ class MetricsSession(object):
                     LOG.error(str(e))
                     raise
 
-        LOG.info('Metrics session saving to %s' % self.file_name)
+        LOG.info('Metrics session saving to %s', self.file_name)
 
         session = { 'entries': self.entries }
 
         try:
-            f = open(self.file_name, mode='wt')
+            f = open(self.file_name, mode='w')
             json.dump(session, f, indent=4)
             f.close()
         except IOError, e:
@@ -101,7 +101,7 @@ class MetricsSession(object):
     def get_data(cls, slug, timestamp):
         file_name = cls.get_file_name(slug, timestamp)
         try:
-            f = open(file_name, mode='rt')
+            f = open(file_name, mode='r')
             session_data = json.load(f)
             f.close()
         except (IOError, json.JSONDecodeError):
@@ -115,7 +115,7 @@ class MetricsSession(object):
 
         keys = MetricsSession.keys
         try:
-            with open(file_name, 'rt') as f:
+            with open(file_name, 'r') as f:
                 session_data = json.load(f)
                 rows = session_data['entries']
         except IOError:
@@ -135,7 +135,7 @@ class MetricsSession(object):
     def get_data_as_json(cls, slug, timestamp):
         file_name = cls.get_file_name(slug, timestamp)
         try:
-            f = open(file_name, 'rt')
+            f = open(file_name, 'r')
             session_data = f.read()
             f.close()
         except IOError:

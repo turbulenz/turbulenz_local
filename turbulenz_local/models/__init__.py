@@ -31,12 +31,12 @@ class Model(object):
         if name in self._fields:
             self._fields[name].value = value
         else:
-            raise AttributeError, name
+            raise AttributeError(name)
 
     def __getattr__(self, name):
         if name in self._fields:
             return self._fields[name].value
-        raise AttributeError, name
+        raise AttributeError(name)
 
 
 class String(Field):

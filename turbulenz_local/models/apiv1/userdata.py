@@ -63,7 +63,7 @@ class UserData(object):
                     finally:
                         f.close()
             except IOError, e:
-                LOG.error('Failed listing userdata: %s' % str(e))
+                LOG.error('Failed listing userdata: %s', str(e))
                 raise UserDataError
 
         # keys and values
@@ -80,7 +80,7 @@ class UserData(object):
         #            finally:
         #                f.close()
         #    except IOError, e:
-        #        LOG.error('Failed listing userdata: %s' % str(e))
+        #        LOG.error('Failed listing userdata: %s', str(e))
         #        raise UserDataError
 
         return list_array
@@ -113,7 +113,7 @@ class UserData(object):
             finally:
                 f.close()
         except IOError, e:
-            LOG.error('Failed setting userdata: %s' % str(e))
+            LOG.error('Failed setting userdata: %s', str(e))
             raise UserDataError
         else:
             return True
@@ -127,7 +127,7 @@ class UserData(object):
             else:
                 raise UserDataKeyError
         except IOError, e:
-            LOG.error('Failed removing userdata: %s' % str(e))
+            LOG.error('Failed removing userdata: %s', str(e))
             raise UserDataError
         else:
             return True
@@ -142,7 +142,7 @@ class UserData(object):
                 try:
                     os.remove(unicode(join_path(self.path, key_path)))
                 except IOError, e:
-                    LOG.error('Failed removing userdata: %s' % str(e))
+                    LOG.error('Failed removing userdata: %s', str(e))
                     raise UserDataError
 
         return True

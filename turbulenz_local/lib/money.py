@@ -31,7 +31,7 @@ class Currency(object):
 
 
 # Loosely based on http://code.google.com/p/python-money/
-class Money:
+class Money(object):
 
     epsilon = 1e-6
 

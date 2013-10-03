@@ -36,8 +36,8 @@ class ApiException(BaseException):
 
 
 class InvalidGameSession(ApiException):
-    def __init__(self):
-        ApiException.__init__(self, 'Invalid game session id', '401 Unauthorized')
+    def __init__(self, value):
+        ApiException.__init__(self, value, '403 Forbidden', {'invalidGameSession': True})
 
 
 class NotFound(ApiException):

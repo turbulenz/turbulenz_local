@@ -24,10 +24,7 @@ class BaseController(WSGIController):
     @classmethod
     def _get_gamesession(cls, params):
         """ Get the user id and project version id for this game session """
-        try:
-            session = cls.game_session_list.get_session(params['gameSessionId'])
-            if session is None:
-                raise InvalidGameSession()
-            return session
-        except (KeyError, TypeError):
-            raise InvalidGameSession()
+        session = cls.game_session_list.get_session(params['gameSessionId'])
+        if session is None:
+            raise InvalidGameSession('No gamesession with that id')
+        return session

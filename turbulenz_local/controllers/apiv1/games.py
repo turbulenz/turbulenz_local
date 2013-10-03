@@ -51,9 +51,15 @@ class GamesController(BaseController):
             mapping_table = str(game.mapping_table)
 
         user = get_current_user()
-        game_session_list = GameSessionList.get_instance()
-        game_session_id = game_session_list.create_session(user, game)
 
+        game_session_list = GameSessionList.get_instance()
+
+        if (request.params.get('closeExistingSessions', False)):
+            game_session_list.remove_game_sessions(user, game)
+
+        game_session = game_session_list.create_session(user, game)
+
+        # Reset API's (so YAML files are reloaded on a page refresh)
         StoreList.reset()
         DataShareList.reset()
         GameNotificationKeysList.reset()
@@ -66,7 +72,7 @@ class GamesController(BaseController):
                 'mappingTablePrefix': prefix + 'staticmax/',
                 'assetPrefix': 'missing/'
             },
-            'gameSessionId': game_session_id
+            'gameSessionId': game_session.gamesession_id
         }
 
     @classmethod

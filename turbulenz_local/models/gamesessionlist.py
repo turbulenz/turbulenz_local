@@ -159,35 +159,45 @@ class GameSessionList(object):
             game is None):
             return None
         session = GameSession(game, user)
-        self.lock.acquire()
-        self._sessions[session.gamesession_id] = session
-        self.write_sessions()
-        self.lock.release()
-        return session.gamesession_id
+        with self.lock:
+            self._sessions[session.gamesession_id] = session
+            self.write_sessions()
+            return session
 
 
     def remove_session(self, string_id):
-        self.lock.acquire()
-        sessions = self._sessions
-        if (string_id in sessions):
-            del sessions[string_id]
+        with self.lock:
+            sessions = self._sessions
+            if (string_id in sessions):
+                del sessions[string_id]
+                self.write_sessions()
+                return True
+            else:
+                return False
+
+    def remove_game_sessions(self, user, game):
+        username = user.username
+        slug = game.slug
+
+        with self.lock:
+            sessions = self._sessions
+            for s in sessions.values():
+                if s.game.slug == slug and \
+                   s.user.username == username:
+
+                    del sessions[s.gamesession_id]
+
             self.write_sessions()
-            self.lock.release()
-            return True
-        else:
-            self.lock.release()
-            return False
 
 
     def get_session(self, string_id):
-        self.lock.acquire()
-        session = self._sessions.get(string_id, None)
-        self.lock.release()
-        return session
+        with self.lock:
+            session = self._sessions.get(string_id, None)
+            return session
 
 
     def update_session(self, session):
-        self.lock.acquire()
-        self._sessions[session.gamesession_id] = session
-        self.write_sessions()
-        self.lock.release()
+        with self.lock:
+            self._sessions[session.gamesession_id] = session
+            self.write_sessions()
+            self.lock.release()

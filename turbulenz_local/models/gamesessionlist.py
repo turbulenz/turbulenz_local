@@ -43,7 +43,7 @@ class GameSession(object):
                                gamesession.get('gameSessionId', None),
                                gamesession.get('created', None))
         else:
-            raise InvalidGameSession()
+            raise InvalidGameSession('No gamesession with that id')
 
 
     def to_dict(self):

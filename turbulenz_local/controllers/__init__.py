@@ -7,7 +7,7 @@ from pylons.controllers import WSGIController
 from pylons.templating import render_jinja2 as render
 
 from turbulenz_local.models.gamesessionlist import GameSessionList
-from turbulenz_local.lib.exceptions import InvalidGameSession
+from turbulenz_local.lib.exceptions import InvalidGameSession, BadRequest
 
 class BaseController(WSGIController):
 
@@ -24,7 +24,10 @@ class BaseController(WSGIController):
     @classmethod
     def _get_gamesession(cls, params):
         """ Get the user id and project version id for this game session """
-        session = cls.game_session_list.get_session(params['gameSessionId'])
+        try:
+            session = cls.game_session_list.get_session(params['gameSessionId'])
+        except KeyError:
+            raise BadRequest('Request is missing gameSessionId parameter')
         if session is None:
             raise InvalidGameSession('No gamesession with that id')
         return session

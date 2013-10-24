@@ -91,17 +91,52 @@ var CarouselView = Backbone.View.extend({
             type: 'GET',
             success: function successFn(data) {
                 var games = data.data;
-                var index = 0;
                 var carousel = $('#carousel');
+
+                function getDate(modifiedString)
+                {
+                    if (modifiedString === 'Never')
+                    {
+                        return null;
+                    }
+                    try
+                    {
+                        var timeDateSplit = modifiedString.split(' | ');
+                        var time = timeDateSplit[0];
+                        var date = timeDateSplit[1];
+                        var dateSplit = date.split('/');
+                        var timeSplit = time.split(':');
+                        return new Date(dateSplit[2], dateSplit[1], dateSplit[0], timeSplit[0], timeSplit[1], 0, 0);
+                    }
+                    catch (e)
+                    {
+                        return null;
+                    }
+                }
+
+                var gamesList = [];
+
                 for (var a in games)
                 {
                     if (games.hasOwnProperty(a))
                     {
-                        carousel.jqoteapp(thisView.game_panel_template, {'game': games[a],
-                                                                         'loop_index': index});
-                        index += 1;
+                        gamesList.push(games[a]);
                     }
                 }
+
+                gamesList.sort(function (a, b) {
+                    return getDate(b.modified) - getDate(a.modified);
+                });
+
+                var gamesListLength = gamesList.length;
+                var gamesListIndex;
+
+                for (gamesListIndex = 0; gamesListIndex < gamesListLength; gamesListIndex += 1)
+                {
+                    carousel.jqoteapp(thisView.game_panel_template, {'game': gamesList[gamesListIndex],
+                                                                     'loop_index': gamesListIndex});
+                }
+
                 thisView.app.trigger('carousel:make');
             }
         });

@@ -10,9 +10,11 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
-.. _version-1.1.2:
+:release-date: 2013-10-24
 
 - Changed local carousel to order projects by last modified from left to right.
+
+.. _version-1.1.2:
 
 1.1.2
 -----

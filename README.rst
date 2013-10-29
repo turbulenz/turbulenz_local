@@ -27,7 +27,7 @@ Installation/Setup
 The recommended paths for using Turbulenz Local is to either install the Turbulenz SDK from the Turbulenz Hub,
 or clone the `Open Source Turbulenz Engine repository <http://github.com/turbulenz/turbulenz_engine>`_ and follow
 it's setup guide.
-Both of these methods will install Turbulenz Local and it's dependencies from `PyPi <http://pypi.python.org>`_ using
+Both of these methods will install Turbulenz Local and its dependencies from `PyPi <http://pypi.python.org>`_ using
 VirtualEnv, however you can also install Turbulenz Local globally on your system or via similar virtual
 environment packages using Python package managers like SetupTools and pip.
 

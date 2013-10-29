@@ -12,6 +12,8 @@ Turbulenz Local Development Server
 
 .. _version-1.1.2:
 
+- Changed local carousel to order projects by last modified from left to right.
+
 1.1.2
 -----
 

@@ -10,9 +10,18 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
-:release-date: 2013-10-24
+.. _version-1.1.3:
+
+1.1.3
+-----
+
+:release-date: 2013-10-30
 
 - Changed local carousel to order projects by last modified from left to right.
+- Updated package to use pylint 1.0 for code checks.
+- Added a scheme to allow launching apps with iOS developer client.
+- Fixed crash when running deploygame tool outside of a terminal.
+- Added mimetype to server up ktx files.
 
 .. _version-1.1.2:
 

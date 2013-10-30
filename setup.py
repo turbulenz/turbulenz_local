@@ -33,7 +33,7 @@ setup(name='turbulenz_local',
         "tornado>=3.0.1",
         "urllib3>=1.3",
         "poster>=0.8.1",
-        "turbulenz_tools>=0.9"
+        "turbulenz_tools>=1.0.4"
     ],
     scripts=SCRIPTS,
     packages=[ 'turbulenz_local',

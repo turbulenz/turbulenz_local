@@ -31,7 +31,7 @@ setup(name='turbulenz_local',
         "Pylons>=1.0",
         "PyYAML>=3.09",
         "tornado>=3.0.1",
-        "urllib3>=1.3",
+        "urllib3>=1.7.1",
         "poster>=0.8.1",
         "turbulenz_tools>=1.0.4"
     ],

@@ -97,6 +97,7 @@ class Deployment(object):
         self.hub_session = None
         self.hub_pool = hub_pool
         self.hub_cookie = hub_cookie
+        self.hub_timeout = 200
         self.total_files = 0
         self.num_files = 0
         self.num_bytes = 0
@@ -131,14 +132,16 @@ class Deployment(object):
                                            fields=fields,
                                            headers=headers,
                                            redirect=False,
-                                           retries=5)
+                                           retries=5,
+                                           timeout=self.hub_timeout)
                 else:
                     self.hub_pool.request('POST',
                                           '/dynamic/upload/cancel',
                                            fields=fields,
                                            headers=headers,
                                            redirect=False,
-                                           retries=5)
+                                           retries=5,
+                                           timeout=self.hub_timeout)
             except (HTTPError, SSLError) as e:
                 LOG.error(e)
 
@@ -193,12 +196,14 @@ class Deployment(object):
         base_url = self._base_check_url
         url_format = self._check_url_format
         get_upload_token = _get_upload_file_token
+        timeout = self.hub_timeout
         if self._batch_checks:
             query = '&'.join((url_format % (get_upload_token(i, f[1]), f[3], f[2])) for i, f in enumerate(files))
             r = urlopen('GET',
                         base_url + query,
                         redirect=False,
-                        assert_same_host=False)
+                        assert_same_host=False,
+                        timeout=timeout)
             if r.status == 200:
                 # pylint: disable=E1103
                 missing_files = set(json_loads(r.data).get('missing', []))
@@ -233,7 +238,8 @@ class Deployment(object):
             if urlopen('GET',
                        base_url + query,
                        redirect=False,
-                       assert_same_host=False).status == 304:
+                       assert_same_host=False,
+                       timeout=timeout).status == 304:
                 # Only needs to update meta data cache
                 checked_queue_put((f[1], f[2], f[3], f[4], f[5]))
             else:
@@ -467,7 +473,8 @@ class Deployment(object):
                                       headers={'Cookie': self.hub_cookie,
                                                'Accept-Encoding': 'gzip'},
                                       redirect=False,
-                                      assert_same_host=False)
+                                      assert_same_host=False,
+                                      timeout=self.hub_timeout)
             if r.status == 200:
                 response = json_loads(r.data)
                 # pylint: disable=E1103
@@ -617,7 +624,8 @@ class Deployment(object):
         return self.hub_pool.urlopen('POST',
                                      url,
                                      MultipartReader(params, boundary),
-                                     headers=headers)
+                                     headers=headers,
+                                     timeout=self.hub_timeout)
 
     # pylint: disable=R0914
     def post_files(self, files, start, end, uploaded_queue_put, boundary, local_deploy):
@@ -653,7 +661,8 @@ class Deployment(object):
                     r = hub_pool.request('POST',
                                          '/dynamic/upload/file',
                                           fields=params,
-                                          headers={'Cookie': hub_cookie})
+                                          headers={'Cookie': hub_cookie},
+                                          timeout=self.hub_timeout)
                 else:
                     params = [MultipartParam('file',
                                              filename=relative_path,
@@ -674,7 +683,8 @@ class Deployment(object):
                     r = hub_pool.urlopen('POST',
                                          '/dynamic/upload/file',
                                          params,
-                                         headers=headers)
+                                         headers=headers,
+                                         timeout=self.hub_timeout)
             except IOError:
                 self.stop('Error opening file "%s".' % deploy_path)
                 continue
@@ -745,8 +755,6 @@ class Deployment(object):
 
         local_deploy = self.hub_pool.host in ['127.0.0.1', '0.0.0.0', 'localhost']
 
-        self.hub_pool.timeout = 200
-
         try:
             if local_deploy:
                 params = {'files.path': self.get_meta_data_path(),
@@ -767,7 +775,8 @@ class Deployment(object):
                 r = self.hub_pool.request('POST',
                                           '/dynamic/upload/begin',
                                            fields=params,
-                                           headers={'Cookie': self.hub_cookie})
+                                           headers={'Cookie': self.hub_cookie},
+                                           timeout=self.hub_timeout)
             else:
                 r = self.post('/dynamic/upload/begin',
                               [MultipartParam('files',

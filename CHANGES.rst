@@ -10,6 +10,16 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+.. _version-1.1.4:
+
+1.1.4
+-----
+
+:release-date: 2013-11-12
+
+- Updated the way the deployment code sets timeouts for compatibility with the lastest versions of urllib3.
+- Fixed some mimetypes for IE11 support.
+
 .. _version-1.1.3:
 
 1.1.3

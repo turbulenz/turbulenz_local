@@ -280,3 +280,7 @@ a {
 .message-container span.message-span a {
     color: white;
 }
+
+#turbulenz_game_engine_canvas {
+    -ms-touch-action: none;
+}

@@ -10,6 +10,10 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+2014-05-16
+- Fixed local server store API to stop game's users to purchasing "own" resources multiple times.
+- Fixed local server crashing for store API calls with malformed parameters.
+
 .. _version-1.1.4:
 
 1.1.4

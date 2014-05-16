@@ -91,6 +91,12 @@ class StoreItem(object):
             self.warning('"icon" yaml property has been deprecated please use '
                          '"icon256", "icon48" or "icon32" for store key "%s"' % key)
 
+        self.images = {
+            'img256': meta_data.get('icon256', ''),
+            'img48': meta_data.get('icon48', ''),
+            'img32': meta_data.get('icon32', '')
+        }
+
     def error(self, msg):
         self.errors.append(msg)
 
@@ -148,11 +154,7 @@ class StoreOffering(StoreItem):
         return {'index': self.index,
                 'title': self.title,
                 'description': self.description,
-                'images': {
-                    'img32': u'',
-                    'img48': u'',
-                    'img256': u'',
-                },
+                'images': self.images,
                 'output': self.output,
                 'prices': dict((k, v.get_minor_amount()) for k, v in self.prices.items()),
                 'available': self.available}
@@ -176,11 +178,7 @@ class StoreResource(StoreItem):
         return {'index': self.index,
                 'title': self.title,
                 'description': self.description,
-                'images': {
-                    'img32': u'',
-                    'img48': u'',
-                    'img256': u'',
-                },
+                'images': self.images,
                 'type': self.type}
 
 
@@ -246,8 +244,10 @@ class StoreUserGameItems(object):
 
     def get_item(self, key):
         try:
-            if self.game_store_items.get_resource(key).type == 'own' and self.user_items[key]['amount'] > 1:
-                return {'amount': 1}
+            if self.game_store_items.get_resource(key).type == 'own':
+                user_item = self.user_items.get(key)
+                if user_item and user_item['amount'] > 1:
+                    return {'amount': 1}
         except StoreError:
             pass
         return self.user_items[key]
@@ -498,6 +498,11 @@ class Transaction(object):
 
         game_store_items = StoreList.get(game)
 
+        resource_keys = set()
+
+        if len(transaction_items) == 0:
+            raise StoreError('Basket is empty')
+
         for item_key, item in transaction_items.items():
             try:
                 # convert string amounts to integers
@@ -518,12 +523,39 @@ class Transaction(object):
             if basket_price != minor_price:
                 raise StoreError('Item "%s" price does not match' % item_key)
 
+            offering_output = game_offering.output
+            try:
+                basket_item_output = item['output']
+                if not isinstance(basket_item_output, dict):
+                    raise ValueError()
+                if len(offering_output) != len(basket_item_output):
+                    raise ValueError()
+
+                for resource_key, amount in offering_output.items():
+                    if amount != basket_item_output[resource_key]:
+                        raise ValueError()
+                    resource_keys.add(resource_key)
+            except (KeyError, ValueError):
+                raise StoreError('Offering "%s" output resources do not match' % item_key)
+
             self.items[item_key] = {
                 'price': basket_price,
                 'amount': basket_amount
             }
 
             total += minor_price * basket_amount
+
+        for key in resource_keys:
+            resource = game_store_items.get_resource(key)
+            if resource is not None and resource.type == 'own':
+                user_store_items = game_store_items.get_store_user(user)
+                if user_store_items is not None:
+                    try:
+                        user_item = user_store_items.get_item(key)
+                        if user_item['amount'] > 0:
+                            raise StoreError('Basket contains an ownable item you already own')
+                    except KeyError:
+                        pass
 
         self.total = total
 

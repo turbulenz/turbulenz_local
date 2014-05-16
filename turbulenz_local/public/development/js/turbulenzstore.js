@@ -72,16 +72,27 @@ TurbulenzStore.prototype = {
         var basketData = {};
         var itemKey;
         var basketSize = 0;
+
+        var gameOfferings = this.offerings[basketGame];
+        if (!gameOfferings)
+        {
+            return;
+        }
+
         for (itemKey in basketItems)
         {
             if (basketItems.hasOwnProperty(itemKey))
             {
-                basketSize += 1;
-                var basketItem = basketItems[itemKey];
-                basketData[itemKey] = {
-                    amount: basketItem.amount,
-                    price: basketItem.price.minorAmount
-                };
+                if (gameOfferings[itemKey])
+                {
+                    var basketItem = basketItems[itemKey];
+                    basketSize += 1;
+                    basketData[itemKey] = {
+                        amount: basketItem.amount,
+                        price: basketItem.price.minorAmount,
+                        output: gameOfferings[itemKey].output
+                    };
+                }
             }
         }
 

@@ -59,6 +59,12 @@ def _add_missing_mime_types():
     mimetypes.add_type('application/ogg', '.ogg')
     mimetypes.add_type('image/png', '.png')
     mimetypes.add_type('text/x-yaml', '.yaml')
+    mimetypes.add_type('image/svg+xml', '.svg')
+    mimetypes.add_type('image/pjpeg', '.jpg')
+    mimetypes.add_type('video/webm', '.webm')
+    mimetypes.add_type('audio/mpeg', '.mp3')
+    mimetypes.add_type('application/tar', '.tar')
+    mimetypes.add_type('text/css', '.css')
 
 
 def _create_parser():

@@ -6,6 +6,8 @@ import logging
 
 # pylint: disable=F0401
 from pylons import request, response
+
+from paste.deploy.converters import asbool
 # pylint: enable=F0401
 
 from turbulenz_local.lib.servicestatus import ServiceStatus
@@ -54,7 +56,7 @@ class GamesController(BaseController):
 
         game_session_list = GameSessionList.get_instance()
 
-        if (request.params.get('closeExistingSessions', False)):
+        if (asbool(request.params.get('closeExistingSessions', False))):
             game_session_list.remove_game_sessions(user, game)
 
         game_session = game_session_list.create_session(user, game)

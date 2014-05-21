@@ -68,8 +68,7 @@ var LocalMessageView = Backbone.View.extend({
     checkPlugin: function ()
     {
         var plugins = PluginDetection.getPlugins();
-
-        if (!plugins.turbulenz.supported)
+        if (plugins.turbulenz.supported)
         {
             if (this.engine)
             {

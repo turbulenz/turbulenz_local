@@ -250,7 +250,7 @@ class Deployment(object):
                 checked_queue_put(f)
 
 
-    # pylint: disable=R0914
+    # pylint: disable=R0914,R0915
     def check_files(self, files, start, end, checked_queue_put, hashes, ultra, cache_time, meta_data_cache):
         files_to_batch_check = []
         base_path_len = len(self.path)
@@ -400,7 +400,7 @@ class Deployment(object):
                 self.stop('Error checking files: "%s".' % str(e))
             except Exception as e:
                 self.stop('Error checking files: "%s".' % str(e))
-    # pylint: enable=R0914
+    # pylint: enable=R0914,R0915
 
     def find_files(self):
         files = set()

@@ -70,7 +70,10 @@ class Deployment(object):
                              'wav',
                              'swf',
                              'webm',
-                             'mp4' ])
+                             'mp4',
+                             'm4v',
+                             'm4a',
+                             'aac' ])
 
     _directories_to_ignore = set([ '.git',
                                    '.hg',

@@ -62,7 +62,11 @@ def _add_missing_mime_types():
     mimetypes.add_type('image/svg+xml', '.svg')
     mimetypes.add_type('image/pjpeg', '.jpg')
     mimetypes.add_type('video/webm', '.webm')
+    mimetypes.add_type('video/mp4', '.mp4')
+    mimetypes.add_type('video/mp4', '.m4v')
+    mimetypes.add_type('audio/aac', '.aac')
     mimetypes.add_type('audio/mpeg', '.mp3')
+    mimetypes.add_type('audio/mp4', '.m4a')
     mimetypes.add_type('application/tar', '.tar')
     mimetypes.add_type('text/css', '.css')
 

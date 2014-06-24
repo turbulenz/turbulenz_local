@@ -10,9 +10,20 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
-2014-05-16
+.. _version-1.1.5:
+
+1.1.5
+-----
+
+:release-date: 2014-06-24
+
+- Add support for the close existing sessions api added to the turbulenz engine.
 - Fixed local server store API to stop game's users to purchasing "own" resources multiple times.
 - Fixed local server crashing for store API calls with malformed parameters.
+- Avoid warning the user when they don't have the legacy plugin installed.
+- Register more mimetypes and ensure they're registered for the deploy game tool.
+- Style the game pages so that touch events are correctly sent to the canvas element.
+- Fixed rare case where an incorrectly registered mimetype for css files prevented use of the local server.
 
 .. _version-1.1.4:
 

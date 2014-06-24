@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 """
 Controller class for deploying a game
 """

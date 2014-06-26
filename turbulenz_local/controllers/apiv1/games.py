@@ -56,7 +56,7 @@ class GamesController(BaseController):
 
         game_session_list = GameSessionList.get_instance()
 
-        if (asbool(request.params.get('closeExistingSessions', False))):
+        if asbool(request.params.get('closeExistingSessions', False)):
             game_session_list.remove_game_sessions(user, game)
 
         game_session = game_session_list.create_session(user, game)

@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2012 Turbulenz Limited
+# Copyright (c) 2011-2012,2014 Turbulenz Limited
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ class DataShare(object):
         username = user.username
         if username not in self.users:
             raise Forbidden('User "%s" has not joined '
-                'data-share with id "%s"' % (username, self.datashare_id))
+                            'data-share with id "%s"' % (username, self.datashare_id))
 
     def join(self, user):
         with self.lock:
@@ -211,7 +211,7 @@ class DataShare(object):
                 if key_store['access'] != self.read_only:
                     raise Forbidden('Forbidden: Key "%s" is read and write access'
                                     '(must use compare and set for read and write keys)' % key,
-                                       {'reason': 'read_and_write'})
+                                    {'reason': 'read_and_write'})
                 owner = key_store['ownedBy']
                 if owner != user.username:
                     raise Forbidden('Forbidden: Key "%s" is read only' % key, {'reason': 'read_only'})
@@ -232,7 +232,7 @@ class DataShare(object):
 
                 if key_store['access'] != self.read_and_write:
                     raise Forbidden('Forbidden: Key "%s" is read only access (must use set for read only keys)' % key,
-                                       {'reason': 'read_only'})
+                                    {'reason': 'read_only'})
                 owner = key_store['ownedBy']
 
                 # if the key is in the store then check its token

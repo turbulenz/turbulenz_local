@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2013 Turbulenz Limited
+# Copyright (c) 2011-2014 Turbulenz Limited
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -86,7 +86,7 @@ class Leaderboard(object):
             self.title = meta_data['title']
 
         if 'aggregate' in meta_data:
-            if (isinstance(meta_data['aggregate'], bool)):
+            if isinstance(meta_data['aggregate'], bool):
                 self.aggregate = meta_data['aggregate']
             else:
                 warning('aggregate property must be a boolean for key "%s"' % key)
@@ -292,10 +292,12 @@ class Leaderboard(object):
     @classmethod
     def _get_row(cls, username, score):
         user = get_user(username)
-        return {'user': {
-                    'username': username,
-                    'displayName': username,
-                    'avatar': user.avatar},
+        return {'user':
+                    {
+                        'username': username,
+                        'displayName': username,
+                        'avatar': user.avatar
+                    },
                 'score': score.score,
                 'time': score.score_time}
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2011,2013 Turbulenz Limited
+# Copyright (c) 2010-2011,2013-2014 Turbulenz Limited
 """
 Controller class for the viewer
 """
@@ -27,6 +27,6 @@ class ViewerController(BaseController):
         asset_url = '/play/' + slug + '/'
         querystring = '?assetpath=%s&baseurl=%s&mapping_table=%s' % (asset, asset_url, game.mapping_table)
         viewer_url = '/%s#/play/%s/%s.%s.%s.html' % (querystring, cls.viewer_app, cls.viewer_app,
-                                                   cls.viewer_type, cls.viewer_mode)
+                                                     cls.viewer_type, cls.viewer_mode)
         redirect(viewer_url)
 

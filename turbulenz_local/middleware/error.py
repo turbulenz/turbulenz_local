@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2013 Turbulenz Limited
+# Copyright (c) 2011-2014 Turbulenz Limited
 
 from traceback import format_exc
 from logging import getLogger
@@ -69,8 +69,8 @@ class ErrorMiddleware(object):
             LOG.error(log_msg)
             LOG.error(trace_string)
             if asbool(self.config.get('debug')):
-                print(log_msg)
-                print(trace_string)
+                print log_msg
+                print trace_string
 
             start_response('500 Internal Server Error', self.error_headers)
             return self.error_response

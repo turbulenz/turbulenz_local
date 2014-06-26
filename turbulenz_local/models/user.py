@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 
 from getpass import getuser as _get_user_name
 from re import compile as re_compile, sub as re_sub
@@ -41,10 +41,10 @@ class User(object):
 
                 if not self.username_pattern.match(self.username):
                     raise ValueError('Username "%s" is invalid. '
-                        'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+                                     'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
             except UnicodeEncodeError:
                 raise ValueError('Username "%s" is invalid. '
-                        'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+                                 'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
 
             self.age = user_data.get('age', self.default_age)
             self.country = user_data.get('country', self.default_country)
@@ -61,12 +61,12 @@ class User(object):
             try:
                 if not self.username_pattern.match(user_data):
                     raise ValueError('Username "%s" is invalid. '
-                        'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
+                                     'Usernames can only contain alphanumeric and hyphen characters.' % user_data)
                 self.username = str(user_data).lower()
 
             except UnicodeEncodeError:
                 raise ValueError('Username "%s" is invalid. '
-                        'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
+                                 'Usernames can only contain alphanumeric and hyphen characters.' % self.username)
 
             self.age = self.default_age
             self.country = self.default_country

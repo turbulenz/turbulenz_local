@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 
 from logging import getLogger
 from os import access, R_OK
@@ -77,7 +77,7 @@ class StaticGameFilesMiddleware(object):
                 start_response(
                     '404 Not Found',
                     [('Content-Type', 'text/html; charset=UTF-8'),
-                    ('Content-Length', '0')]
+                     ('Content-Length', '0')]
                 )
                 return ['']
 

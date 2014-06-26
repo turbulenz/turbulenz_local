@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 
 import logging
 import os
@@ -264,7 +264,7 @@ class Game(object):
 
                 files.append(_File(file_name, file_name, directory, os.path.join(abs_static_path, file_name)))
             else:
-                if (file_name not in directories):
+                if file_name not in directories:
                     directories[file_name] = _File(file_name)
 
         return directories.values() + files
@@ -619,7 +619,7 @@ class _File(object):
         return True
 
     def is_directory(self):
-        return (self.request_name is None)
+        return self.request_name is None
 
     def as_dict(self):
         return {

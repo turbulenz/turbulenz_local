@@ -530,9 +530,9 @@ def main():
             start_time = time()
 
             result = _progress(deploy_info, silent, verbose)
-            if (0 == result):
+            if 0 == result:
                 result = _postupload_progress(deploy_info, connection, cookie, silent, verbose)
-                if (0 == result):
+                if 0 == result:
                     if not silent:
                         log('Deployment time: %s' % _fmt_time((time() - start_time)))
                     game.set_deployed()

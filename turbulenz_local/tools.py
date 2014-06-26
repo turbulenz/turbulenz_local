@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2011,2013 Turbulenz Limited
+# Copyright (c) 2010-2011,2013-2014 Turbulenz Limited
 
 import os
 import re
@@ -88,7 +88,7 @@ def compress_file(file_path, compress_path):
     seven_zip = get_7zip_path()
     if seven_zip:
         process = Popen([seven_zip,
-                        'a', '-tgzip',
+                         'a', '-tgzip',
                          #'-mx=9', '-mfb=257', '-mpass=15',
                          compress_path, file_path],
                         stdout=PIPE, stderr=PIPE)

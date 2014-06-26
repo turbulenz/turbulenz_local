@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 
 import io
 import gzip
@@ -79,7 +79,7 @@ class GzipMiddleware(object):
         self.compress_level = asint(config.get('gzip.compress_level', '5'))
         self.compress = set(aslist(config.get('gzip.compress', ''), ',', strip=True))
         self.do_not_compress = set(aslist(config.get('gzip.do_not_compress', ''), ',', strip=True))
-        for m in (self.compress | self.do_not_compress):
+        for m in self.compress | self.do_not_compress:
             if mimetypes.guess_extension(m) is None:
                 LOG.warning('Unrecognised mimetype in server configuration: %s', m)
         self.cache_dir = normpath(config.get('deploy.cache_dir', None))

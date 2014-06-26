@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2013 Turbulenz Limited
+# Copyright (c) 2011-2014 Turbulenz Limited
 
 import logging
 import os
@@ -57,7 +57,7 @@ class UserData(object):
             try:
                 f = open(unicode(join_path(self.path, key_file)), 'r')
                 (key, ext) = os.path.splitext(key_file)
-                if (ext == '.txt'):
+                if ext == '.txt':
                     try:
                         list_array.append(key)
                     finally:
@@ -138,7 +138,7 @@ class UserData(object):
 
         for key_path in key_paths:
             (_, ext) = os.path.splitext(key_path)
-            if (ext == '.txt'):
+            if ext == '.txt':
                 try:
                     os.remove(unicode(join_path(self.path, key_path)))
                 except IOError, e:

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2011,2013 Turbulenz Limited
+# Copyright (c) 2010-2011,2013-2014 Turbulenz Limited
 
 import logging
 import yaml
@@ -90,7 +90,7 @@ class GameList(object):
         if old_slug is not None and new_slug is not None:
             try:
                 game = self._slugs[old_slug]
-                del(self._slugs[old_slug])
+                del self._slugs[old_slug]
                 if new_slug in self._slugs.keys():
                     new_slug = SlugDetail(self.make_slug_unique(new_slug))
                     game.slug = new_slug
@@ -138,7 +138,7 @@ class GameList(object):
         Deletes the game from the game list in games.yaml
         """
         try:
-            del(self._slugs[slug])
+            del self._slugs[slug]
         except KeyError:
             raise GameNotFoundError('Game not found: %s' % slug)
         else:

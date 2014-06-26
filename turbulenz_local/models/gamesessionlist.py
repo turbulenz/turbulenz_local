@@ -155,8 +155,7 @@ class GameSessionList(object):
 
 
     def create_session(self, user, game):
-        if (user is None or
-            game is None):
+        if user is None or game is None:
             return None
         session = GameSession(game, user)
         with self.lock:
@@ -168,7 +167,7 @@ class GameSessionList(object):
     def remove_session(self, string_id):
         with self.lock:
             sessions = self._sessions
-            if (string_id in sessions):
+            if string_id in sessions:
                 del sessions[string_id]
                 self.write_sessions()
                 return True

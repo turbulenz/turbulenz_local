@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2013 Turbulenz Limited
+# Copyright (c) 2012-2014 Turbulenz Limited
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -122,7 +122,7 @@ class StoreOffering(StoreItem):
                 self.prices[currency] = Money(get_currency(currency), currency_price)
             except TypeError:
                 self.error('price %s invalid precision for store offering "%s" using default 1 %s'
-                            % (currency, self.key, currency))
+                           % (currency, self.key, currency))
                 self.prices[currency] = Money(get_currency(currency), 1)
 
         output = meta_data.get('output')

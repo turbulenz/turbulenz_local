@@ -141,14 +141,14 @@ class DeployController(BaseController):
 
         response.headers['Cache-Control'] = 'no-store, no-cache, max-age=0'
 
+    # pylint: disable=E1103
         return {
             'ok': True,
             'cookie': hub_headers.get('Cookie') if rememberme else None,
             'user': username,
-            # pylint: disable=E1103
             'projects': json_loads(r.data).get('projects', [])
-            # pylint: enable=E1103
         }
+    # pylint: enable=E1103
 
 
     # pylint: disable=R0911
@@ -231,8 +231,7 @@ class DeployController(BaseController):
                                  '/dynamic/user',
                                  headers=hub_headers,
                                  retries=1,
-                                 redirect=False
-            )
+                                 redirect=False)
             # pylint: disable=E1103
             username = json_loads(r.data).get('username')
             # pylint: enable=E1103
@@ -368,12 +367,12 @@ class DeployController(BaseController):
 
         if not deploy_info.done:
             return {
-                    'ok': True,
-                    'data': {
-                        'total': 1,
-                        'processed': 0
-                    }
+                'ok': True,
+                'data': {
+                    'total': 1,
+                    'processed': 0
                 }
+            }
 
         if not deploy_info.hub_session:
             response.status_int = 404

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 """
 Controller class for deploying a game
 """
@@ -132,19 +132,19 @@ class Deployment(object):
                 if self.done:
                     self.hub_pool.request('POST',
                                           '/dynamic/upload/end',
-                                           fields=fields,
-                                           headers=headers,
-                                           redirect=False,
-                                           retries=5,
-                                           timeout=self.hub_timeout)
+                                          fields=fields,
+                                          headers=headers,
+                                          redirect=False,
+                                          retries=5,
+                                          timeout=self.hub_timeout)
                 else:
                     self.hub_pool.request('POST',
                                           '/dynamic/upload/cancel',
-                                           fields=fields,
-                                           headers=headers,
-                                           redirect=False,
-                                           retries=5,
-                                           timeout=self.hub_timeout)
+                                          fields=fields,
+                                          headers=headers,
+                                          redirect=False,
+                                          retries=5,
+                                          timeout=self.hub_timeout)
             except (HTTPError, SSLError) as e:
                 LOG.error(e)
 
@@ -663,9 +663,9 @@ class Deployment(object):
                         params['encoding'] = 'gzip'
                     r = hub_pool.request('POST',
                                          '/dynamic/upload/file',
-                                          fields=params,
-                                          headers={'Cookie': hub_cookie},
-                                          timeout=self.hub_timeout)
+                                         fields=params,
+                                         headers={'Cookie': hub_cookie},
+                                         timeout=self.hub_timeout)
                 else:
                     params = [MultipartParam('file',
                                              filename=relative_path,
@@ -777,9 +777,9 @@ class Deployment(object):
                           'localversion': __version__}
                 r = self.hub_pool.request('POST',
                                           '/dynamic/upload/begin',
-                                           fields=params,
-                                           headers={'Cookie': self.hub_cookie},
-                                           timeout=self.hub_timeout)
+                                          fields=params,
+                                          headers={'Cookie': self.hub_cookie},
+                                          timeout=self.hub_timeout)
             else:
                 r = self.post('/dynamic/upload/begin',
                               [MultipartParam('files',
@@ -905,9 +905,6 @@ class MultipartReader(object):
         self.i = 0
         self.param = None
         self.param_iter = None
-
-    def __iter__(self):
-        return self
 
     def read(self, blocksize):
         """generator function to return multipart/form-data representation

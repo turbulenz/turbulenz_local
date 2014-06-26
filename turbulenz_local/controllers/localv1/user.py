@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2013 Turbulenz Limited
+# Copyright (c) 2011-2014 Turbulenz Limited
 
 from pylons import request, response
 
@@ -19,7 +19,7 @@ class UserController(BaseController):
             login_user(str(username).lower())
         except UnicodeEncodeError:
             raise BadRequest('Username "%s" is invalid. '
-                    'Usernames can only contain alphanumeric and hyphen characters.' % username)
+                             'Usernames can only contain alphanumeric and hyphen characters.' % username)
         return {'ok': True}
 
 

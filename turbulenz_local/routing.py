@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2013 Turbulenz Limited
+# Copyright (c) 2010-2014 Turbulenz Limited
 """Routes configuration
 
 The more specific and detailed routes should be defined first so they
@@ -134,7 +134,7 @@ def make_map():
         m.connect('/read/{datashare_id:[A-Za-z0-9]+}/{key:[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*}', action='read_key')
         m.connect('/set/{datashare_id:[A-Za-z0-9]+}/{key:[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*}', action='set_key')
         m.connect('/compare-and-set/{datashare_id:[A-Za-z0-9]+}/{key:[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*}',
-            action='compare_and_set_key')
+                  action='compare_and_set_key')
 
         # Local API for testing only
         m.connect('/remove-all/{slug:[A-Za-z0-9\-]+}', action='remove_all')

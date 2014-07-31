@@ -164,7 +164,7 @@ class Deployment(object):
             meta_data_cache = json_load(gzip_file)
             gzip_file.close()
             cache_time = stat(file_name).st_mtime
-        except IOError:
+        except (IOError, ValueError):
             cache_time = -1
             meta_data_cache = {}
         return cache_time, meta_data_cache

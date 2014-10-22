@@ -144,6 +144,9 @@ def make_map():
         m.connect("/user", action="user")
         #m.connect("/game/{slug:[A-Za-z0-9\-]+}", action="game")
 
+    with router.submapper(controller="apiv1/gameauthtoken", path_prefix='/api/v1') as m:
+        m.connect("/game-auth-token/{slug:[A-Za-z0-9\-]+}", action="game_auth_token")
+
     with router.submapper(controller='apiv1/gamenotifications', path_prefix='/api/v1/game-notifications') as m:
         m.connect('/usersettings/read/{slug:[A-Za-z0-9\-]+}', action='read_usersettings')
         m.connect('/usersettings/update/{slug:[A-Za-z0-9\-]+}', action='update_usersettings')

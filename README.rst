@@ -15,7 +15,7 @@ metrics, asset browsers, asset dissassemblers and the ability to launch an asset
 History
 =======
 
-The latest release is 1.1.5 which can be found here `<https://pypi.python.org/pypi/turbulenz_local/1.1.5>`_
+The latest release is 1.1.6 which can be found here `<https://pypi.python.org/pypi/turbulenz_local/1.1.6>`_
 
 A full history of changes can be found in the
 `Changelog <http://github.com/turbulenz/turbulenz_local/blob/master/CHANGES.rst>`_

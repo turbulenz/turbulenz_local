@@ -1,6 +1,6 @@
-# Copyright (c) 2010-2014 Turbulenz Limited
+# Copyright (c) 2010-2015 Turbulenz Limited
 
-__version__ = '1.1.5'
+__version__ = '1.1.6'
 
 import os.path
 CONFIG_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config')

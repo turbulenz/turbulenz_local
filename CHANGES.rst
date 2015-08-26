@@ -10,6 +10,16 @@ Turbulenz Local Development Server
 1.x-dev
 -------
 
+.. _version-1.1.6:
+
+1.1.6
+-----
+
+:release-date: 2015-08-26
+
+- Fix some package dependencies to deal with new releases with breaking changes.
+- Add new game auth token api to allow game servers to validate users.
+
 .. _version-1.1.5:
 
 1.1.5
